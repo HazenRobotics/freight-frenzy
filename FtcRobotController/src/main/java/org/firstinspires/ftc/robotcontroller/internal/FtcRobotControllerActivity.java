@@ -256,6 +256,8 @@ public class FtcRobotControllerActivity extends Activity
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    RsContext.init(getApplicationContext());
+
     if (enforcePermissionValidator()) {
       return;
     }
