@@ -13,8 +13,6 @@ import org.intel.rs.types.Stream
 import org.intel.rs.frame.FrameList
 
 
-
-
 class TrackingCamera {
 
     lateinit var pose: Pose
@@ -33,7 +31,6 @@ class TrackingCamera {
         val poseFrame = frames.poseFrame
         poseFrame.pose
     }
-
 
 
 }
