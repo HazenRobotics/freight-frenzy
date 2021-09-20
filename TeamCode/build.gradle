@@ -19,6 +19,7 @@ android {
     androidResources {
         noCompress 'tflite'
     }
+    buildToolsVersion '31.0.0'
 }
 
 dependencies {
