@@ -17,6 +17,10 @@ public class Lift implements Subsystem {
 
 	AngleUnit angleUnit;
 
+	Thread liftIsBusy = new Thread( ( ) -> {
+
+	});
+
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 19.2;
 
@@ -44,16 +48,37 @@ public class Lift implements Subsystem {
 		rightMotor.setVelocity( velocity, angleUnit );
 	}
 
-	public void setPosition( int position ) {
+	private void setTargetPosition( int position ) {
 		leftMotor.setTargetPosition( position );
 		rightMotor.setTargetPosition( position );
 	}
 
-	public void setLiftPosition( double velocity, double position ) {
-		setPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
+	/**
+	 * @param velocity the velocity at which to move the lift
+	 * @param position the position to move the lift to in inches
+	 */
+	public void setPosition( double velocity, double position ) {
+		setTargetPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
 		setVelocity( velocity );
-		while( leftMotor.isBusy() || rightMotor.isBusy() );
+		while( isBusy( ) ) ;
 		setVelocity( 0 );
+	}
+
+	/**
+	 * @param velocity the velocity at which to move the lift
+	 * @param position the position to move the lift to in inches
+	 */
+	public void setPositionAsync( double velocity, double position ) {
+		setTargetPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
+		setVelocity( velocity );
+		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
+			while( isBusy( ) ) ;
+			setVelocity( 0 );
+		} ).start( );
+	}
+
+	public boolean isBusy( ) {
+		return leftMotor.isBusy( ) || rightMotor.isBusy( );
 	}
 
 	public int convertDistTicks( double distanceToTravel, double circumference ) {

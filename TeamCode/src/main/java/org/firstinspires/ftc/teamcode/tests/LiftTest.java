@@ -21,5 +21,7 @@ public class LiftTest extends LinearOpMode {
 
 		waitForStart();
 
+		lift.setPosition( 400, 10 );
+
 	}
 }
