@@ -19,7 +19,7 @@ public class Lift implements Subsystem {
 
 	Thread liftIsBusy = new Thread( ( ) -> {
 
-	});
+	} );
 
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 19.2;
