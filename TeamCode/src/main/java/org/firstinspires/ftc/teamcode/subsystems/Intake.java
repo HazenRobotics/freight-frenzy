@@ -35,5 +35,4 @@ public class Intake implements Subsystem {
 	public void stop( ) {
 		setPower( 0 );
 	}
-
 }
