@@ -34,12 +34,6 @@ public class AudioTest extends OpMode {
 	@Override
 	public void loop( ) {
 
-		if( gamepad1.a.onPress( ) )
-			telemetry.addLine( SoundLibrary.playAudio( "pew_default" ) );
-
-		if( gamepad1.b.onPress( ) )
-			telemetry.addLine( SoundLibrary.playRandomPew( ) );
-
 		if( gamepad1.x.onPress( ) )
 			telemetry.addLine( SoundLibrary.playRandomSound( ) );
 
