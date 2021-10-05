@@ -8,36 +8,38 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-public class Lift implements Subsystem {
+public class Lift {
 
-	DcMotorEx rightMotor;
 	DcMotorEx leftMotor;
+	DcMotorEx rightMotor;
 
 	double wheelRadius;
+	double groundBucketHeight;
+	double liftAngle;
 
 	AngleUnit angleUnit;
-
-	Thread liftIsBusy = new Thread( ( ) -> {
-
-	} );
 
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 19.2;
 
 	public Lift( HardwareMap hw ) {
-		this( hw, 0.5, AngleUnit.DEGREES );
+		this( hw, 600, 45, 0.5, AngleUnit.DEGREES,
+				"leftLiftMotor", "rightLiftMotor" );
 	}
 
-	public Lift( HardwareMap hw, double spoolRadius, AngleUnit angleUnit ) {
-		setup( hw );
+	public Lift( HardwareMap hw, double groundBucketHeight, double liftAngle, double spoolRadius,
+				 AngleUnit angleUnit, String leftMotorName, String rightMotorName ) {
+		setup( hw, leftMotorName, rightMotorName );
+		setLiftAngle( liftAngle );
+		setGroundBucketHeight( groundBucketHeight );
 		setWheelRadius( spoolRadius );
 		setAngleUnit( angleUnit );
 	}
 
-	public void setup( HardwareMap hw ) {
+	public void setup( HardwareMap hw, String leftMotorName, String rightMotorName ) {
 
-		leftMotor = hardwareMap.get( DcMotorEx.class, "leftMotor" );
-		rightMotor = hardwareMap.get( DcMotorEx.class, "rightMotor" );
+		leftMotor = hw.get( DcMotorEx.class, leftMotorName );
+		rightMotor = hw.get( DcMotorEx.class, rightMotorName );
 
 		rightMotor.setDirection( DcMotorSimple.Direction.REVERSE );
 	}
@@ -57,11 +59,45 @@ public class Lift implements Subsystem {
 	 * @param velocity the velocity at which to move the lift
 	 * @param position the position to move the lift to in inches
 	 */
-	public void setPosition( double velocity, double position ) {
+	public void setLiftPosition( double velocity, double position ) {
 		setTargetPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
 		setVelocity( velocity );
 		while( isBusy( ) ) ;
 		setVelocity( 0 );
+	}
+
+
+	/*
+
+						/|
+			 (lift) c  / |
+	  		          /  |  b the height of this side of the triangle
+(bottom of bucket)   /___|  h (height given from the ground)
+      B (this angle) ^   |
+					_____|
+ 		  	       (ground)
+
+		* given h
+		* find c (the distance to set the lift to)
+		* g is the distance the bucket is off the ground
+		* B is the lift angle (either 40 or 45°)
+
+		sin(θ) = b/c
+		b = h-g
+		θ = B
+
+		c = (h-g)/(sin(B)
+		liftPosition = (height - groundBucketHeight/( sin(liftAngle) )
+
+	 */
+
+	/**
+	 * @param velocity the velocity at which to move the lift
+	 * @param height the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
+	 */
+	public void setLiftHeight( double velocity, double height ) {
+		double liftPosition = (height - groundBucketHeight)/(Math.sin( Math.toRadians( liftAngle ) ));
+		setLiftPosition( velocity, liftPosition );
 	}
 
 	/**
@@ -111,5 +147,23 @@ public class Lift implements Subsystem {
 
 	public double getWheelRadius( ) {
 		return wheelRadius;
+	}
+
+	// setters and getters for groundBucketHeight
+	public void setGroundBucketHeight( double newBucketHeight ) {
+		groundBucketHeight = newBucketHeight;
+	}
+
+	public double getGroundBucketHeight( ) {
+		return groundBucketHeight;
+	}
+
+	// setters and getters for liftAngle
+	public void setLiftAngle( double newAngle ) {
+		liftAngle = newAngle;
+	}
+
+	public double getLiftAngle( ) {
+		return liftAngle;
 	}
 }
