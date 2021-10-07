@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.robots;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.utils.TensorFlowUtil;
+import org.firstinspires.ftc.teamcode.vision.TensorFlowUtil;
 
 public class Robot1 {
 
