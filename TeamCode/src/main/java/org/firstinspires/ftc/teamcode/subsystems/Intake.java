@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake implements Subsystem {
+public class Intake {
 
 	DcMotor intakeMotor1;
 	DcMotor intakeMotor2;
@@ -13,7 +13,6 @@ public class Intake implements Subsystem {
 		setup( hw );
 	}
 
-	@Override
 	public void setup( HardwareMap hw ) {
 
 		intakeMotor1 = hw.dcMotor.get( "intake1" );
