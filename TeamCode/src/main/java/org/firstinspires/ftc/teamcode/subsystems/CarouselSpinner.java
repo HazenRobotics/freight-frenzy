@@ -6,8 +6,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class CarouselSpinner {
 
 	CRServo spinner;
-	double wheelRadius = 2;
-	final double GEAR_RATIO = 67;
+
+	// I don't think we'll need these since we have to use timed methods when rotating it.
+//	double wheelRadius = 2;
+//	final double GEAR_RATIO = 67;
 
 	public CarouselSpinner( HardwareMap hw ) {
 		setup( hw );

@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -12,38 +10,38 @@ public class Lift {
 
 	public static final double MAX_VELOCITY = 30;
 
-	DcMotorEx leftMotor;
-	DcMotorEx rightMotor;
-
-	double wheelRadius;
-	double groundBucketHeight;
-	double liftAngle;
-
-	AngleUnit angleUnit;
-
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 19.2;
 
+	DcMotorEx leftMotor;
+	DcMotorEx rightMotor;
+
+	double spoolRadius;
+	double groundBucketHeight;
+
+	double liftAngle;
+	AngleUnit angleUnit;
+
 	public Lift( HardwareMap hw ) {
-		this( hw, 600, 45, 0.5, AngleUnit.DEGREES,
-				"leftLiftMotor", "rightLiftMotor" );
+		this( hw,"leftLiftMotor", "rightLiftMotor", 600,
+				45, 0.5, AngleUnit.DEGREES );
 	}
 
-	public Lift( HardwareMap hw, double groundBucketHeight, double liftAngle, double spoolRadius,
-				 AngleUnit angleUnit, String leftMotorName, String rightMotorName ) {
-		setup( hw, leftMotorName, rightMotorName );
-		setLiftAngle( liftAngle );
-		setGroundBucketHeight( groundBucketHeight );
-		setWheelRadius( spoolRadius );
-		setAngleUnit( angleUnit );
+	public Lift( HardwareMap hw, String leftMotorName, String rightMotorName, double groundBucketHeight,
+				 double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
+		setup( hw, leftMotorName, rightMotorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setup( HardwareMap hw, String leftMotorName, String rightMotorName ) {
+	public void setup( HardwareMap hw, String leftMotorName, String rightMotorName, double groundBucketHeight,
+					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
 		leftMotor = hw.get( DcMotorEx.class, leftMotorName );
 		rightMotor = hw.get( DcMotorEx.class, rightMotorName );
 
 		rightMotor.setDirection( DcMotorSimple.Direction.REVERSE );
+
+		setGroundBucketHeight( groundBucketHeight );
+		setSpoolRadius( spoolRadius );
 	}
 
 	public void setVelocity( double velocity ) {
@@ -62,7 +60,7 @@ public class Lift {
 	 * @param position the position to move the lift to in inches
 	 */
 	public void setLiftPosition( double velocity, double position ) {
-		setTargetPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
+		setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
 		setVelocity( velocity );
 		while( isBusy( ) ) ;
 		setVelocity( 0 );
@@ -107,7 +105,7 @@ public class Lift {
 	 * @param position the position to move the lift to in inches
 	 */
 	public void setPositionAsync( double velocity, double position ) {
-		setTargetPosition( convertDistTicks( position, 2 * wheelRadius * Math.PI ) );
+		setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
 		setVelocity( velocity );
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
 			while( isBusy( ) ) ;
@@ -120,17 +118,17 @@ public class Lift {
 	}
 
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
-		double revolutions = distanceToTravel / circumference;
-		int totalTicks = (int) Math.round( (revolutions * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 
-		return totalTicks;
+		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 	}
 
 	public int convertTicksDist( double ticksToTravel, double circumference ) {
-		double calculations = ticksToTravel * circumference * GEAR_RATIO;
-		int totalDistance = (int) Math.round( calculations / PULSES_PER_REVOLUTION );
 
-		return totalDistance;
+		return (int) Math.round( (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION );
+	}
+
+	public AngleUnit getAngleUnit( ) {
+		return angleUnit;
 	}
 
 	// setters and getters for angleUnit
@@ -138,17 +136,17 @@ public class Lift {
 		this.angleUnit = angleUnit;
 	}
 
-	public AngleUnit getAngleUnit( ) {
-		return angleUnit;
+	public double getWheelRadius( ) {
+		return spoolRadius;
 	}
 
 	// setters and getters for spoolRadius
-	public void setWheelRadius( double newRadius ) {
-		wheelRadius = newRadius;
+	public void setSpoolRadius( double newRadius ) {
+		spoolRadius = newRadius;
 	}
 
-	public double getWheelRadius( ) {
-		return wheelRadius;
+	public double getGroundBucketHeight( ) {
+		return groundBucketHeight;
 	}
 
 	// setters and getters for groundBucketHeight
@@ -156,16 +154,12 @@ public class Lift {
 		groundBucketHeight = newBucketHeight;
 	}
 
-	public double getGroundBucketHeight( ) {
-		return groundBucketHeight;
+	public double getLiftAngle( ) {
+		return liftAngle;
 	}
 
 	// setters and getters for liftAngle
 	public void setLiftAngle( double newAngle ) {
 		liftAngle = newAngle;
-	}
-
-	public double getLiftAngle( ) {
-		return liftAngle;
 	}
 }

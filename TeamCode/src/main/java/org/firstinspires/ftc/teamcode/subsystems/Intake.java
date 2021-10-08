@@ -4,28 +4,27 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake implements Subsystem {
+public class Intake {
 
-	DcMotor intakeMotor1;
-	DcMotor intakeMotor2;
-	
+	DcMotor intakeMotorLeft;
+	DcMotor intakeMotorRight;
+
 	public Intake( HardwareMap hw ) {
 		setup( hw );
 	}
 
-	@Override
 	public void setup( HardwareMap hw ) {
 
-		intakeMotor1 = hw.dcMotor.get( "intake1" );
-		intakeMotor2 = hw.dcMotor.get( "intake2" );
+		intakeMotorLeft = hw.dcMotor.get( "intakeLeft" );
+		intakeMotorRight = hw.dcMotor.get( "intakeRight" );
 
-		intakeMotor1.setDirection( DcMotorSimple.Direction.REVERSE );
+		intakeMotorRight.setDirection( DcMotorSimple.Direction.REVERSE );
 	}
 
 	public void setPower( double power ) {
 
-		intakeMotor1.setPower( power );
-		intakeMotor2.setPower( power );
+		intakeMotorLeft.setPower( power );
+		intakeMotorRight.setPower( power );
 	}
 
 	public void eject( ) {
@@ -35,4 +34,5 @@ public class Intake implements Subsystem {
 	public void stop( ) {
 		setPower( 0 );
 	}
+
 }
