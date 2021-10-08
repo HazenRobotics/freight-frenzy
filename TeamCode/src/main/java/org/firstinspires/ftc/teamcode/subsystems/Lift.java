@@ -119,18 +119,18 @@ public class Lift {
 		return leftMotor.isBusy( ) || rightMotor.isBusy( );
 	}
 
+	/**
+	 * @param distanceToTravel the distance to move in inches
+	 * @param circumference    the circumference of the wheel that has the encoder
+	 * @return totalTicks - the amount of ticks to move forward
+	 */
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
-		double revolutions = distanceToTravel / circumference;
-		int totalTicks = (int) Math.round( (revolutions * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 
-		return totalTicks;
+		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 	}
 
 	public int convertTicksDist( double ticksToTravel, double circumference ) {
-		double calculations = ticksToTravel * circumference * GEAR_RATIO;
-		int totalDistance = (int) Math.round( calculations / PULSES_PER_REVOLUTION );
-
-		return totalDistance;
+		return (int) Math.round( (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION );
 	}
 
 	// setters and getters for angleUnit
