@@ -68,10 +68,14 @@ public class Logger {
 
 		// "\n" = System.lineSeparator()
 
-		Thread fileWriter = new Thread( ( ) -> {
+		new Thread( ( ) -> {
 
-			Date date = new Date( );
-			String time = includeTimeStamp ? new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: " : "";
+			String time = "";
+			Date date;
+			if( includeTimeStamp || deleteOldLogs )
+				date = new Date( );
+			if( includeTimeStamp )
+				time = new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: ";
 
 			//".../Internal Storage";
 			String path = Environment.getExternalStorageDirectory( ).getPath( ) + LOG_PATH;
@@ -86,9 +90,7 @@ public class Logger {
 
 			if( deleteOldLogs )
 				deleteOldLogsDay( new SimpleDateFormat( "MM-dd" ).format( date ) );
-
-		} );
-		fileWriter.start( );
+		} ).start( );
 
 	}
 
