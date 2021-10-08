@@ -24,7 +24,7 @@ class DepthCamera {
 
     private fun getStreams() {
         val frames = pipeline.waitForFrames()
-        val depthFrame = frames.depthFrame
+        depth = frames.depthFrame
 
     }
 }

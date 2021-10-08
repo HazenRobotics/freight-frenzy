@@ -20,13 +20,11 @@ class TrackingCamera {
     init {
         val config = Config()
         config.enableStream(Stream.Pose, Format.Xyz32f)
-        config.enableStream(Stream.Accel, Format.Xyz32f)
-        config.enableStream(Stream.Gyro, Format.Xyz32f)
 
         pipeline.start(config)
     }
 
-    fun getStreams() {
+    fun getStream() {
         val frames = pipeline.waitForFrames()
         val poseFrame = frames.poseFrame
         pose = poseFrame.pose

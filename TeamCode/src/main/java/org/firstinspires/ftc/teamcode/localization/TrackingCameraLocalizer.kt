@@ -16,7 +16,7 @@ class TrackingCameraLocalizer : Localizer {
 	private val trackingCam = TrackingCamera()
 
 	override fun update( ) {
-		trackingCam.getStreams()
+		trackingCam.getStream()
 		poseEstimate = camPoseToPose2d(trackingCam.pose)
 		poseVelocity = camVeloToPose2d(trackingCam.pose)
 		poseAcceleration = camAccToPose2d(trackingCam.pose)
@@ -26,7 +26,7 @@ class TrackingCameraLocalizer : Localizer {
 		return Pose2d(
 				camValue.translation[0].toDouble(),
 				camValue.translation[1].toDouble(),
-				quaternionToEulerAngle(camValue.rotation)/*TODO: need to figure out quaternions to axis angles*/
+				quaternionToEulerAngle(camValue.rotation)
 		)
 	}
 
