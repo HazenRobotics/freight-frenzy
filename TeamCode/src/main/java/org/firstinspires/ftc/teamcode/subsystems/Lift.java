@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Lift {
 
+	public static final double MAX_VELOCITY = 30;
+
 	DcMotorEx leftMotor;
 	DcMotorEx rightMotor;
 
@@ -93,10 +95,10 @@ public class Lift {
 
 	/**
 	 * @param velocity the velocity at which to move the lift
-	 * @param height the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
+	 * @param height   the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
 	 */
 	public void setLiftHeight( double velocity, double height ) {
-		double liftPosition = (height - groundBucketHeight)/(Math.sin( Math.toRadians( liftAngle ) ));
+		double liftPosition = (height - groundBucketHeight) / (Math.sin( Math.toRadians( liftAngle ) ));
 		setLiftPosition( velocity, liftPosition );
 	}
 

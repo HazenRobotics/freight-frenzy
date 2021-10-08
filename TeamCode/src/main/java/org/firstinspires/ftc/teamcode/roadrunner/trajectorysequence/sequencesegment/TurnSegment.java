@@ -8,29 +8,30 @@ import com.acmerobotics.roadrunner.util.Angle;
 import java.util.List;
 
 public final class TurnSegment extends SequenceSegment {
-    private final double totalRotation;
-    private final MotionProfile motionProfile;
 
-    public TurnSegment(Pose2d startPose, double totalRotation, MotionProfile motionProfile, List<TrajectoryMarker> markers) {
-        super(
-                motionProfile.duration(),
-                startPose,
-                new Pose2d(
-                        startPose.getX(), startPose.getY(),
-                        Angle.norm(startPose.getHeading() + totalRotation)
-                ),
-                markers
-        );
+	private final double totalRotation;
+	private final MotionProfile motionProfile;
 
-        this.totalRotation = totalRotation;
-        this.motionProfile = motionProfile;
-    }
+	public TurnSegment( Pose2d startPose, double totalRotation, MotionProfile motionProfile, List<TrajectoryMarker> markers ) {
+		super(
+				motionProfile.duration( ),
+				startPose,
+				new Pose2d(
+						startPose.getX( ), startPose.getY( ),
+						Angle.norm( startPose.getHeading( ) + totalRotation )
+				),
+				markers
+		);
 
-    public final double getTotalRotation() {
-        return this.totalRotation;
-    }
+		this.totalRotation = totalRotation;
+		this.motionProfile = motionProfile;
+	}
 
-    public final MotionProfile getMotionProfile() {
-        return this.motionProfile;
-    }
+	public final double getTotalRotation( ) {
+		return this.totalRotation;
+	}
+
+	public final MotionProfile getMotionProfile( ) {
+		return this.motionProfile;
+	}
 }

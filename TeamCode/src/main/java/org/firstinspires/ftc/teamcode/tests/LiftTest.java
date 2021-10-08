@@ -14,9 +14,9 @@ public class LiftTest extends LinearOpMode {
 		lift = new Lift( hardwareMap );
 
 		telemetry.addLine( "init finished" );
-		telemetry.update();
+		telemetry.update( );
 
-		waitForStart();
+		waitForStart( );
 
 		lift.setLiftPosition( 400, 10 );
 

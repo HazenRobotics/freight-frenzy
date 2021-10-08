@@ -18,30 +18,31 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 @TeleOp(group = "drive")
 @Disabled
 public class LocalizationTest extends LinearOpMode {
-    @Override
-    public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+	@Override
+	public void runOpMode( ) throws InterruptedException {
+		SampleMecanumDrive drive = new SampleMecanumDrive( hardwareMap );
 
-        waitForStart();
+		drive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
 
-        while (!isStopRequested()) {
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
-                    )
-            );
+		waitForStart( );
 
-            drive.update();
+		while( !isStopRequested( ) ) {
+			drive.setWeightedDrivePower(
+					new Pose2d(
+							-gamepad1.left_stick_y,
+							-gamepad1.left_stick_x,
+							-gamepad1.right_stick_x
+					)
+			);
 
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.update();
-        }
-    }
+			drive.update( );
+
+			Pose2d poseEstimate = drive.getPoseEstimate( );
+			telemetry.addData( "x", poseEstimate.getX( ) );
+			telemetry.addData( "y", poseEstimate.getY( ) );
+			telemetry.addData( "heading", poseEstimate.getHeading( ) );
+			telemetry.update( );
+		}
+	}
 }

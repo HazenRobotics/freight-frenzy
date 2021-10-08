@@ -48,7 +48,7 @@ public class SoundLibrary {
 	}
 
 	private void initSounds( ) {
-		
+
 		// other audios
 		audioList.add( new Audio( "ps_startup", 0.5f, hardwareMap ) );
 		audioList.add( new Audio( "slurp_yummy", 1, hardwareMap ) );

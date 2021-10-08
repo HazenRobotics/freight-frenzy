@@ -28,17 +28,17 @@ public abstract class Robot {
 	/**
 	 * Creates a Robot
 	 *
-	 * @param hw robot's hardware map
+	 * @param op robot's opMode
 	 */
-	public Robot( HardwareMap hw, OpMode op ) {
-		this.hardwareMap = hw;
-		this.opMode = op;
+	public Robot( OpMode op ) {
+		opMode = op;
+		hardwareMap = opMode.hardwareMap;
 		telemetry = opMode.telemetry;
 
 		//vuforiaKey = hardwareMap.appContext.getResources().getString(R.string.vuforiakey);
 
 		//Bulk Caching to decrease cycle times
-		for( LynxModule module : hw.getAll( LynxModule.class ) ) {
+		for( LynxModule module : hardwareMap.getAll( LynxModule.class ) ) {
 			module.setBulkCachingMode( LynxModule.BulkCachingMode.AUTO );
 		}
 	}
@@ -79,7 +79,6 @@ public abstract class Robot {
 	}
 
 	/**
-	 *
 	 * @param millis the amount of milliseconds to wait in a while loop
 	 */
 	public void sleep( long millis ) {

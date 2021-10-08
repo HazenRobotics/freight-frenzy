@@ -51,7 +51,7 @@ public class TensorFlowUtil {
 		QUAD
 	}
 
-	public TensorFlowUtil(  OpMode op ) {
+	public TensorFlowUtil( OpMode op ) {
 		opMode = op;
 		hardwareMap = opMode.hardwareMap;
 	}
