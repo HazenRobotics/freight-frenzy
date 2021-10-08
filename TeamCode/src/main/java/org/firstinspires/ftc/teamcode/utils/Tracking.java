@@ -160,8 +160,8 @@ public class Tracking {
 	 * @return the distance (in inches) in that number of ticks
 	 */
 	public static double convertTicksDist( double ticks, double wheelDiameter, double pulsesPerRevolution, double gearRatio ) {
-		double curcumference = Math.PI * wheelDiameter;
-		double totalDistance = (ticks * curcumference * gearRatio) / pulsesPerRevolution;
+		double circumference = Math.PI * wheelDiameter;
+		double totalDistance = (ticks * circumference * gearRatio) / pulsesPerRevolution;
 
 		return totalDistance;
 	}

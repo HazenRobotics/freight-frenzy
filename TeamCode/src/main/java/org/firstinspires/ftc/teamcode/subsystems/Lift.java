@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -117,18 +119,18 @@ public class Lift {
 		return leftMotor.isBusy( ) || rightMotor.isBusy( );
 	}
 
+	/**
+	 * @param distanceToTravel the distance to move in inches
+	 * @param circumference    the circumference of the wheel that has the encoder
+	 * @return totalTicks - the amount of ticks to move forward
+	 */
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
 
 		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 	}
 
 	public int convertTicksDist( double ticksToTravel, double circumference ) {
-
 		return (int) Math.round( (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION );
-	}
-
-	public AngleUnit getAngleUnit( ) {
-		return angleUnit;
 	}
 
 	// setters and getters for angleUnit
@@ -136,8 +138,8 @@ public class Lift {
 		this.angleUnit = angleUnit;
 	}
 
-	public double getWheelRadius( ) {
-		return spoolRadius;
+	public AngleUnit getAngleUnit( ) {
+		return angleUnit;
 	}
 
 	// setters and getters for spoolRadius
@@ -145,21 +147,21 @@ public class Lift {
 		spoolRadius = newRadius;
 	}
 
-	public double getGroundBucketHeight( ) {
-		return groundBucketHeight;
-	}
-
 	// setters and getters for groundBucketHeight
 	public void setGroundBucketHeight( double newBucketHeight ) {
 		groundBucketHeight = newBucketHeight;
 	}
 
-	public double getLiftAngle( ) {
-		return liftAngle;
+	public double getGroundBucketHeight( ) {
+		return groundBucketHeight;
 	}
 
 	// setters and getters for liftAngle
 	public void setLiftAngle( double newAngle ) {
 		liftAngle = newAngle;
+	}
+
+	public double getLiftAngle( ) {
+		return liftAngle;
 	}
 }
