@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.cameras
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.intel.rs.Context
 import org.intel.rs.device.Device
 import org.intel.rs.device.DeviceList
@@ -22,14 +20,16 @@ class TrackingCamera {
     init {
         val config = Config()
         config.enableStream(Stream.Pose, Format.Xyz32f)
+        config.enableStream(Stream.Accel, Format.Xyz32f)
+        config.enableStream(Stream.Gyro, Format.Xyz32f)
 
         pipeline.start(config)
     }
 
-    private fun getStreams() {
+    fun getStreams() {
         val frames = pipeline.waitForFrames()
         val poseFrame = frames.poseFrame
-        poseFrame.pose
+        pose = poseFrame.pose
     }
 
 

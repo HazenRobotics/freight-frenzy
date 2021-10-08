@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Lift {
 
+	public static final double MAX_VELOCITY = 30;
+
 	DcMotorEx leftMotor;
 	DcMotorEx rightMotor;
 
