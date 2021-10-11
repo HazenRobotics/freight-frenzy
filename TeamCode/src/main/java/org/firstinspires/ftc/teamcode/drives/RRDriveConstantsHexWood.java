@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 /*
  * Constants shared between multiple drive types.
  *
- * TODO: Tune or adjust the following constants to fit your robot. Note that the non-final
+ * TOBO: Tune or adjust the following constants to fit your robot. Note that the non-final
  * fields may also be edited through the dashboard (connect to the robot's WiFi network and
  * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
  * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
@@ -15,25 +15,25 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 @Config
-public class RRDriveConstantsWood {
+public class RRDriveConstantsHexWood {
 
 	/*
 	 * These are motor constants that should be listed online for your motors.
 	 */
-	public static final double TICKS_PER_REV = 1440;
-	public static final double MAX_RPM = 100;
+	public static final double TICKS_PER_REV = 28;
+	public static final double MAX_RPM = 340; // no load
 
 	/*
 	 * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
 	 * Set this flag to false if drive encoders are not present and an alternative localization
 	 * method is in use (e.g., tracking wheels).
 	 *
-	 * If using the built-in motor velocity PID, update
-	 * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
-	 * Set the value of MOTOR_VELO_PID to `new PIDCoefficients(kP, kI, kD);`
+	 * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
+	 * from DriveVelocityPIDTuner.
 	 */
 	public static final boolean RUN_USING_ENCODER = true;
-	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 0, 0, 0, 0 );
+	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 0, 0, 0,
+			getMotorVelocityF( MAX_RPM / 60 * TICKS_PER_REV ) );
 
 	/*
 	 * These are physical constants that can be determined from your robot (including the track
@@ -43,9 +43,9 @@ public class RRDriveConstantsWood {
 	 * angular distances although most angular parameters are wrapped in Math.toRadians() for
 	 * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
 	 */
-	public static double WHEEL_RADIUS = 1.9291; // in
-	public static double GEAR_RATIO = 1 / 3f; // output (wheel) speed / input (motor) speed
-	public static double TRACK_WIDTH = 15.3; // in
+	public static double WHEEL_RADIUS = 1.8898; // in - 48mm
+	public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+	public static double TRACK_WIDTH = 15.5; // in
 
 	/*
 	 * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -65,9 +65,9 @@ public class RRDriveConstantsWood {
 	 * inches.
 	 */
 	public static double MAX_VEL = 30;
-	public static double MAX_ACCEL = 20;
+	public static double MAX_ACCEL = 30;
 	public static double MAX_ANG_VEL = Math.toRadians( 60 );
-	public static double MAX_ANG_ACCEL = Math.toRadians( 40 );
+	public static double MAX_ANG_ACCEL = Math.toRadians( 60 );
 
 
 	public static double encoderTicksToInches( double ticks ) {
