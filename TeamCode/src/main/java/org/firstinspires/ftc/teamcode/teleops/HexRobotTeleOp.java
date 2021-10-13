@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.tests;
+package org.firstinspires.ftc.teamcode.teleops;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robots.BasicRobot;
+import org.firstinspires.ftc.teamcode.robots.HexWoodBot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
@@ -21,21 +21,22 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "AllSystemsTest", group = "TeleOp")
+@TeleOp(name = "HexRobotTeleOp", group = "TeleOp")
 //@Disabled
-public class AllSystemsTest extends OpMode {
+public class HexRobotTeleOp extends OpMode {
 
 	// Declare the variables of motors and distance sens
 
 	GamepadEvents gamepad;
 
-	BasicRobot robot;
+	HexWoodBot robot;
+
+	double intakePower = 0.5;
 
 	@Override
-	//put stuff for before the robot is given command (so get ready)
 	public void init( ) {
 
-		robot = new BasicRobot( this );
+		robot = new HexWoodBot( this );
 		gamepad = new GamepadEvents( gamepad1 );
 
 		telemetry.addData( "Mode", "waiting for start" );
@@ -43,7 +44,6 @@ public class AllSystemsTest extends OpMode {
 	}
 
 	@Override
-	//put stuff for after init
 	public void loop( ) {
 
 		//gamepad inputs
@@ -51,24 +51,24 @@ public class AllSystemsTest extends OpMode {
 
 		// intake
 		if( gamepad1.left_bumper )
-			robot.intake.setPower( 1 );
+			robot.intake.setPower( robot.intake.getPower( ) < intakePower ? intakePower : 0 );
 		else if( gamepad1.right_bumper )
-			robot.intake.setPower( -1 );
+			robot.intake.setPower(  robot.intake.getPower( ) > -intakePower ? -intakePower : 0 );
 
 		// lift velocity control
-		if( gamepad1.left_trigger > 0 )
-			robot.lift.setVelocity( gamepad1.left_trigger * Lift.MAX_VELOCITY );
-		else if( gamepad1.right_trigger >= 0 )
-			robot.lift.setVelocity( -gamepad1.right_trigger * Lift.MAX_VELOCITY );
+//		if( gamepad1.left_trigger > 0 )
+//			robot.lift.setVelocity( gamepad1.left_trigger * Lift.MAX_VELOCITY );
+//		else if( gamepad1.right_trigger >= 0 )
+//			robot.lift.setVelocity( -gamepad1.right_trigger * Lift.MAX_VELOCITY );
 
 		// bucket control
 		// multiple positions
 
 		// carousel spinner control
-		if( gamepad.x.onPress( ) ) // toggles carousel spinner
-			robot.spinner.setPower( robot.spinner.getPower( ) > 0 ? 0 : 1 );
-		else if( gamepad.y.onPress( ) )
-			robot.spinner.setPower( robot.spinner.getPower( ) < 0 ? 0 : -1 );
+//		if( gamepad.x.onPress( ) ) // toggles carousel spinner
+//			robot.spinner.setPower( robot.spinner.getPower( ) > 0 ? 0 : 1 );
+//		else if( gamepad.y.onPress( ) )
+//			robot.spinner.setPower( robot.spinner.getPower( ) < 0 ? 0 : -1 );
 
 		//updates
 		telemetry.update( );

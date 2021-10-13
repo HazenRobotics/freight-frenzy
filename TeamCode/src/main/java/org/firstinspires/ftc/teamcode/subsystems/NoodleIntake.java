@@ -4,27 +4,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake {
+public class NoodleIntake {
 
-	DcMotor intakeMotorLeft;
-	DcMotor intakeMotorRight;
+	DcMotor intakeMotor;
 
-	public Intake( HardwareMap hw ) {
+	public NoodleIntake( HardwareMap hw ) {
 		setup( hw );
 	}
 
 	public void setup( HardwareMap hw ) {
 
-		intakeMotorLeft = hw.dcMotor.get( "intakeLeft" );
-		intakeMotorRight = hw.dcMotor.get( "intakeRight" );
-
-		intakeMotorRight.setDirection( DcMotorSimple.Direction.REVERSE );
+		intakeMotor = hw.dcMotor.get( "intake" );
 	}
 
 	public void setPower( double power ) {
 
-		intakeMotorLeft.setPower( power );
-		intakeMotorRight.setPower( power );
+		intakeMotor.setPower( power );
 	}
 
 	public void eject( ) {
@@ -35,4 +30,7 @@ public class Intake {
 		setPower( 0 );
 	}
 
+	public double getPower( ) {
+		return intakeMotor.getPower( );
+	}
 }
