@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * and op modes themselves.
  */
 @Config
-public class RRDriveConstantsHexWood {
+public class RRDriveConstantsHexWood42 {
 
 	/*
 	 * These are motor constants that should be listed online for your motors.
