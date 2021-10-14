@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.utils.GyroTracker;
+import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 
 public class HexWoodBot extends Robot {
 
@@ -19,6 +21,8 @@ public class HexWoodBot extends Robot {
 	public Lift lift;
 	public Bucket bucket;
 	public NoodleIntake intake;
+	public GyroTracker gyroTracker;
+	public EncoderTracker encoderTracker;
 
 	public HexWoodBot( OpMode op ) {
 
@@ -32,9 +36,11 @@ public class HexWoodBot extends Robot {
 
 		super.driveTrain = new MecanumDrive( hardwareMap );
 		mecanumDrive = (MecanumDrive) driveTrain;
-//		spinner = new CarouselSpinner( hardwareMap );
-//		lift = new Lift( hardwareMap );
-//		bucket = new Bucket( hardwareMap );
+		spinner = new CarouselSpinner( hardwareMap );
+		lift = new Lift( hardwareMap );
+		bucket = new Bucket( hardwareMap );
+		gyroTracker = new GyroTracker( hardwareMap, false );
+		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
 		intake = new NoodleIntake( hardwareMap );
 
 	}
