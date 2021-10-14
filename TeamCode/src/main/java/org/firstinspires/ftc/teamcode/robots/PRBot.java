@@ -21,7 +21,6 @@ public class PRBot extends Robot {
 		hardwareMap = opMode.hardwareMap;
 
 		// initialize util objects/classes
-
 		super.driveTrain = new TwoWheelDrive( hardwareMap );
 		drive = (TwoWheelDrive) driveTrain;
 	}
