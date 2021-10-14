@@ -23,13 +23,13 @@ public class MecanumDrive extends FourWheelDrive {
 	 * Creates a MechanumDrive with specified names for the wheels
 	 *
 	 * @param hw                  robot's hardware map
-	 * @param frontRightMotorName name of front right motor in the hardware map
 	 * @param frontLeftMotorName  name of front left motor in the hardware map
-	 * @param backRightMotorName  name of back right motor in the hardware map
 	 * @param backLeftMotorName   name of back left motor in the hardware map
+	 * @param frontRightMotorName name of front right motor in the hardware map
+	 * @param backRightMotorName  name of back right motor in the hardware map
 	 */
-	public MecanumDrive( HardwareMap hw, String frontLeftMotorName, String frontRightMotorName, String backLeftMotorName, String backRightMotorName ) {
-		super( hw, frontRightMotorName, frontLeftMotorName, backRightMotorName, backLeftMotorName );
+	public MecanumDrive( HardwareMap hw, String frontLeftMotorName, String backLeftMotorName, String frontRightMotorName, String backRightMotorName ) {
+		super( hw, frontLeftMotorName, backLeftMotorName, frontRightMotorName, backRightMotorName );
 	}
 
 	public int convertDistTicks( double distanceToTravel ) {
@@ -49,17 +49,8 @@ public class MecanumDrive extends FourWheelDrive {
 	 * @param backRightPower  power at which to run the back right motor.
 	 * @param backLeftPower   power at which to run the back left motor.
 	 */
-	public void setMotorPower( double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower ) {
-		super.setMotorPower( frontLeftPower, frontRightPower, backLeftPower, backRightPower );
-	}
-
-	/**
-	 * Makes the robot strafe to the left or the right
-	 *
-	 * @param power power at which to strafe (+ is to the right, - is to the left)
-	 */
-	public void strafe( double power ) {
-		drive( 0, 0, power );
+	public void setMotorPower( double frontLeftPower, double backLeftPower, double frontRightPower, double backRightPower ) {
+		super.setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 	}
 
 	/**
@@ -72,17 +63,12 @@ public class MecanumDrive extends FourWheelDrive {
 	public void drive( double drive, double strafe, double rotate ) {
 
 		// You might have to play with the + or - depending on how your motors are installed
-		double frontLeftPower = drive + strafe - rotate;
-		double backLeftPower = drive - strafe - rotate;
-		double frontRightPower = drive - strafe + rotate;
-		double backRightPower = drive + strafe + rotate;
+		double frontLeftPower = drive + strafe + rotate;
+		double backLeftPower = drive - strafe + rotate;
+		double frontRightPower = drive - strafe - rotate;
+		double backRightPower = drive + strafe - rotate;
 
-		setMotorPower( frontLeftPower, frontRightPower, backLeftPower, backRightPower );
+		setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 	}
-
-    /*
-    public void setMotorPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower){
-        setMotorPower(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-    }*/
 
 }

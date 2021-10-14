@@ -15,22 +15,22 @@ import org.intel.rs.frame.FrameList
 
 class TrackingCamera {
 
-    lateinit var pose: Pose
-    private val context = Context()
-    private val pipeline = Pipeline(context)
+	lateinit var pose: Pose
+	private val context = Context()
+	private val pipeline = Pipeline(context)
 
-    init {
-        val config = Config()
-        config.enableStream(Stream.Pose, Format.Xyz32f)
+	init {
+		val config = Config()
+		config.enableStream(Stream.Pose, Format.Xyz32f)
 
-        pipeline.start(config)
-    }
+		pipeline.start(config)
+	}
 
-    private fun getStreams() {
-        val frames = pipeline.waitForFrames()
-        val poseFrame = frames.poseFrame
-        poseFrame.pose
-    }
+	private fun getStreams() {
+		val frames = pipeline.waitForFrames()
+		val poseFrame = frames.poseFrame
+		poseFrame.pose
+	}
 
 
 }
