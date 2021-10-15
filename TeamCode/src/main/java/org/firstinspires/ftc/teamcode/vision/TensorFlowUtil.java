@@ -20,7 +20,7 @@ public class TensorFlowUtil {
 
 	private final String TENSOR_FLOW_MODEL_NAME = "FreightFrenzy.tflite";
 
-	private static final String[] LABELS = new String[] { "Duck 1", "Duck 2", "Duck 3", "Element 1", "Element 2", "Element 3", "None"};
+	public static final String[] LABELS = new String[] { "Duck 1", "Duck 2", "Duck 3", "Element 1", "Element 2", "Element 3", "None"};
 
 	private final Vuforia vuforia = Vuforia.getInstance( );
 
@@ -74,18 +74,15 @@ public class TensorFlowUtil {
 		Recognition recognition = tensorFlow.getRecognition( );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
-				case LABELS[0]:
-				case LABELS[3]:// Left
+				case "Duck 1":
+				case "Element 1": // Left
 					return BarcodePosition.LEFT;
-					break;
-				case LABELS[1]:
-				case LABELS[4]:// Center
+				case "Duck 2":
+				case "Element 2":// Center
 					return BarcodePosition.CENTER;
-					break;
-				case LABELS[2]:
-				case LABELS[5]:// Right
+				case "Duck 3":
+				case "Element 3":// Right
 					return BarcodePosition.RIGHT;
-					break;
 			}
 		}
 		return null;
@@ -113,7 +110,7 @@ public class TensorFlowUtil {
 				break;
 		}
 
-		determineStackFromCounts( );
+		determinePositionFromCounts( );
 
 		loopRunTime = opMode.getRuntime( ) - startTime;
 
@@ -127,45 +124,45 @@ public class TensorFlowUtil {
 
 		resetLoopsAndCounters( );
 
-		Stack isQuad = Stack.NONE;
+		BarcodePosition isRight = BarcodePosition.RIGHT;
 
-		boolean doQuadBreak = false;
+		boolean doRightBreak = false;
 
 		while( !((LinearOpMode) opMode).isStarted( ) || totalLoops < defaultLoops ) {
 
-			isQuad = identifyObjects( );
-			if( isQuad == Stack.QUAD && doQuadBreak )
+			isRight = identifyObjects( );
+			if( isRight == BarcodePosition.RIGHT && doRightBreak )
 				break;
-			infiniteStackRecognitions.add( isQuad );
-			adjustStackCounts( infiniteStackRecognitions.get( totalLoops ), 1 );
+			infiniteRecognitions.add( isRight );
+			adjustStackCounts( infiniteRecognitions.get( totalLoops ), 1 );
 			if( ++totalLoops > defaultLoops ) {
-				adjustStackCounts( infiniteStackRecognitions.remove( 0 ), -1 );
+				adjustStackCounts( infiniteRecognitions.remove( 0 ), -1 );
 				totalLoops--;
 			}
 		}
 
-		determineStackFromCounts( );
+		determinePositionFromCounts( );
 
-		if( isQuad == Stack.QUAD && doQuadBreak )
-			stack = Stack.QUAD;
+		if( isRight == BarcodePosition.RIGHT && doRightBreak )
+			position = BarcodePosition.RIGHT;
 
 		loopRunTime = opMode.getRuntime( ) - startTime;
 
-		logAndPrint( stack + " stack found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
+		logAndPrint( position + " position found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
 	}
 
 	void determineObjectWhileNotStarted( ) {
 		Robot.writeToMatchFile( "objectDeterminationWhileLoop", true );
 
-		infiniteStackRecognitions = new ArrayList<Stack>( );
+		infiniteRecognitions = new ArrayList<BarcodePosition>( );
 
 		resetLoopsAndCounters( );
 
 		while( !((LinearOpMode) opMode).isStarted( ) || totalLoops < defaultLoops ) {
 
-			infiniteStackRecognitions.add( identifyObjects( ) );
+			infiniteRecognitions.add( identifyObjects( ) );
 			if( ++totalLoops > defaultLoops ) {
-				infiniteStackRecognitions.remove( 0 );
+				infiniteRecognitions.remove( 0 );
 				totalLoops--;
 			}
 
@@ -174,44 +171,49 @@ public class TensorFlowUtil {
 		}
 
 		for( int i = 0; i < totalLoops; i++ ) {
-			adjustStackCounts( infiniteStackRecognitions.get( i ), 1 );
-			opMode.telemetry.addLine( "stackRecognition #" + i + " : " + infiniteStackRecognitions.get( i ) );
+			adjustStackCounts( infiniteRecognitions.get( i ), 1 );
+			opMode.telemetry.addLine( "positionRecognition #" + i + " : " + infiniteRecognitions.get( i ) );
 			opMode.telemetry.update( );
 		}
 
-		determineStackFromCounts( );
+		determinePositionFromCounts( );
 
 		loopRunTime = opMode.getRuntime( ) - startTime;
 
-		logAndPrint( stack + " stack found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
+		logAndPrint( position + " position found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
 	}
 
 	private void resetLoopsAndCounters( ) {
 
 		totalLoops = 0;
-		singles = 0;
-		quads = 0;
+		left = 0;
+		center = 0;
+		right  = 0;
 
 		startTime = opMode.getRuntime( );
 	}
 
-	private void adjustStackCounts( Stack curStack, int adjustment ) {
-		switch( curStack ) {
-			case SINGLE:
-				singles += adjustment;
+	private void adjustStackCounts( BarcodePosition curPos, int adjustment ) {
+		switch( curPos ) {
+
+			case LEFT:
+				left += adjustment;
 				break;
-			case QUAD:
-				quads += adjustment;
+			case CENTER:
+				center += adjustment;
+				break;
+			case RIGHT:
+				right += adjustment;
 				break;
 		}
 	}
 
-	private void determineStackFromCounts( ) {
-		setStack( Stack.NONE );
-		if( singles > quads )
-			setStack( Stack.SINGLE );
-		else if( quads > singles )
-			setStack( Stack.QUAD );
+	private void determinePositionFromCounts( ) {
+		setPosition( BarcodePosition.CENTER );
+		if( left > center && left > right )
+			setPosition( BarcodePosition.LEFT );
+		else if( right > center && right > left)
+			setPosition( BarcodePosition.RIGHT );
 	}
 
 	void stopTF( ) {
@@ -222,12 +224,13 @@ public class TensorFlowUtil {
 		stopTF( );
 	}
 
-	public void setStack( Stack newStack ) {
-		this.stack = newStack;
+	public void setPosition( BarcodePosition newPosition) {
+		this.position = newPosition;
 	}
 
-	public Stack getStack( ) {
-		return this.stack;
+
+	public BarcodePosition getStack( ) {
+		return this.position;
 	}
 
 	public void setDefaultLoops( int newLoop ) {
@@ -250,14 +253,14 @@ public class TensorFlowUtil {
 		tensorFlow.setZoom( zoom, 16.0 / 9.0 );
 	}
 
-	public void runStackDetection( ) {
-		Robot.writeToMatchFile( "runStackDetection()", true );
+	public void runPositionDetection( ) {
+		Robot.writeToMatchFile( "runPostionDetection()", true );
 
-		runStackDetection( defaultLoops );
+		this.runPositionDetection( defaultLoops );
 	}
 
-	public void runStackDetection( int loops ) {
-		Robot.writeToMatchFile( "runStackDetection( " + loops + " )", true );
+	public void runPositionDetection( int loops ) {
+		Robot.writeToMatchFile( "runPositionDetection( " + loops + " )", true );
 
 		startTF( );
 
