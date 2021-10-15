@@ -18,37 +18,36 @@ import java.util.ArrayList;
 
 public class TensorFlowUtil {
 
-	private final String TENSOR_FLOW_MODEL_NAME = "UltimateGoal.tflite";
+	private final String TENSOR_FLOW_MODEL_NAME = "FreightFrenzy.tflite";
 
-	private static final String LABEL_FIRST_ELEMENT = "Quad";
-	private static final String LABEL_SECOND_ELEMENT = "Single";
+	private static final String[] LABELS = new String[] { "Duck 1", "Duck 2", "Duck 3", "Element 1", "Element 2", "Element 3", "None"};
 
 	private final Vuforia vuforia = Vuforia.getInstance( );
 
 	// class specific
-	private Stack[] stackRecognitions;
-	private ArrayList<Stack> infiniteStackRecognitions;
+	private BarcodePosition[] recognitions;
+	private ArrayList<BarcodePosition> infiniteRecognitions;
 
 	// the default loops and how many loops we've done
 	private int defaultLoops = 20000, totalLoops = 0;
 
 	// how many of each stack type there are
-	private int singles = 0, quads = 0;
+	private int left = 0, center = 0, right = 0;
 
 	// the start time of the stack detection method, and the final time it takes to loop through them
 	private double startTime = 0, loopRunTime = 0;
 
 	// # of rings in starting stack
-	Stack stack;
+	BarcodePosition position;
 
 	TensorFlow tensorFlow;
 	OpMode opMode;
 	HardwareMap hardwareMap;
 
-	public enum Stack {
-		NONE,
-		SINGLE,
-		QUAD
+	public enum BarcodePosition {
+		LEFT,
+		CENTER,
+		RIGHT
 	}
 
 	public TensorFlowUtil(  OpMode op ) {
@@ -64,44 +63,53 @@ public class TensorFlowUtil {
 			vuforia.start( );
 		}
 
-		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.8f, true, hardwareMap, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT );
+		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.8f, true, hardwareMap, LABELS );
 	}
 
 	void startTF( ) {
 		tensorFlow.activate( );
 	}
 
-	Stack identifyObjects( ) {
+	BarcodePosition identifyObjects( ) {
 		Recognition recognition = tensorFlow.getRecognition( );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
-				case LABEL_SECOND_ELEMENT: // "Single"
-					return Stack.SINGLE;
-				case LABEL_FIRST_ELEMENT: // "Quad"
-					return Stack.QUAD;
+				case LABELS[0]:
+				case LABELS[3]:// Left
+					return BarcodePosition.LEFT;
+					break;
+				case LABELS[1]:
+				case LABELS[4]:// Center
+					return BarcodePosition.CENTER;
+					break;
+				case LABELS[2]:
+				case LABELS[5]:// Right
+					return BarcodePosition.RIGHT;
+					break;
 			}
 		}
-		return Stack.NONE;
+		return null;
 	}
 
 	void determineObjectLoop( int loops ) {
 		Robot.writeToMatchFile( "objectDeterminationLoop", true );
 
-		stackRecognitions = new Stack[loops];
+		recognitions = new BarcodePosition[loops];
 
 		resetLoopsAndCounters( );
 
 		for( int i = 0; i < loops; i++ ) {
-			stackRecognitions[i] = identifyObjects( );
-			if( stackRecognitions[i] == Stack.SINGLE )
-				singles++;
-			else if( stackRecognitions[i] == Stack.QUAD )
-				quads++;
+			recognitions[i] = identifyObjects( );
+			if( recognitions[i] == BarcodePosition.LEFT )
+				left++;
+			else if( recognitions[i] == BarcodePosition.CENTER )
+				center++;
+			else if(recognitions[i] == BarcodePosition.RIGHT)
 
-			opMode.telemetry.addLine( "stackRecognition #" + (totalLoops = i) + " : " + stackRecognitions[i] );
+			opMode.telemetry.addLine( "stackRecognition #" + (totalLoops = i) + " : " + recognitions[i] );
 			opMode.telemetry.update( );
 
-			if( singles + quads >= 5 )
+			if( left + center + right >= 5 )
 				break;
 		}
 
@@ -109,13 +117,13 @@ public class TensorFlowUtil {
 
 		loopRunTime = opMode.getRuntime( ) - startTime;
 
-		logAndPrint( stack + " stack found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
+		logAndPrint( position + " stack found [in " + totalLoops + " loops & " + loopRunTime + " seconds]", true );
 	}
 
 	void determineObjectWhileNotStartedSpeed( ) {
 //        Robot.writeToMatchFile("objectDeterminationWhileLoop", true);
 
-		infiniteStackRecognitions = new ArrayList<Stack>( );
+		infiniteRecognitions = new ArrayList<BarcodePosition>( );
 
 		resetLoopsAndCounters( );
 
