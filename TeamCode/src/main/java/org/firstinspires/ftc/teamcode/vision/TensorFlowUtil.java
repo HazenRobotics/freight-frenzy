@@ -229,7 +229,7 @@ public class TensorFlowUtil {
 	}
 
 
-	public BarcodePosition getStack( ) {
+	public BarcodePosition getBarcodePosition( ) {
 		return this.position;
 	}
 
