@@ -20,7 +20,7 @@ public class Bucket {
 	 * @param hw robot's hardware map
 	 */
 	public Bucket( HardwareMap hw ) {
-		setup( hw, "pusher" );
+		setup( hw, "bucket" );
 	}
 
 	/**

@@ -1,0 +1,17 @@
+Motors & Encoders:
+Expansion Hub Motor 0: "frontLeft" - front left motor and encoder
+Expansion Hub Motor 1: "backLeft" - back left motor and encoder
+Expansion Hub Motor 2: "frontRight" - front right motor and encoder
+Expansion Hub Motor 3: "backRight" - back right motor and encoder
+Control Hub Motor 0: "liftLeft" - the lift's left motor and encoder
+Control Hub Motor 1: "liftRight" - the lift's right motor and encoder
+Control Hub Motor 2: "intake" - the intake's motor and the (dead wheel's) parallel encoder
+Control Hub Motor 3: "perpendicular" - the (dead wheel's) perpendicular encoder
+
+Servos:
+Control Hub Servo 0: "spinner" - the carousel servo
+Control Hub Servo 1: "bucket" - the bucket servo
+Control Hub Servo 2: "capper" - the capper servo to put the shipping element on
+
+I2C devices:
+Control Hub 0: "weight" - the weight sensor

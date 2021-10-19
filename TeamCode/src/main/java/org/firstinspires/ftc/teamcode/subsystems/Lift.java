@@ -25,7 +25,7 @@ public class Lift {
 	AngleUnit angleUnit;
 
 	public Lift( HardwareMap hw ) {
-		this( hw,"leftLiftMotor", "rightLiftMotor", 600,
+		this( hw,"liftLeft","liftRight", 600,
 				45, 0.5, AngleUnit.DEGREES );
 	}
 
@@ -44,6 +44,8 @@ public class Lift {
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
+		setLiftAngle( liftAngle );
+		setAngleUnit( angleUnit );
 	}
 
 	public void setVelocity( double velocity ) {

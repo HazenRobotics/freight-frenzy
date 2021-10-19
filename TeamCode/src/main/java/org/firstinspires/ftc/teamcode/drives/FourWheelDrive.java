@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 public class FourWheelDrive implements Drive {
 
 	public DcMotorEx frontLeft;
@@ -186,6 +188,41 @@ public class FourWheelDrive implements Drive {
 	public double getBackRightPower( ) {
 		return backRight.getPower( );
 	}
+
+
+	public double getFrontLeftVelocity( ) {
+		return frontLeft.getVelocity( );
+	}
+
+	public double getBackLeftVelocity( ) {
+		return backLeft.getVelocity( );
+	}
+
+	public double getFrontRightVelocity( ) {
+		return frontRight.getVelocity( );
+	}
+
+	public double getBackRightVelocity( ) {
+		return backRight.getVelocity( );
+	}
+
+
+	public double getFrontLeftVelocity( AngleUnit angleUnit ) {
+		return frontLeft.getVelocity( angleUnit );
+	}
+
+	public double getBackLeftVelocity( AngleUnit angleUnit ) {
+		return backLeft.getVelocity( angleUnit );
+	}
+
+	public double getFrontRightVelocity( AngleUnit angleUnit ) {
+		return frontRight.getVelocity( angleUnit );
+	}
+
+	public double getBackRightVelocity( AngleUnit angleUnit ) {
+		return backRight.getVelocity( angleUnit );
+	}
+
 
 	public int getFrontLeftPosition( ) {
 		return frontLeft.getCurrentPosition( );
