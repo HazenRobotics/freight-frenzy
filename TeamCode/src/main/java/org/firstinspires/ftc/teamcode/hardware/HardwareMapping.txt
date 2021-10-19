@@ -11,7 +11,10 @@ Control Hub Motor 3: "perpendicular" - the (dead wheel's) perpendicular encoder
 Servos:
 Control Hub Servo 0: "spinner" - the carousel servo
 Control Hub Servo 1: "bucket" - the bucket servo
-Control Hub Servo 2: "capper" - the capper servo to put the shipping element on
+Control Hub Servo 2: "capper" - the capper servo for the shipping element
 
 I2C devices:
 Control Hub 0: "weight" - the weight sensor
+
+
+

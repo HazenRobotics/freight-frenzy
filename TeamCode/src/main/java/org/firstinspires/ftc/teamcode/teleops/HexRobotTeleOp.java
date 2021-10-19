@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
