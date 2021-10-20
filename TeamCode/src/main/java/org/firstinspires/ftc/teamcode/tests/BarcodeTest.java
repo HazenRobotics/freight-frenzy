@@ -13,6 +13,7 @@ public class BarcodeTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
+
 		tensorFlow = new TensorFlowUtil( this );
 		tensorFlow.initTensorFlow();
 

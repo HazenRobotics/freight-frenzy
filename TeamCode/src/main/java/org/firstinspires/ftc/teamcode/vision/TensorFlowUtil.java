@@ -20,7 +20,7 @@ public class TensorFlowUtil {
 
 	private final String TENSOR_FLOW_MODEL_NAME = "FreightFrenzy.tflite";
 
-	public static final String[] LABELS = new String[] { "Duck 1", "Duck 2", "Duck 3", "Element 1", "Element 2", "Element 3", "None"};
+	public static final String[] LABELS = new String[]{ "Duck 1", "Duck 2", "Duck 3", "Element 1", "Element 2", "Element 3", "None" };
 
 	private final Vuforia vuforia = Vuforia.getInstance( );
 
@@ -50,7 +50,7 @@ public class TensorFlowUtil {
 		RIGHT
 	}
 
-	public TensorFlowUtil(  OpMode op ) {
+	public TensorFlowUtil( OpMode op ) {
 		opMode = op;
 		hardwareMap = opMode.hardwareMap;
 	}
@@ -71,6 +71,7 @@ public class TensorFlowUtil {
 	}
 
 	BarcodePosition identifyObjects( ) {
+
 		Recognition recognition = tensorFlow.getRecognition( );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
@@ -78,10 +79,10 @@ public class TensorFlowUtil {
 				case "Element 1": // Left
 					return BarcodePosition.LEFT;
 				case "Duck 2":
-				case "Element 2":// Center
+				case "Element 2": // Center
 					return BarcodePosition.CENTER;
 				case "Duck 3":
-				case "Element 3":// Right
+				case "Element 3": // Right
 					return BarcodePosition.RIGHT;
 			}
 		}
@@ -89,6 +90,7 @@ public class TensorFlowUtil {
 	}
 
 	void determineObjectLoop( int loops ) {
+
 		Robot.writeToMatchFile( "objectDeterminationLoop", true );
 
 		recognitions = new BarcodePosition[loops];
@@ -101,13 +103,14 @@ public class TensorFlowUtil {
 				left++;
 			else if( recognitions[i] == BarcodePosition.CENTER )
 				center++;
-			else if(recognitions[i] == BarcodePosition.RIGHT)
+			else if( recognitions[i] == BarcodePosition.RIGHT )
+				right++;
 
 			opMode.telemetry.addLine( "stackRecognition #" + (totalLoops = i) + " : " + recognitions[i] );
 			opMode.telemetry.update( );
 
-			if( left + center + right >= 5 )
-				break;
+//			if( left + center + right >= 5 )
+//				break;
 		}
 
 		determinePositionFromCounts( );
@@ -152,9 +155,10 @@ public class TensorFlowUtil {
 	}
 
 	void determineObjectWhileNotStarted( ) {
+
 		Robot.writeToMatchFile( "objectDeterminationWhileLoop", true );
 
-		infiniteRecognitions = new ArrayList<BarcodePosition>( );
+		infiniteRecognitions = new ArrayList<>( );
 
 		resetLoopsAndCounters( );
 
@@ -188,7 +192,7 @@ public class TensorFlowUtil {
 		totalLoops = 0;
 		left = 0;
 		center = 0;
-		right  = 0;
+		right = 0;
 
 		startTime = opMode.getRuntime( );
 	}
@@ -212,7 +216,9 @@ public class TensorFlowUtil {
 		setPosition( BarcodePosition.CENTER );
 		if( left > center && left > right )
 			setPosition( BarcodePosition.LEFT );
-		else if( right > center && right > left)
+		else if( center > left && center > right )
+			setPosition( BarcodePosition.CENTER );
+		else if( right > left && right > center )
 			setPosition( BarcodePosition.RIGHT );
 	}
 
@@ -224,7 +230,7 @@ public class TensorFlowUtil {
 		stopTF( );
 	}
 
-	public void setPosition( BarcodePosition newPosition) {
+	public void setPosition( BarcodePosition newPosition ) {
 		this.position = newPosition;
 	}
 
@@ -260,6 +266,7 @@ public class TensorFlowUtil {
 	}
 
 	public void runPositionDetection( int loops ) {
+
 		Robot.writeToMatchFile( "runPositionDetection( " + loops + " )", true );
 
 		startTF( );
