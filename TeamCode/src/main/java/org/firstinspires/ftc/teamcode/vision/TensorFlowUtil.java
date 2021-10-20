@@ -6,6 +6,8 @@ package org.firstinspires.ftc.teamcode.vision;
  * Made using keyboard shortcuts ONLY
  */
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -73,6 +75,8 @@ public class TensorFlowUtil {
 	BarcodePosition identifyObjects( ) {
 
 		Recognition recognition = tensorFlow.getRecognition( );
+
+		Log.e( "TFOD_TEST", "got recognitions: " + recognition );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
 				case "Duck 1":
@@ -85,7 +89,11 @@ public class TensorFlowUtil {
 				case "Element 3": // Right
 					return BarcodePosition.RIGHT;
 			}
+			Log.e( "TFOD_TEST", "tfod recognition name invalid: " + recognition.getLabel( )  );
 		}
+
+		Log.e( "TFOD_TEST", "didn't find a tfo recognition "  );
+
 		return null;
 	}
 
@@ -99,6 +107,9 @@ public class TensorFlowUtil {
 
 		for( int i = 0; i < loops; i++ ) {
 			recognitions[i] = identifyObjects( );
+
+			Log.e( "TFOD_TEST", " identified an object"  );
+
 			if( recognitions[i] == BarcodePosition.LEFT )
 				left++;
 			else if( recognitions[i] == BarcodePosition.CENTER )
@@ -213,7 +224,9 @@ public class TensorFlowUtil {
 	}
 
 	private void determinePositionFromCounts( ) {
-		setPosition( BarcodePosition.CENTER );
+
+//		setPosition( BarcodePosition.CENTER );
+
 		if( left > center && left > right )
 			setPosition( BarcodePosition.LEFT );
 		else if( center > left && center > right )

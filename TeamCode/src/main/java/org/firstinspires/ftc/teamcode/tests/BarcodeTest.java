@@ -1,28 +1,42 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.vision.TensorFlowUtil;
 
-@Autonomous(name="Barcode Test", group = "Test")
+@Autonomous(name = "Barcode Test", group = "Test")
 public class BarcodeTest extends LinearOpMode {
+
 	TensorFlowUtil tensorFlow;
 
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
 
-		tensorFlow = new TensorFlowUtil( this );
-		tensorFlow.initTensorFlow();
+		Log.e( "TFOD_TEST", "run opmode: " );
 
-		waitForStart();
+		tensorFlow = new TensorFlowUtil( this );
+		tensorFlow.initTensorFlow( );
+
+		telemetry.addLine( "TensorFlow init finished" );
+		telemetry.update( );
+
+		waitForStart( );
+
+		Log.e( "TFOD_TEST", "started opmode: " );
+
 		telemetry.addLine( "Running position detection..." );
-		telemetry.update();
-		tensorFlow.runPositionDetection();
-		telemetry.addData( "Detected barcode position", tensorFlow.getBarcodePosition() );
-		telemetry.update();
-		while( !isStopRequested() );
+		telemetry.update( );
+
+		tensorFlow.runPositionDetection( );
+
+		telemetry.addData( "Detected barcode position", tensorFlow.getBarcodePosition( ) );
+		telemetry.update( );
+
+		while( !isStopRequested( ) ) ;
+
 	}
 }

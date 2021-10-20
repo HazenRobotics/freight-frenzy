@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -52,7 +51,7 @@ import java.util.List;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-@Disabled
+//@Disabled
 public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
   /* Note: This sample uses the all-objects Tensor Flow model (FreightFrenzy_BCDM.tflite), which contains
    * the following 4 detectable objects
@@ -65,7 +64,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
    *  FreightFrenzy_BC.tflite  0: Ball,  1: Cube
    *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
    */
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+//    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy.tflite";
     private static final String[] LABELS = {
       "Ball",
       "Cube",
@@ -85,8 +85,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    private static final String VUFORIA_KEY = "ASZZxs//////AAABmZH+VLl/YE2ekt+27Dayd/8VPb+94QyyfpWCvrKJmZO4LmYykX4/iMfk2R7qvaDVllKYEjyuF7pPxkH4TMmXulQMt+/snHA1TsS7+lWVL2naborYEbp2YjAzjbyqLS0bB+KpVH4o0piCviop3XuHFE+b+1L0wyiHTVmwnEC5eyGuwVPB2iL2JrsXqYQcaKFD4EKr9hUarDSc4tNSTrwknvfCHsGWfTvI+euQAUxKzBOCKyApx4x1Y3xLZyj1J6Mk2/fTsfHTuBUoGfHzdinX7eOKo8CJ/uo66pvxBpU6fH/IeQBR6JuqvUNiSKP5lUI+c8bHR9oTd9hFxboX41DzpDJAmex0SNiODJwKGMrCKC+d";
+//            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -163,7 +163,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "webcam");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
