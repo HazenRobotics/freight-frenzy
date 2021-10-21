@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,7 +14,7 @@ public class Lift {
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 19.2;
 
-	DcMotorEx leftMotor;
+	DcMotorEx motor;
 
 
 	double spoolRadius;
@@ -25,19 +24,23 @@ public class Lift {
 	AngleUnit angleUnit;
 
 	public Lift( HardwareMap hw ) {
-		this( hw,"liftLeft","liftRight", 600,
+		this( hw,"liftLeft", 5,
 				45, 0.5, AngleUnit.DEGREES );
 	}
 
-	public Lift( HardwareMap hw, String leftMotorName, String rightMotorName, double groundBucketHeight,
+	public Lift( HardwareMap hw, String motorName, double groundBucketHeight,
 				 double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
-		setup( hw, leftMotorName, rightMotorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
+		setup( hw, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setup( HardwareMap hw, String leftMotorName, String rightMotorName, double groundBucketHeight,
+	public void setup( HardwareMap hw, String leftMotorName, double groundBucketHeight,
 					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
-		leftMotor = hw.get( DcMotorEx.class, leftMotorName );
+		motor = hw.get( DcMotorEx.class, leftMotorName );
+
+		motor.setDirection( DcMotorSimple.Direction.REVERSE );
+
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
@@ -47,11 +50,11 @@ public class Lift {
 
 	public void setVelocity( double velocity ) {
 
-		leftMotor.setVelocity( velocity, angleUnit );
+		motor.setVelocity( velocity, angleUnit );
 	}
 
 	private void setTargetPosition( int position ) {
-		leftMotor.setTargetPosition( position );
+		motor.setTargetPosition( position );
 	}
 
 	/**
@@ -65,9 +68,7 @@ public class Lift {
 		setVelocity( 0 );
 	}
 
-
 	/*
-
 						/|
 			 (lift) c  / |
 	  		          /  |  b the height of this side of the triangle
@@ -113,7 +114,7 @@ public class Lift {
 	}
 
 	public boolean isBusy( ) {
-		return leftMotor.isBusy( );
+		return motor.isBusy( );
 	}
 
 	/**
@@ -163,6 +164,6 @@ public class Lift {
 	}
 
 	public void setPower( double power ) {
-		leftMotor.setPower( power );
+		motor.setPower( power );
 	}
 }

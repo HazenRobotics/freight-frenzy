@@ -67,8 +67,8 @@ public class HexRobotTeleOp extends OpMode {
 		// lift velocity control
 		if( gamepad1.left_trigger > 0 )
 			robot.lift.setPower( gamepad1.left_trigger );
-		else if( gamepad1.right_trigger >= 0 )
-			robot.lift.setPower( -gamepad1.right_trigger * Lift.MAX_VELOCITY );
+		else if( gamepad1.right_trigger > 0 )
+			robot.lift.setPower( -gamepad1.right_trigger );
 
 		// bucket control
 		// multiple positions
