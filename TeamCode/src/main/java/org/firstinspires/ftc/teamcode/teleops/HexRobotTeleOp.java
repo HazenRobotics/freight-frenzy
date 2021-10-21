@@ -57,9 +57,9 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "back right: " + robot.mecanumDrive.getBackRightPosition( ) );
 
 		// intake
-		if( gamepad1.left_bumper )
+		if( gamepad.left_bumper.onPress( ) )
 			robot.intake.setPower( robot.intake.getPower( ) < intakePower ? intakePower : 0 );
-		else if( gamepad1.right_bumper )
+		else if( gamepad.right_bumper.onPress( ) )
 			robot.intake.setPower(  robot.intake.getPower( ) > -intakePower ? -intakePower : 0 );
 		else
 			robot.intake.setPower( 0 );
@@ -69,6 +69,8 @@ public class HexRobotTeleOp extends OpMode {
 			robot.lift.setPower( gamepad1.left_trigger );
 		else if( gamepad1.right_trigger > 0 )
 			robot.lift.setPower( -gamepad1.right_trigger );
+		else
+			robot.lift.setPower( 0 );
 
 		// bucket control
 		// multiple positions

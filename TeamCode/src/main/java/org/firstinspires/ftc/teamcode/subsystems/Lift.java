@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,20 +14,19 @@ public class Lift {
 	public static final double MAX_VELOCITY = 30;
 
 	final double PULSES_PER_REVOLUTION = 537.7;
-	final double GEAR_RATIO = 19.2;
+	final double GEAR_RATIO = 1/*9.2*/;
 
 	DcMotorEx motor;
-
 
 	double spoolRadius;
 	double groundBucketHeight;
 
-	double liftAngle;
-	AngleUnit angleUnit;
+	double liftAngle; // the angle of the lift from the ground angle unit
+	AngleUnit angleUnit; // the angle unit for the lift angle i.e. degrees or radians
 
 	public Lift( HardwareMap hw ) {
-		this( hw,"liftLeft", 5,
-				45, 0.5, AngleUnit.DEGREES );
+		this( hw, "liftLeft", 5,
+				(32 / 25.4) / 2, 45, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
 	public Lift( HardwareMap hw, String motorName, double groundBucketHeight,
@@ -40,8 +41,6 @@ public class Lift {
 
 		motor.setDirection( DcMotorSimple.Direction.REVERSE );
 
-		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
-
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
@@ -53,8 +52,13 @@ public class Lift {
 		motor.setVelocity( velocity, angleUnit );
 	}
 
+	public int getCurrentPosition( ) {
+		return motor.getCurrentPosition( );
+	}
+
 	private void setTargetPosition( int position ) {
 		motor.setTargetPosition( position );
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 	}
 
 	/**
@@ -62,11 +66,38 @@ public class Lift {
 	 * @param position the position to move the lift to in inches
 	 */
 	public void setLiftPosition( double velocity, double position ) {
-		setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
+		setTargetPosition( convertTicksDist( position, 2 * spoolRadius * Math.PI ) );
 		setVelocity( velocity );
 		while( isBusy( ) ) ;
 		setVelocity( 0 );
 	}
+
+	public void moveLift( double power, double distanceToTravel ) {
+
+		// reset encoder count kept by left motor.
+		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+
+		motor.setTargetPosition( convertDistTicks( distanceToTravel, 2 * spoolRadius * Math.PI ) );
+
+		motor.setPower( power );
+
+		Log.e( "GOAL:", "power: " + power + ", ticks: " + convertDistTicks( distanceToTravel, 2 * spoolRadius * Math.PI ) );
+		Log.e( "ACTUAL:", "power: " + motor.getPower( ) + ", ticks: " + motor.getTargetPosition( ) );
+
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
+
+		// wait while opmode is active and left motor is busy running to position.
+		while( /*opModeIsActive( ) &&*/ motor.isBusy( ) ) {
+//			telemetry.addData( "encoder-fwd", motor.getCurrentPosition( ) + "  busy=" + motor.isBusy( ) );
+//			telemetry.update( );
+//			idle( );
+		}
+
+		// set motor power to zero to turn off motors. The motors stop on their own but
+		// power is still applied so we turn off the power.
+		motor.setPower( 0.0 );
+	}
+
 
 	/*
 						/|
@@ -105,7 +136,7 @@ public class Lift {
 	 * @param position the position to move the lift to in inches
 	 */
 	public void setPositionAsync( double velocity, double position ) {
-		setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
+		setTargetPosition( convertTicksDist( position, 2 * spoolRadius * Math.PI ) );
 		setVelocity( velocity );
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
 			while( isBusy( ) ) ;
@@ -123,7 +154,6 @@ public class Lift {
 	 * @return totalTicks - the amount of ticks to move forward
 	 */
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
-
 		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 	}
 
