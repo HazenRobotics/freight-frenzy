@@ -31,7 +31,7 @@ public class HexRobotTeleOp extends OpMode {
 
 	HexWoodBot robot;
 
-	double intakePower = 0.5;
+	double intakePower = 0.9;
 
 	@Override
 	public void init( ) {
@@ -61,12 +61,14 @@ public class HexRobotTeleOp extends OpMode {
 			robot.intake.setPower( robot.intake.getPower( ) < intakePower ? intakePower : 0 );
 		else if( gamepad1.right_bumper )
 			robot.intake.setPower(  robot.intake.getPower( ) > -intakePower ? -intakePower : 0 );
+		else
+			robot.intake.setPower( 0 );
 
 		// lift velocity control
 		if( gamepad1.left_trigger > 0 )
-			robot.lift.setVelocity( gamepad1.left_trigger * Lift.MAX_VELOCITY );
+			robot.lift.setPower( gamepad1.left_trigger );
 		else if( gamepad1.right_trigger >= 0 )
-			robot.lift.setVelocity( -gamepad1.right_trigger * Lift.MAX_VELOCITY );
+			robot.lift.setPower( -gamepad1.right_trigger * Lift.MAX_VELOCITY );
 
 		// bucket control
 		// multiple positions

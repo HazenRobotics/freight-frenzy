@@ -16,7 +16,7 @@ public class Lift {
 	final double GEAR_RATIO = 19.2;
 
 	DcMotorEx leftMotor;
-	DcMotorEx rightMotor;
+
 
 	double spoolRadius;
 	double groundBucketHeight;
@@ -38,9 +38,6 @@ public class Lift {
 					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
 		leftMotor = hw.get( DcMotorEx.class, leftMotorName );
-		rightMotor = hw.get( DcMotorEx.class, rightMotorName );
-
-		rightMotor.setDirection( DcMotorSimple.Direction.REVERSE );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
@@ -51,12 +48,10 @@ public class Lift {
 	public void setVelocity( double velocity ) {
 
 		leftMotor.setVelocity( velocity, angleUnit );
-		rightMotor.setVelocity( velocity, angleUnit );
 	}
 
 	private void setTargetPosition( int position ) {
 		leftMotor.setTargetPosition( position );
-		rightMotor.setTargetPosition( position );
 	}
 
 	/**
@@ -118,7 +113,7 @@ public class Lift {
 	}
 
 	public boolean isBusy( ) {
-		return leftMotor.isBusy( ) || rightMotor.isBusy( );
+		return leftMotor.isBusy( );
 	}
 
 	/**
@@ -165,5 +160,9 @@ public class Lift {
 
 	public double getLiftAngle( ) {
 		return liftAngle;
+	}
+
+	public void setPower( double power ) {
+		leftMotor.setPower( power );
 	}
 }
