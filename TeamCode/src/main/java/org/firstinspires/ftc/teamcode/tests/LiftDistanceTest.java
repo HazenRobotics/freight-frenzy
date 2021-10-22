@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
-@Autonomous(name = "LiftTest", group = "Tests")
-//@Disabled
-public class LiftTest extends LinearOpMode {
+@Autonomous(name = "Lift Distance Test", group = "Tests")
+@Disabled
+public class LiftDistanceTest extends LinearOpMode {
 
 	Lift lift;
 
@@ -21,7 +22,7 @@ public class LiftTest extends LinearOpMode {
 
 		waitForStart( );
 
-		lift.moveLift( 0.5, 13 );
+		lift.setLiftHeightPow( 0.75, 20 );
 
 		telemetry.addLine( "set position" );
 		telemetry.update( );

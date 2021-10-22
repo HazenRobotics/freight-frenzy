@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -25,7 +23,7 @@ public class Lift {
 	AngleUnit angleUnit; // the angle unit for the lift angle i.e. degrees or radians
 
 	public Lift( HardwareMap hw ) {
-		this( hw, "liftLeft", 5,
+		this( hw, "liftLeft", 10.25,
 				(32 / 25.4) / 2, 45, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
@@ -56,46 +54,62 @@ public class Lift {
 		return motor.getCurrentPosition( );
 	}
 
-	private void setTargetPosition( int position ) {
-		motor.setTargetPosition( position );
-		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
-	}
-
 	/**
 	 * @param velocity the velocity at which to move the lift
 	 * @param position the position to move the lift to in inches
 	 */
-	public void setLiftPosition( double velocity, double position ) {
-		setTargetPosition( convertTicksDist( position, 2 * spoolRadius * Math.PI ) );
-		setVelocity( velocity );
-		while( isBusy( ) ) ;
-		setVelocity( 0 );
-	}
+	public void runToPositionVel( double velocity, double position ) {
 
-	public void moveLift( double power, double distanceToTravel ) {
-
-		// reset encoder count kept by left motor.
+		// reset encoder count kept by the motor.
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+		motor.setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
 
-		motor.setTargetPosition( convertDistTicks( distanceToTravel, 2 * spoolRadius * Math.PI ) );
-
-		motor.setPower( power );
-
-		Log.e( "GOAL:", "power: " + power + ", ticks: " + convertDistTicks( distanceToTravel, 2 * spoolRadius * Math.PI ) );
-		Log.e( "ACTUAL:", "power: " + motor.getPower( ) + ", ticks: " + motor.getTargetPosition( ) );
+		setVelocity( velocity );
 
 		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
-		// wait while opmode is active and left motor is busy running to position.
-		while( /*opModeIsActive( ) &&*/ motor.isBusy( ) ) {
-//			telemetry.addData( "encoder-fwd", motor.getCurrentPosition( ) + "  busy=" + motor.isBusy( ) );
-//			telemetry.update( );
-//			idle( );
-		}
+		while( isBusy( ) ) ;
 
-		// set motor power to zero to turn off motors. The motors stop on their own but
-		// power is still applied so we turn off the power.
-		motor.setPower( 0.0 );
+		setVelocity( 0 );
+	}
+
+	/**
+	 * @param power    the power at which to move the lift
+	 * @param position the position to move the lift to in inches
+	 */
+	public void runToPositionPow( double power, double position ) {
+
+		// reset encoder count kept by the motor.
+		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+		motor.setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
+
+		setPower( power );
+
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
+
+		while( isBusy( ) ) ;
+
+		setPower( 0 );
+	}
+
+	/**
+	 * @param power the power at which to move the lift
+	 * @param position the position to move the lift to in inches
+	 */
+	public void setPositionAsync( double power, double position ) {
+
+		// reset encoder count kept by the motor.
+		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+		motor.setTargetPosition( convertDistTicks( position, 2 * spoolRadius * Math.PI ) );
+
+		setPower( power );
+
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
+
+		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
+			while( isBusy( ) ) ;
+			setPower( 0 );
+		} ).start( );
 	}
 
 
@@ -126,22 +140,22 @@ public class Lift {
 	 * @param velocity the velocity at which to move the lift
 	 * @param height   the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
 	 */
-	public void setLiftHeight( double velocity, double height ) {
+	public void setLiftHeightVel( double velocity, double height ) {
+		if( height - groundBucketHeight < 0 )
+			return;
 		double liftPosition = (height - groundBucketHeight) / (Math.sin( Math.toRadians( liftAngle ) ));
-		setLiftPosition( velocity, liftPosition );
+		runToPositionVel( velocity, liftPosition );
 	}
 
 	/**
-	 * @param velocity the velocity at which to move the lift
-	 * @param position the position to move the lift to in inches
+	 * @param power  the power at which to move the lift
+	 * @param height the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
 	 */
-	public void setPositionAsync( double velocity, double position ) {
-		setTargetPosition( convertTicksDist( position, 2 * spoolRadius * Math.PI ) );
-		setVelocity( velocity );
-		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
-			while( isBusy( ) ) ;
-			setVelocity( 0 );
-		} ).start( );
+	public void setLiftHeightPow( double power, double height ) {
+		if( height - groundBucketHeight < 0 )
+			return;
+		double liftPosition = (height - groundBucketHeight) / (Math.sin( Math.toRadians( liftAngle ) ));
+		runToPositionPow( power, liftPosition );
 	}
 
 	public boolean isBusy( ) {
