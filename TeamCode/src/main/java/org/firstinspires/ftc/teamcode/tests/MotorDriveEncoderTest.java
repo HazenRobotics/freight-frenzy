@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.tests;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
  */
 
 @TeleOp(name = "MotorDriveEncoderTest", group = "TeleOp")
-//@Disabled
+@Disabled
 public class MotorDriveEncoderTest extends OpMode {
 
 	// Declare the variables of motors and distance sens
