@@ -13,6 +13,7 @@ class TrackingCameraLocalizer : Localizer {
 	private val trackingCam = TrackingCamera()
 
 	override fun update() {
+		trackingCam.getStream()
 		poseEstimate = camPoseToPose2d(trackingCam.pose)
 		poseVelocity = camVeloToPose2d(trackingCam.pose)
 	}

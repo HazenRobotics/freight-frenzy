@@ -43,7 +43,7 @@ public class RRDriveConstantsHexWood42 {
 	 * angular distances although most angular parameters are wrapped in Math.toRadians() for
 	 * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
 	 */
-	public static double WHEEL_RADIUS = 1.8898; // in - 48mm
+	public static double WHEEL_RADIUS = 96 / 2.0 / 25.4 ; // in - 48mm
 	public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
 	public static double TRACK_WIDTH = 15.5; // in
 

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.utils.Tracking;
+//import org.firstinspires.ftc.teamcode.utils.Tracking;
 
 @TeleOp(name = "EncoderPositionTest", group = "test")
 //@Disabled
@@ -29,11 +29,11 @@ public class EncoderPositionTest extends OpMode {
 		int ticksPosition = encoder.getCurrentPosition( ) - initialPosition;
 		// get rid of this when Andrew fixes next encoder
 		ticksPosition /= 8;
-		double inchesPosition = Tracking.convertTicksDist( ticksPosition, 1.4961, 250, 1 );
+		//double inchesPosition = Tracking.convertTicksDist( ticksPosition, 1.4961, 250, 1 );
 
 		telemetry.addLine( "Current Position:" );
 		telemetry.addLine( "  " + ticksPosition + " ticks" );
-		telemetry.addLine( "  " + inchesPosition + " inches" );
+		//telemetry.addLine( "  " + inchesPosition + " inches" );
 		telemetry.update( );
 	}
 
