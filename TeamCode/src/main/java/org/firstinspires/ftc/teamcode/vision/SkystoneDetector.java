@@ -22,27 +22,32 @@ public class SkystoneDetector extends OpenCvPipeline {
 
 	static final Rect LEFT_ROI = new Rect(
 			new Point(0, 0),
-			new Point(80, 320));
+			new Point(106, 240));
 	static final Rect MIDDLE_ROI = new Rect(
-			new Point( 80,0 ),
-			new Point( 160, 320 ));
+			new Point( 106,0 ),
+			new Point( 224, 240 ));
 	static final Rect RIGHT_ROI = new Rect(
-			new Point(160, 0),
-			new Point(240, 320));
+			new Point(224, 0),
+			new Point(320, 240));
 
 
-	static double PERCENT_COLOR_THRESHOLD = 0.005;
+	static double PERCENT_COLOR_THRESHOLD = 0.01;
 
 	public SkystoneDetector(Telemetry t) { telemetry = t; }
 
-	@Override
-	public Mat processFrame(Mat input) {
+	public Mat processFrame(Mat input,String type) {
 		Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-		//Scalar lowHSV = new Scalar(40, 50, 70);
-		//Scalar highHSV = new Scalar(65, 255, 255);
-		Scalar lowHSV = new Scalar(25, 25, 35);
-		Scalar highHSV = new Scalar(40, 255, 255);
+		Scalar lowHSV;
+		Scalar highHSV;
 
+		if(type.equalsIgnoreCase( "duck" )) {
+			lowHSV = new Scalar(25, 25, 35);
+			highHSV = new Scalar(40, 255, 255);
+		}
+		else {
+			lowHSV = new Scalar(40, 50, 70);
+			highHSV = new Scalar(65, 255, 255);
+		}
 		Core.inRange(mat, lowHSV, highHSV, mat);
 
 		Mat left = mat.submat(LEFT_ROI);
@@ -57,35 +62,34 @@ public class SkystoneDetector extends OpenCvPipeline {
 		middle.release();
 		right.release();
 
-		telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
-		telemetry.addData("Middle raw value", (int) Core.sumElems(middle).val[0]);
-		telemetry.addData("Right raw value", (int) Core.sumElems(right).val[0]);
-		telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
-		telemetry.addData("Middle percentage", Math.round(middleValue * 100) + "%");
-		telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
+		/*
+		telemetry.addData(type + " Left raw value", (int) Core.sumElems(left).val[0]);
+		telemetry.addData(type + " Middle raw value", (int) Core.sumElems(middle).val[0]);
+		telemetry.addData(type + " Right raw value", (int) Core.sumElems(right).val[0]);
+		telemetry.addData(type + " Left percentage", Math.round(leftValue * 100) + "%");
+		telemetry.addData(type + " Middle percentage", Math.round(middleValue * 100) + "%");
+		telemetry.addData(type + " Right percentage", Math.round(rightValue * 100) + "%"); */
 
-		boolean elementLeft = leftValue > PERCENT_COLOR_THRESHOLD;
-		boolean elementMiddle = middleValue > PERCENT_COLOR_THRESHOLD;
-		boolean elementRight = rightValue > PERCENT_COLOR_THRESHOLD;
+		boolean leftBool = leftValue > PERCENT_COLOR_THRESHOLD;
+		boolean middleBool = middleValue > PERCENT_COLOR_THRESHOLD;
+		boolean rightBool = rightValue > PERCENT_COLOR_THRESHOLD;
 
-		if (!elementLeft && !elementMiddle && !elementRight) {
-			location = Location.NOT_FOUND;
-			telemetry.addData("Element Location", "not found");
+		if (rightBool) {
+			location = Location.RIGHT;
+			telemetry.addData("Location", type + " right");
 		}
-		else if (elementLeft) {
+		else if (leftBool) {
 			location = Location.LEFT;
-			telemetry.addData("Element Location", "left");
+			telemetry.addData("Location", type + " left");
 		}
-		else if (elementMiddle) {
+		else if (middleBool) {
 			location = Location.MIDDLE;
-			telemetry.addData("Element Location", "middle");
+			telemetry.addData( "Location", type + " middle" );
 		}
 		else {
-			location = Location.RIGHT;
-			telemetry.addData("Element Location", "right");
+			location = Location.NOT_FOUND;
+			telemetry.addData("Location", type + " not found");
 		}
-		telemetry.update();
-
 		Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 
 		Scalar elementColor = new Scalar(255, 0, 0);
@@ -94,8 +98,15 @@ public class SkystoneDetector extends OpenCvPipeline {
 		Imgproc.rectangle(mat, LEFT_ROI, location == Location.LEFT? notElement:elementColor);
 		Imgproc.rectangle(mat, RIGHT_ROI, location == Location.RIGHT? notElement:elementColor);
 		Imgproc.rectangle(mat, MIDDLE_ROI, location == Location.MIDDLE? notElement:elementColor);
-
 		return mat;
+	}
+
+	@Override
+	public Mat processFrame(Mat input) {
+		processFrame( input, "element" );
+		Mat duck = processFrame( input,"duck" );
+		telemetry.update();
+		return duck;
 	}
 
 	public Location getLocation() {

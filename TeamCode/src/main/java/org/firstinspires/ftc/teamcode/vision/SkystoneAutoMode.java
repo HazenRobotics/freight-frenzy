@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -10,17 +12,19 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @Autonomous(name="Skystone Detector", group="Auto")
 public class SkystoneAutoMode extends LinearOpMode {
-	OpenCvCamera phoneCam;
+	OpenCvCamera webcam;
+
 	@Override
 	public void runOpMode() throws InterruptedException {
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1", "id", hardwareMap.appContext.getPackageName());
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, "webcam" ), cameraMonitorViewId );
 		SkystoneDetector detector = new SkystoneDetector(telemetry);
-		phoneCam.setPipeline(detector);
-		phoneCam.openCameraDeviceAsync(
+		webcam.setPipeline(detector);
+		webcam.openCameraDeviceAsync(
 				new OpenCvCamera.AsyncCameraOpenListener( ) {
 					@Override
 					public void onOpened( ) {
-						phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+						webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 					}
 
 					@Override
@@ -43,6 +47,6 @@ public class SkystoneAutoMode extends LinearOpMode {
 			case NOT_FOUND:
 				// ...
 		}
-		phoneCam.stopStreaming();
+		webcam.stopStreaming();
 	}
 }
