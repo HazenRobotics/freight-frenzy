@@ -22,6 +22,7 @@ public class RRDriveTest extends OpMode {
 	public void loop( ) {
 
 		drive.setDrivePower( new Pose2d( -gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x ) );
+		drive.update();
 
 		telemetry.addData( "Pose Estimate: ", drive.getPoseEstimate( ) );
 		telemetry.update( );

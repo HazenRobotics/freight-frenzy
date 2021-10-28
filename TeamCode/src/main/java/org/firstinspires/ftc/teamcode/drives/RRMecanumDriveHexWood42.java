@@ -81,8 +81,6 @@ public class RRMecanumDriveHexWood42 extends MecanumDrive {
 	private final BNO055IMU imu;
 	private final VoltageSensor batteryVoltageSensor;
 
-	private final Localizer localizer;
-
 	public RRMecanumDriveHexWood42( HardwareMap hardwareMap ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
 
@@ -137,8 +135,7 @@ public class RRMecanumDriveHexWood42 extends MecanumDrive {
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
-		localizer = new TrackingCameraLocalizer(hardwareMap, new Pose2d(  ), 0.8);
-		setLocalizer( localizer );
+		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( 6, 7, Math.toRadians( 90 ) ), 0.8) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
@@ -327,6 +324,6 @@ public class RRMecanumDriveHexWood42 extends MecanumDrive {
 	}
 
 	public void freeCamera() {
-		((TrackingCameraLocalizer) localizer).freeCamera();
+		((TrackingCameraLocalizer) getLocalizer()).freeCamera();
 	}
 }
