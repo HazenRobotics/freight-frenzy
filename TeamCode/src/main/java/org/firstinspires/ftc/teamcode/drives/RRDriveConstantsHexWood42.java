@@ -20,7 +20,7 @@ public class RRDriveConstantsHexWood42 {
 	/*
 	 * These are motor constants that should be listed online for your motors.
 	 */
-	public static final double TICKS_PER_REV = 28;
+	public static final double TICKS_PER_REV = 480;
 	public static final double MAX_RPM = 340; // no load
 
 	/*
@@ -43,8 +43,8 @@ public class RRDriveConstantsHexWood42 {
 	 * angular distances although most angular parameters are wrapped in Math.toRadians() for
 	 * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
 	 */
-	public static double WHEEL_RADIUS = 96 / 2.0 / 25.4 ; // in - 48mm
-	public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+	public static double WHEEL_RADIUS = 50 / 25.4 ; // in - 48mm (new), 50mm (old)
+	public static double GEAR_RATIO = 30 / 48.0; // output (wheel) speed / input (motor) speed
 	public static double TRACK_WIDTH = 15.5; // in
 
 	/*
