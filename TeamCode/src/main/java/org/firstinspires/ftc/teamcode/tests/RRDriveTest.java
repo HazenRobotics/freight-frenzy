@@ -26,4 +26,9 @@ public class RRDriveTest extends OpMode {
 		telemetry.addData( "Pose Estimate: ", drive.getPoseEstimate( ) );
 		telemetry.update( );
 	}
+
+	@Override
+	public void stop() {
+		drive.freeCamera();
+	}
 }
