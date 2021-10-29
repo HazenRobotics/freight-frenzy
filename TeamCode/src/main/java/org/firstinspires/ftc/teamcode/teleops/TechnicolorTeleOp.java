@@ -65,9 +65,9 @@ public class TechnicolorTeleOp extends OpMode {
 		}
 
 		if (gamepad1.a)
-			shooterServo.setPosition( 0.8 );
+			shooterServo.setPosition( 0.73 );
 		else
-			shooterServo.setPosition( 0 );
+			shooterServo.setPosition( 0.4 );
 
 		setPowers( frontLeftPower, frontRightPower, backLeftPower, backRightPower);
 	}

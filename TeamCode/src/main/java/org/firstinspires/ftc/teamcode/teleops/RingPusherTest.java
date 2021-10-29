@@ -15,6 +15,8 @@ public class RingPusherTest extends OpMode {
 	public void init( ) {
 
 		shooterServo = hardwareMap.servo.get( " shooterServo " );
+		telemetry.addLine( "finished init" );
+		telemetry.update( );
 
 	}
 
