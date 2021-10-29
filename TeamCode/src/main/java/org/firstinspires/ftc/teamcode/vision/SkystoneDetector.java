@@ -31,7 +31,7 @@ public class SkystoneDetector extends OpenCvPipeline {
 			new Point(320, 240));
 
 
-	static double PERCENT_COLOR_THRESHOLD = 0.01;
+	static double PERCENT_COLOR_THRESHOLD = 0.02;
 
 	public SkystoneDetector(Telemetry t) { telemetry = t; }
 
@@ -103,10 +103,14 @@ public class SkystoneDetector extends OpenCvPipeline {
 
 	@Override
 	public Mat processFrame(Mat input) {
-		processFrame( input, "element" );
-		Mat duck = processFrame( input,"duck" );
+		Mat elementImage = processFrame( input, "element" );
+		Mat duckImage = processFrame( input,"duck" );
+		double eleValue = Core.sumElems(elementImage).val[0] / (elementImage.rows()* elementImage.cols())/ 255;
+		double duckValue = Core.sumElems(duckImage).val[0] / (duckImage.rows()* duckImage.cols()) / 255;
 		telemetry.update();
-		return duck;
+		if(eleValue < duckValue)
+			return duckImage;
+		return elementImage;
 	}
 
 	public Location getLocation() {
