@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
@@ -135,7 +136,7 @@ public class RRMecanumDriveHexWood42 extends MecanumDrive {
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
-		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( 6, 7, Math.toRadians( 90 ) ), 0.8) );
+		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( 6, 7, 0 )) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
@@ -323,7 +324,11 @@ public class RRMecanumDriveHexWood42 extends MecanumDrive {
 		return new ProfileAccelerationConstraint( maxAccel );
 	}
 
-	public void freeCamera() {
-		((TrackingCameraLocalizer) getLocalizer()).freeCamera();
+	public void stopCamera() {
+		((TrackingCameraLocalizer) getLocalizer()).stopCamera();
+	}
+
+	public T265Camera.PoseConfidence getPoseConfidence() {
+		return ((TrackingCameraLocalizer) getLocalizer()).getPoseConfidence();
 	}
 }
