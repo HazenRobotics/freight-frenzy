@@ -10,15 +10,15 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="Skystone Detector", group="Auto")
-public class SkystoneAutoMode extends LinearOpMode {
+@Autonomous(name="Barcode Position Detector", group="Auto")
+public class BarcodeAutoMode extends LinearOpMode {
 	OpenCvCamera webcam;
 
 	@Override
 	public void runOpMode() throws InterruptedException {
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, "webcam" ), cameraMonitorViewId );
-		SkystoneDetector detector = new SkystoneDetector(telemetry);
+		BarcodePositionDetector detector = new BarcodePositionDetector(telemetry);
 		webcam.setPipeline(detector);
 		webcam.openCameraDeviceAsync(
 				new OpenCvCamera.AsyncCameraOpenListener( ) {

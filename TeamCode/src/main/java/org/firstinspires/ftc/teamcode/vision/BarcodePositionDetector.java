@@ -9,7 +9,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class SkystoneDetector extends OpenCvPipeline {
+public class BarcodePositionDetector extends OpenCvPipeline {
 	Telemetry telemetry;
 	Mat mat = new Mat();
 	public enum Location {
@@ -33,7 +33,7 @@ public class SkystoneDetector extends OpenCvPipeline {
 
 	static double PERCENT_COLOR_THRESHOLD = 0.02;
 
-	public SkystoneDetector(Telemetry t) { telemetry = t; }
+	public BarcodePositionDetector(Telemetry t) { telemetry = t; }
 
 	public Mat processFrame(Mat input,String type) {
 		Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
