@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class MecanumDrive extends FourWheelDrive {
 
-	final double WHEEL_DIAMETER = 1.4960629921; // odometry wheel 38mm
-	// mecanum wheel diameter = 3.9788735773; circumference = 12.5
+	final double WHEEL_DIAMETER = 38 / 25.4; // odometry wheel 38mm
 
 	/**
 	 * Creates a MechanumDrive with default names for the wheels

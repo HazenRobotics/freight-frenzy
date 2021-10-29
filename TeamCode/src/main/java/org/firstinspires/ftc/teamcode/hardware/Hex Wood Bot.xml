@@ -10,9 +10,8 @@
         </LynxModule>
         <LynxModule name="Control Hub" port="173">
             <NeveRest20Gearmotor name="liftLeft" port="0" />
-            <NeveRest20Gearmotor name="liftRight" port="1" />
-            <NeveRest60Gearmotor name="intake" port="2" />
-            <MatrixLegacyMotor name="perpendicular" port="3" />
+            <NeveRest60Gearmotor name="intake" port="1" />
+            <NeveRest20Gearmotor name="perpendicular" port="2" />
             <ContinuousRotationServo name="spinner" port="0" />
             <Servo name="bucket" port="1" />
             <Servo name="capper" port="2" />
