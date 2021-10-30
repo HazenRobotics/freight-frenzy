@@ -15,16 +15,16 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 @Disabled
 public class TurnTest extends LinearOpMode {
 
-    public static double ANGLE = 90; // deg
+	public static double ANGLE = 90; // deg
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+	@Override
+	public void runOpMode( ) throws InterruptedException {
+		SampleMecanumDrive drive = new SampleMecanumDrive( hardwareMap );
 
-        waitForStart();
+		waitForStart( );
 
-        if (isStopRequested()) return;
+		if( isStopRequested( ) ) return;
 
-        drive.turn(Math.toRadians(ANGLE));
-    }
+		drive.turn( Math.toRadians( ANGLE ) );
+	}
 }

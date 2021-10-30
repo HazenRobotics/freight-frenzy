@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -11,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-public class Tracking {
+public class GyroTracker {
 
 	BNO055IMU gyro1;
 	BNO055IMU gyro2;
@@ -19,51 +18,18 @@ public class Tracking {
 	Orientation angles;
 	Acceleration gravity;
 
-	DcMotorEx parallelEncoder;
-	DcMotorEx perpendicularEncoder;
-
-	double encoderRadius;
-
-	public Tracking( HardwareMap hw ) {
-		this( hw, false, "backLeft", "frontLeft" );
+	public GyroTracker( HardwareMap hw ) {
+		this( hw, false );
 	}
 
-	public Tracking( HardwareMap hw, boolean twoGyros ) {
-		this( hw, twoGyros, "backLeft", "frontLeft" );
-	}
+	public GyroTracker( HardwareMap hw, boolean twoGyros ) {
 
-	public Tracking( HardwareMap hw, int encoderRad, boolean twoGyros ) {
-
-		this( hw, encoderRad, twoGyros, "backLeft", "frontLeft" );
-
-		encoderRadius = encoderRad;
-	}
-
-	public Tracking( HardwareMap hw, String parallelName, String perpendicularName ) {
-		this( hw, false, parallelName, perpendicularName );
-	}
-
-	public Tracking( HardwareMap hw, boolean twoGyros, String parallelName, String perpendicularName ) {
-
-		initEncoders( parallelName, perpendicularName );
-
-		initGyro( hardwareMap = hw, twoGyros );
-	}
-
-	public Tracking( HardwareMap hw, int encoderRad, boolean twoGyros, String parallelName, String perpendicularName ) {
-
-		this( hw, twoGyros, parallelName, perpendicularName );
-
-		encoderRadius = encoderRad;
-	}
-
-	private void initEncoders( String parallelName, String perpendicularName ) {
-
-		parallelEncoder = hardwareMap.get( DcMotorEx.class, parallelName );
-		perpendicularEncoder = hardwareMap.get( DcMotorEx.class, perpendicularName );
+		initGyro( hw, twoGyros );
 	}
 
 	public void initGyro( HardwareMap hw, boolean twoGyros ) {
+
+		hardwareMap = hw;
 
 		BNO055IMU.Parameters parameters = new BNO055IMU.Parameters( );
 		parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -82,56 +48,6 @@ public class Tracking {
 		}
 
 		angles = gyro1.getAngularOrientation( AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES );
-	}
-
-	// *************** all encoder methods ***************
-
-	/**
-	 * returns the Longitudinal (forward/backward) distance on the encoders from where it started
-	 *
-	 * @return the position of the parallel encoder
-	 */
-	public int getLongitudinalPosition( ) {
-		return parallelEncoder.getCurrentPosition( );
-	}
-
-	/**
-	 * returns the Lateral (left/right) distance on the encoders from where it started
-	 *
-	 * @return the position of the perpendicular encoder
-	 */
-	public int getLateralPosition( ) {
-		return perpendicularEncoder.getCurrentPosition( );
-	}
-
-	/**
-	 * @return the velocity of the parallel encoder in ticks per second
-	 */
-	public double getLongitudinalVelocity( ) {
-		return parallelEncoder.getVelocity( );
-	}
-
-	/**
-	 * @param angleUnit the unit to get velocity in
-	 * @return the velocity of the parallel encoder in @angleUnit
-	 */
-	public double getLongitudinalVelocity( AngleUnit angleUnit ) {
-		return parallelEncoder.getVelocity( angleUnit );
-	}
-
-	/**
-	 * @return the velocity of the perpendicular encoder in ticks per second
-	 */
-	public double getLateralVelocity( ) {
-		return perpendicularEncoder.getVelocity( );
-	}
-
-	/**
-	 * @param angleUnit the unit to get velocity
-	 * @return the velocity of the perpendicular encoder in @angleUnit
-	 */
-	public double getLateralVelocity( AngleUnit angleUnit ) {
-		return perpendicularEncoder.getVelocity( angleUnit );
 	}
 
 	/**
@@ -160,8 +76,8 @@ public class Tracking {
 	 * @return the distance (in inches) in that number of ticks
 	 */
 	public static double convertTicksDist( double ticks, double wheelDiameter, double pulsesPerRevolution, double gearRatio ) {
-		double curcumference = Math.PI * wheelDiameter;
-		double totalDistance = (ticks * curcumference * gearRatio) / pulsesPerRevolution;
+		double circumference = Math.PI * wheelDiameter;
+		double totalDistance = (ticks * circumference * gearRatio) / pulsesPerRevolution;
 
 		return totalDistance;
 	}

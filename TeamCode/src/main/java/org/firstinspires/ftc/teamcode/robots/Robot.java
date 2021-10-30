@@ -79,7 +79,6 @@ public abstract class Robot {
 	}
 
 	/**
-	 *
 	 * @param millis the amount of milliseconds to wait in a while loop
 	 */
 	public void sleep( long millis ) {

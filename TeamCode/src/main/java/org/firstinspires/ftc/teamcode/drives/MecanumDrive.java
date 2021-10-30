@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  */
 public class MecanumDrive extends FourWheelDrive {
 
-	final double WHEEL_DIAMETER = 1.4960629921; // odometry wheel 38mm
-	// mecanum wheel diameter = 3.9788735773; circumference = 12.5
+	final double WHEEL_DIAMETER = 38 / 25.4; // odometry wheel 38mm
 
 	/**
 	 * Creates a MechanumDrive with default names for the wheels
@@ -63,10 +62,10 @@ public class MecanumDrive extends FourWheelDrive {
 	public void drive( double drive, double strafe, double rotate ) {
 
 		// You might have to play with the + or - depending on how your motors are installed
-		double frontLeftPower = drive + strafe - rotate;
-		double backLeftPower = drive - strafe - rotate;
-		double frontRightPower = drive - strafe + rotate;
-		double backRightPower = drive + strafe + rotate;
+		double frontLeftPower = drive + strafe + rotate;
+		double backLeftPower = drive - strafe + rotate;
+		double frontRightPower = drive - strafe - rotate;
+		double backRightPower = drive + strafe - rotate;
 
 		setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 	}
