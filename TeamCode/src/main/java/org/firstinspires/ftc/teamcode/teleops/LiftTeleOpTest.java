@@ -40,14 +40,14 @@ public class LiftTeleOpTest extends OpMode {
 	public void loop( ) {
 
 		// lift velocity control
-		if( gamepad1.left_trigger > 0 )
-			robot.lift.setPower( gamepad1.left_trigger );
-		else if( gamepad1.right_trigger > 0 )
-			robot.lift.setPower( -gamepad1.right_trigger );
-		else
-			robot.lift.setPower( 0 );
+//		if( gamepad1.left_trigger > 0 )
+//			robot.lift.setPower( gamepad1.left_trigger );
+//		else if( gamepad1.right_trigger > 0 )
+//			robot.lift.setPower( -gamepad1.right_trigger );
+//		else
+//			robot.lift.setPower( 0 );
 
-		telemetry.addLine( "Lift Position: " + robot.lift.getCurrentPosition( ) );
+//		telemetry.addLine( "Lift Position: " + robot.lift.getCurrentPosition( ) );
 
 		//updates
 		telemetry.update( );

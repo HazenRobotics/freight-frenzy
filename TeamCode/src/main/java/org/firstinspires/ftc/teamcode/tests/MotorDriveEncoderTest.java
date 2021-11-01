@@ -55,10 +55,10 @@ public class MotorDriveEncoderTest extends OpMode {
 
 		AngleUnit angleUnit = AngleUnit.DEGREES;
 
-		telemetry.addLine( "front left vel: " + robot.mecanumDrive.getFrontLeftVelocity( angleUnit ) );
-		telemetry.addLine( "back left vel: " + robot.mecanumDrive.getBackLeftVelocity( angleUnit ) );
-		telemetry.addLine( "front right vel: " + robot.mecanumDrive.getFrontRightVelocity( angleUnit ) );
-		telemetry.addLine( "back right vel: " + robot.mecanumDrive.getBackRightVelocity( angleUnit ) );
+//		telemetry.addLine( "front left vel: " + robot.mecanumDrive.getFrontLeftVelocity( angleUnit ) );
+//		telemetry.addLine( "back left vel: " + robot.mecanumDrive.getBackLeftVelocity( angleUnit ) );
+//		telemetry.addLine( "front right vel: " + robot.mecanumDrive.getFrontRightVelocity( angleUnit ) );
+//		telemetry.addLine( "back right vel: " + robot.mecanumDrive.getBackRightVelocity( angleUnit ) );
 
 		telemetry.addLine( "front left pos: " + robot.mecanumDrive.getFrontLeftPosition( ) );
 		telemetry.addLine( "back left pos: " + robot.mecanumDrive.getBackLeftPosition( ) );

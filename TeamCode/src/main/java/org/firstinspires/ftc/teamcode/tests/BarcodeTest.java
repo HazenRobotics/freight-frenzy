@@ -5,7 +5,7 @@ import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.vision.TensorFlowUtil;
+import org.firstinspires.ftc.teamcode.vision.unused.TensorFlowUtil;
 
 @Autonomous(name = "Barcode Test", group = "Test")
 public class BarcodeTest extends LinearOpMode {

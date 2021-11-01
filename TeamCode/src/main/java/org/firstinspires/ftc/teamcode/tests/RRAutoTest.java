@@ -14,6 +14,7 @@ public class RRAutoTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
+
 		robot = new Robot18Inch( hardwareMap, new Pose2d( -36, -63 ) );
 
 		waitForStart();

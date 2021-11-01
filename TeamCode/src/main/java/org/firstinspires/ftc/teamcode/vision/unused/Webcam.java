@@ -1,15 +1,12 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.vision.unused;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -18,37 +15,35 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class BarcodeDetection {
+public class Webcam {
 
-	Telemetry telemetry;
 	private OpenCvWebcam webcam;
 	private BarcodePipeline pipeline;
 
 	public enum BarcodePosition {
 		LEFT,
 		MIDDLE,
-		RIGHT,
-		NOT_FOUND
+		RIGHT
 	}
 
-	public BarcodeDetection( HardwareMap hw, String webcamName, Telemetry t ) {
+	public Webcam( HardwareMap hw ) {
+		this( hw, "webcam" );
+	}
+
+	public Webcam( HardwareMap hw, String webcamName ) {
 		setup( hw, webcamName );
-		telemetry = t;
 	}
 
 	public void setup( HardwareMap hw, String webcamName ) {
 
 		int cameraMonitorViewId = hw.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hw.appContext.getPackageName( ) );
 		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hw.get( WebcamName.class, webcamName ), cameraMonitorViewId );
-		pipeline = new BarcodePipeline( telemetry );
+		pipeline = new BarcodePipeline( );
 		setPipeline( pipeline );
 	}
 
-	public void processFrameCapture() {
-		//pipeline.processFrame(  )
-	}
-
 	public void init( ) {
+		setTimeoutTime( 2500 );
 		openCameraDevice( );
 	}
 
@@ -84,14 +79,7 @@ public class BarcodeDetection {
 
 	public static class BarcodePipeline extends OpenCvPipeline {
 
-		double PERCENT_COLOR_THRESHOLD = 0.005;
-		Mat mat = new Mat();
 		BarcodePosition position;
-		Telemetry telemetry;
-
-		public BarcodePipeline(Telemetry t) {
-			telemetry = t;
-		}
 
 		/*
 		 * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
@@ -115,15 +103,16 @@ public class BarcodeDetection {
 			/*
 			 * Draw a simple box around the middle 1/2 of the entire frame
 			 */
-			final Rect LEFT_ROI = new Rect(
-					new Point(0, 0),
-					new Point(80, 240));
-			final Rect MIDDLE_ROI = new Rect(
-					new Point( 80,0 ),
-					new Point( 160, 240 ));
-			final Rect RIGHT_ROI = new Rect(
-					new Point(160, 0),
-					new Point(240, 240));
+			Imgproc.rectangle(
+					input,
+					new Point(
+							input.cols( ) / 4,
+							input.rows( ) / 4 ),
+					new Point(
+							input.cols( ) * (3f / 4f),
+							input.rows( ) * (3f / 4f) ),
+					new Scalar( 0, 255, 0 ), 4 );
+
 			// TODO: figure out where duck is here
 
 			/**
@@ -131,61 +120,8 @@ public class BarcodeDetection {
 			 * to change which stage of the pipeline is rendered to the viewport when it is
 			 * tapped, please see {@link PipelineStageSwitchingExample}
 			 */
-			Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-			//duck colors
-			//Scalar lowHSV = new Scalar(40, 50, 70);
-			//Scalar highHSV = new Scalar(65, 255, 255);
-
-			//shipping hub colors
-			Scalar lowHSV = new Scalar(25, 25, 35);
-			Scalar highHSV = new Scalar(40, 255, 255);
-
-			Core.inRange(mat, lowHSV, highHSV, mat);
-
-			Mat left = mat.submat(LEFT_ROI);
-			Mat middle = mat.submat(MIDDLE_ROI);
-			Mat right = mat.submat(RIGHT_ROI);
-
-			double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
-			double middleValue = Core.sumElems(middle).val[0] / MIDDLE_ROI.area() / 255;
-			double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area() / 255;
-
-			left.release();
-			middle.release();
-			right.release();
-
-
-			boolean elementLeft = leftValue > PERCENT_COLOR_THRESHOLD;
-			boolean elementMiddle = middleValue > PERCENT_COLOR_THRESHOLD;
-			boolean elementRight = rightValue > PERCENT_COLOR_THRESHOLD;
-
-			if (!elementLeft && !elementMiddle && !elementRight) {
-				position = BarcodePosition.NOT_FOUND;
-			}
-			else if (elementLeft) {
-				position = BarcodePosition.LEFT;
-			}
-			else if (elementMiddle) {
-				position = BarcodePosition.MIDDLE;
-			}
-			else {
-				position = BarcodePosition.RIGHT;
-			}
-
-			telemetry.addLine( "" + position );
-
-			Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
-
-			Scalar elementColor = new Scalar(255, 0, 0);
-			Scalar notElement = new Scalar(0, 255, 0);
-
-			Imgproc.rectangle(mat, LEFT_ROI, position == BarcodePosition.LEFT? notElement:elementColor);
-			Imgproc.rectangle(mat, RIGHT_ROI, position == BarcodePosition.RIGHT? notElement:elementColor);
-			Imgproc.rectangle(mat, MIDDLE_ROI, position == BarcodePosition.MIDDLE? notElement:elementColor);
-
 
 			return input;
-
 		}
 
 

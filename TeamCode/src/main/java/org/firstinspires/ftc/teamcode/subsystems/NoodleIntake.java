@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake {
+public class NoodleIntake {
 
 	DcMotor intakeMotor1;
 	DcMotor intakeMotor2;
 	
-	public Intake( HardwareMap hw ) {
+	public NoodleIntake( HardwareMap hw ) {
 		setup( hw );
 	}
 
