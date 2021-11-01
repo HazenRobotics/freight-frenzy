@@ -17,8 +17,8 @@ public class BarcodeUtil {
 	private OpenCvWebcam webcam;
 	private BarcodePositionDetector pipeline;
 
-	public BarcodeUtil( HardwareMap hw, String webcamName, Telemetry t ) {
-		telemetry = t;
+	public BarcodeUtil( HardwareMap hw, String webcamName, Telemetry telemetry ) {
+		this.telemetry = telemetry;
 		setup( hw, webcamName );
 	}
 

@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robots.HexWoodBot;
-import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.robots.HexBot;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -25,12 +24,12 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 @Disabled
 public class LiftTeleOpTest extends OpMode {
 
-	HexWoodBot robot;
+	HexBot robot;
 
 	@Override
 	public void init( ) {
 
-		robot = new HexWoodBot( this );
+		robot = new HexBot( this );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );

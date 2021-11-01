@@ -8,23 +8,29 @@ import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.SquareIntake;
 import org.firstinspires.ftc.teamcode.utils.GyroTracker;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
+import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
-public class HexWoodBot extends Robot {
+public class HexBot extends Robot {
 
 	public OpMode opMode;
 	public HardwareMap hardwareMap;
 
 	public MecanumDrive mecanumDrive;
-	public CarouselSpinner spinner;
+
+	BarcodeUtil barcodeUtil;
+
+	public CarouselSpinner spinnerLeft;
+	public CarouselSpinner spinnerRight;
 	public Lift lift;
 	public Bucket bucket;
 	public NoodleIntake intake;
 	public GyroTracker gyroTracker;
 	public EncoderTracker encoderTracker;
 
-	public HexWoodBot( OpMode op ) {
+	public HexBot( OpMode op ) {
 
 		super( op );
 
@@ -32,16 +38,17 @@ public class HexWoodBot extends Robot {
 		hardwareMap = op.hardwareMap;
 
 		// initialize util objects/classes
-//		tfod = new TensorFlowUtil( opMode );
+		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", opMode.telemetry );
 
 		super.driveTrain = new MecanumDrive( hardwareMap );
 		mecanumDrive = (MecanumDrive) driveTrain;
-		spinner = new CarouselSpinner( hardwareMap );
+		spinnerLeft = new CarouselSpinner( hardwareMap );
+		spinnerRight = new CarouselSpinner( hardwareMap );
 		lift = new Lift( hardwareMap );
 		bucket = new Bucket( hardwareMap );
+		intake = new NoodleIntake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
 		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
-		intake = new NoodleIntake( hardwareMap );
 
 	}
 

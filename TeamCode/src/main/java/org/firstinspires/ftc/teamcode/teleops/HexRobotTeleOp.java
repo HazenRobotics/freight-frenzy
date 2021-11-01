@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robots.HexWoodBot;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.robots.HexBot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
 /**
@@ -29,14 +28,14 @@ public class HexRobotTeleOp extends OpMode {
 
 	GamepadEvents gamepad;
 
-	HexWoodBot robot;
+	HexBot robot;
 
 	double intakePower = 0.9;
 
 	@Override
 	public void init( ) {
 
-		robot = new HexWoodBot( this );
+		robot = new HexBot( this );
 		gamepad = new GamepadEvents( gamepad1 );
 
 		telemetry.addData( "Mode", "waiting for start" );
@@ -58,15 +57,15 @@ public class HexRobotTeleOp extends OpMode {
 
 		// intake
 		if( gamepad.left_bumper.onPress( ) )
-			robot.intake.setPower( robot.intake.getPower( ) < intakePower - 0.1 ? intakePower : 0 );
+			robot.intake.setPower( robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
 		else if( gamepad.right_bumper.onPress( ) )
-			robot.intake.setPower(  robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
+			robot.intake.setPower( robot.intake.getPower( ) < intakePower - 0.1 ? intakePower : 0 );
 
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 )
 			robot.lift.setPower( gamepad1.right_trigger );
 		else if( gamepad1.left_trigger > 0 )
-		robot.lift.setPower( -gamepad1.left_trigger );
+			robot.lift.setPower( -gamepad1.left_trigger );
 		else
 			robot.lift.setPower( 0 );
 
@@ -75,9 +74,9 @@ public class HexRobotTeleOp extends OpMode {
 
 		// carousel spinner control
 		if( gamepad.x.onPress( ) ) // toggles carousel spinner
-			robot.spinner.setPower( robot.spinner.getPower( ) > 0 ? 0 : 1 );
+			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : 1 );
 		else if( gamepad.y.onPress( ) )
-			robot.spinner.setPower( robot.spinner.getPower( ) < 0 ? 0 : -1 );
+			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -1 );
 
 		//updates
 		telemetry.update( );
@@ -86,15 +85,20 @@ public class HexRobotTeleOp extends OpMode {
 
 	public void addControlTelemetry( ) {
 
+		// 		y
+		//   x     b
+		//		a
+
 		telemetry.addLine( "            Controls:" );
-		telemetry.addData( "Drive ", "Gp1: left stick y (axis)" )
-				.addData( "Strafe", "Gp1: left stick x (axis)" )
-				.addData( "Rotate", "Gp1: right stick x (axis)" )
-				.addData( "Lift Up", "Gp1: right trigger" )
-				.addData( "Lift Down", "Gp1: left trigger" )
-				.addData( "example", "example" )
-				.addData( "Intake Toggle", "Gp1/Gp2: right bumper" )
-				.addData( "Negate Intake", "Gp1/Gp2: left bumper" );
+		telemetry.addLine( "Drive: Gp1: left stick y (axis)" );
+		telemetry.addLine( "Strafe: Gp1: left stick x (axis)" );
+		telemetry.addLine( "Rotate: Gp1: right stick x (axis)" );
+		telemetry.addLine( "Lift Up: Gp1: right trigger" );
+		telemetry.addLine( "Lift Down: Gp1: left trigger" );
+		telemetry.addLine( "Intake In: Gp1: left bumper" );
+		telemetry.addLine( "Intake Out: Gp1: right bumper" );
+		telemetry.addLine( "Left Spinner: Gp1: x" );
+		telemetry.addLine( "Right Spinner: Gp1: y" );
 		telemetry.addLine( );
 	}
 

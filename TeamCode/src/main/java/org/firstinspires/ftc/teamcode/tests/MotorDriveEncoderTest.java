@@ -1,15 +1,11 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.robots.HexWoodBot;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.robots.HexBot;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -31,12 +27,12 @@ public class MotorDriveEncoderTest extends OpMode {
 
 	// Declare the variables of motors and distance sens
 
-	HexWoodBot robot;
+	HexBot robot;
 
 	@Override
 	public void init( ) {
 
-		robot = new HexWoodBot( this );
+		robot = new HexBot( this );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
