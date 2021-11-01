@@ -23,7 +23,7 @@ public class Lift {
 	AngleUnit angleUnit; // the angle unit for the lift angle i.e. degrees or radians
 
 	public Lift( HardwareMap hw ) {
-		this( hw, "liftLeft", 10.25,
+		this( hw, "lift", 10.25,
 				(32 / 25.4) / 2, 45, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
