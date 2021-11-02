@@ -43,8 +43,8 @@ public class HexBot extends Robot {
 
 		super.driveTrain = new MecanumDrive( hardwareMap );
 		mecanumDrive = (MecanumDrive) driveTrain;
-		spinnerLeft = new CarouselSpinner( hardwareMap );
-		spinnerRight = new CarouselSpinner( hardwareMap );
+		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
+		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
 		lift = new Lift( hardwareMap );
 		bucket = new Bucket( hardwareMap );
 		intake = new NoodleIntake( hardwareMap );

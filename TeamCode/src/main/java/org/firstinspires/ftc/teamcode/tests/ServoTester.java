@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "Servo Test", group = "Test")
-@Disabled
+//@Disabled
 public class ServoTester extends OpMode {
 
 	Servo servo;
@@ -24,9 +24,14 @@ public class ServoTester extends OpMode {
 	public void loop( ) {
 
 		if( gamepad1.right_trigger > 0 )
-			servo.setPosition( servo.getPosition( ) + 0.0001 );
+			servo.setPosition( servo.getPosition( ) + 0.001 );
 		else if( gamepad1.left_trigger > 0 )
-			servo.setPosition( servo.getPosition( ) - 0.0001 );
+			servo.setPosition( servo.getPosition( ) - 0.001 );
+
+		if( gamepad1.a )
+			servo.setPosition( 1.0 );
+		else if( gamepad1.b )
+			servo.setPosition( 0.0 );
 
 		telemetry.addLine( "Servo position: " + servo.getPosition( ) );
 		telemetry.update( );
