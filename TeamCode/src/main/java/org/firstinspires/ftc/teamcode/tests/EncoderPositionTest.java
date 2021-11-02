@@ -24,19 +24,13 @@ public class EncoderPositionTest extends OpMode {
 	public void init( ) {
 		names = new String[]{ "frontLeft", "backLeft", "frontRight", "backRight", "lift", "intake", "perpendicular" };
 		encoder = new DcMotor[names.length];
-//		encoder[0] = hardwareMap.dcMotor.get( "frontLeft" );
-//		encoder[1] = hardwareMap.dcMotor.get( "backLeft" );
-//		encoder[2] = hardwareMap.dcMotor.get( "frontRight" );
-//		encoder[3] = hardwareMap.dcMotor.get( "backRight" );
-//		encoder[4] = hardwareMap.dcMotor.get( "lift" );
-//		encoder[5] = hardwareMap.dcMotor.get( "intake" );
-//		encoder[6] = hardwareMap.dcMotor.get( "perpendicular" );
 		initialPosition = new int[encoder.length];
 		for( int i = 0; i < names.length; i++ ) {
 			encoder[i] = hardwareMap.dcMotor.get( names[i] );
 			encoder[i].setMode( DcMotor.RunMode.RUN_USING_ENCODER );
 			initialPosition[i] = encoder[i].getCurrentPosition( );
 		}
+
 		format = new DecimalFormat( "#.####" );
 
 		telemetry.addLine( "Init Finished." );
@@ -46,12 +40,17 @@ public class EncoderPositionTest extends OpMode {
 	@Override
 	public void loop( ) {
 
-		for( int i = 0; i < names.length; i++ ) {
+		for( int i = 0; i < names.length; i++ ) { // 0, 1, 2, 3 are motors, 4, is lift, 5, & 6 are dead wheels
 
 			int ticksPosition = encoder[i].getCurrentPosition( ) - initialPosition[i];
-			// get rid of this when Andrew fixes next encoder
-//			ticksPosition /= 8;
-			double inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 50 / 25.4, 480, 30 / 48.0 ) / 4.0;
+
+			double inchesPosition = 0;
+			if( i < 4 ) // 0, 1, 2, 3, are motors
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 50 / 25.4, 537.6, 1 );
+			else if( i > 4 ) // 5 & 6 are dead wheels
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 50 / 25.4, 480, 30 / 48.0 ) / 4.0;
+			else // 4 is the lift
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 32 / 25.4 / 2, 537.6, 1 );
 			String extraSpace = inchesPosition < 0 ? "" : " ";
 
 			telemetry.addLine( names[i] + " current position:" );
