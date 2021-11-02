@@ -14,6 +14,7 @@ import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -31,7 +32,13 @@ public class TrackingCameraLocalizer implements Localizer {
 	 */
 	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot ) {
 		if(slamra == null) {
-			slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0, hardwareMap.appContext);
+			File map = new File("/localization/maps/map");
+			if(map.exists()) {
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0, "/localization/maps/map",  hardwareMap.appContext);
+			}
+			else {
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0,  hardwareMap.appContext);
+			}
 		}
 		try {
 			if(!slamra.isStarted()) slamra.start();
@@ -50,6 +57,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
 		_poseEstimate = pose2d;
+		slamra.setPose(rrPose2dToFtclib(pose2d));
 	}
 
 	@Nullable
@@ -69,7 +77,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	}
 
 	public void stopCamera() {
-		//slamra.exportRelocalizationMap( Paths.get( "") );
+		slamra.exportRelocalizationMap( "/localization/maps/map" );
 		slamra.stop();
 		slamra.free();
 	}
