@@ -67,7 +67,6 @@ public class SoundLibrary {
 		//audioList.add( new Audio("gold", hardwareMap) );
 		//audioList.add( new Audio("silver", hardwareMap) );
 
-
 		// checks all of the sounds and removes the ones that aren't found
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( !audioList.get( i ).exists( ) ) audioList.remove( i-- );

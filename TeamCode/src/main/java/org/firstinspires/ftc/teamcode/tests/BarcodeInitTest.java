@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
 @Autonomous(name = "New Barcode Test", group = "Test")
-//@Disabled
-public class NewBarcodeTest extends LinearOpMode {
+@Disabled
+public class BarcodeInitTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {

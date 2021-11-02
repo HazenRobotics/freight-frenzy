@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -37,6 +38,8 @@ public class HexRobotTeleOp extends OpMode {
 
 		robot = new HexBot( this );
 		gamepad = new GamepadEvents( gamepad1 );
+
+		SoundLibrary.playRandomStartup( );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );

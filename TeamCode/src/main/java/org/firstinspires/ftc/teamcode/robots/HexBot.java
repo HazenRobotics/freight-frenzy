@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
-import org.firstinspires.ftc.teamcode.subsystems.SquareIntake;
 import org.firstinspires.ftc.teamcode.utils.GyroTracker;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
 public class HexBot extends Robot {
@@ -18,10 +18,9 @@ public class HexBot extends Robot {
 	public OpMode opMode;
 	public HardwareMap hardwareMap;
 
+	public BarcodeUtil barcodeUtil;
+
 	public MecanumDrive mecanumDrive;
-
-	BarcodeUtil barcodeUtil;
-
 	public CarouselSpinner spinnerLeft;
 	public CarouselSpinner spinnerRight;
 	public Lift lift;
@@ -39,6 +38,8 @@ public class HexBot extends Robot {
 
 		// initialize util objects/classes
 		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", opMode.telemetry );
+
+		new SoundLibrary( hardwareMap );
 
 		super.driveTrain = new MecanumDrive( hardwareMap );
 		mecanumDrive = (MecanumDrive) driveTrain;
