@@ -36,8 +36,9 @@ public class TrackingCameraLocalizer implements Localizer {
 		try {
 			if(!slamra.isStarted()) slamra.start();
 		} catch( Exception e ) {
-			setPoseEstimate( new Pose2d(  ) );
+
 		}
+		setPoseEstimate( new Pose2d(  ) );
 	}
 
 	@NonNull
@@ -68,19 +69,20 @@ public class TrackingCameraLocalizer implements Localizer {
 	}
 
 	public void stopCamera() {
-		//slamra.exportRelocalizationMap( Paths.get( ) );
+		//slamra.exportRelocalizationMap( Paths.get( "") );
 		slamra.stop();
+		slamra.free();
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {
-		return new com.arcrobotics.ftclib.geometry.Pose2d( rrPose.getX() * DistanceUnit.mPerInch, rrPose.getY() * DistanceUnit.mPerInch ,  new Rotation2d( rrPose.getHeading() ) );
+		return new com.arcrobotics.ftclib.geometry.Pose2d( -rrPose.getY() * DistanceUnit.mPerInch, rrPose.getX() * DistanceUnit.mPerInch,  new Rotation2d( rrPose.getHeading() ) );
 	}
 	private Pose2d ftclibPose2dToRR( com.arcrobotics.ftclib.geometry.Pose2d ftclibPose ) {
-		return new Pose2d(ftclibPose.getX() / DistanceUnit.mPerInch, ftclibPose.getY() /DistanceUnit.mPerInch,  ftclibPose.getHeading());
+		return new Pose2d(-ftclibPose.getY() /DistanceUnit.mPerInch,ftclibPose.getX() / DistanceUnit.mPerInch,   ftclibPose.getHeading());
 	}
 	private Pose2d ftclibChassisSpeedsToRR( ChassisSpeeds ftclibChassisSpeeds ) {
-		return new Pose2d( ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch
-				,-ftclibChassisSpeeds.vxMetersPerSecond / DistanceUnit.mPerInch
+		return new Pose2d( -ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch
+				,ftclibChassisSpeeds.vxMetersPerSecond / DistanceUnit.mPerInch
 				, ftclibChassisSpeeds.omegaRadiansPerSecond);
 	}
 	private Transform2d transformFromRobot(Pose2d item) {
