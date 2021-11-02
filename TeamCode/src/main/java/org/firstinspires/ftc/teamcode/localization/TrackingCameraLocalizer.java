@@ -12,15 +12,17 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class TrackingCameraLocalizer implements Localizer {
 
-	private Pose2d poseEstimate;
-	private Pose2d poseVelocity;
+	private Pose2d _poseEstimate;
+	private Pose2d _poseVelocity;
 	private T265Camera.PoseConfidence confidence;
 	private static T265Camera slamra;
-
-	private com.arcrobotics.ftclib.geometry.Pose2d previousPose;
-	private com.arcrobotics.ftclib.geometry.Pose2d previousAbsolutePose;
 
 	/**
 	 * Constructs and starts a new VSLAM Camera instance
@@ -41,19 +43,18 @@ public class TrackingCameraLocalizer implements Localizer {
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
-		return poseEstimate;
+		return _poseEstimate;
 	}
 
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
-		previousAbsolutePose = rrPose2dToFtclib( pose2d );
-		poseEstimate = ftclibPose2dToRR( previousAbsolutePose );
+		_poseEstimate = pose2d;
 	}
 
 	@Nullable
 	@Override
 	public Pose2d getPoseVelocity( ) {
-		return poseVelocity;
+		return _poseVelocity;
 	}
 
 	@Override
@@ -61,23 +62,25 @@ public class TrackingCameraLocalizer implements Localizer {
 		T265Camera.CameraUpdate cameraUpdate = slamra.getLastReceivedCameraUpdate();
 		confidence = cameraUpdate.confidence;
 
-		poseEstimate = ftclibPose2dToRR( relativePoseToAbsolutePose( cameraUpdate.pose ) );
+		_poseEstimate = ftclibPose2dToRR( cameraUpdate.pose );
+		_poseVelocity = ftclibChassisSpeedsToRR( cameraUpdate.velocity );
 
 	}
 
 	public void stopCamera() {
+		//slamra.exportRelocalizationMap( Paths.get( ) );
 		slamra.stop();
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {
-		return new com.arcrobotics.ftclib.geometry.Pose2d( rrPose.getY() / 39.37, -rrPose.getX() / 39.37,  new Rotation2d( rrPose.getHeading() ) );
+		return new com.arcrobotics.ftclib.geometry.Pose2d( rrPose.getX() * DistanceUnit.mPerInch, rrPose.getY() * DistanceUnit.mPerInch ,  new Rotation2d( rrPose.getHeading() ) );
 	}
 	private Pose2d ftclibPose2dToRR( com.arcrobotics.ftclib.geometry.Pose2d ftclibPose ) {
-		return new Pose2d(ftclibPose.getY() * 39.37, -ftclibPose.getX() * 39.37,  ftclibPose.getHeading());
+		return new Pose2d(ftclibPose.getX() / DistanceUnit.mPerInch, ftclibPose.getY() /DistanceUnit.mPerInch,  ftclibPose.getHeading());
 	}
 	private Pose2d ftclibChassisSpeedsToRR( ChassisSpeeds ftclibChassisSpeeds ) {
-		return new Pose2d( ftclibChassisSpeeds.vyMetersPerSecond * 39.37
-				,-ftclibChassisSpeeds.vxMetersPerSecond * 39.37
+		return new Pose2d( ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch
+				,-ftclibChassisSpeeds.vxMetersPerSecond / DistanceUnit.mPerInch
 				, ftclibChassisSpeeds.omegaRadiansPerSecond);
 	}
 	private Transform2d transformFromRobot(Pose2d item) {
@@ -86,27 +89,6 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	public T265Camera.PoseConfidence getPoseConfidence( ) {
 		return confidence;
-	}
-
-	private com.arcrobotics.ftclib.geometry.Pose2d relativePoseToAbsolutePose( com.arcrobotics.ftclib.geometry.Pose2d pose ) {
-		double dx = pose.getX() - previousPose.getX();
-		double dy = pose.getY() - previousPose.getY();
-		double dtheta = pose.getHeading() - previousPose.getHeading();
-		double theta = Math.atan( dtheta );
-
-		previousPose = pose;
-
-		double absoluteDY = Math.sin( theta ) * dy;
-		double absoluteDX = Math.cos( theta ) * dx;
-
-		double absoluteX = previousAbsolutePose.getX() + absoluteDX;
-		double absoluteY = previousAbsolutePose.getY() + absoluteDY;
-		com.arcrobotics.ftclib.geometry.Pose2d absolutePose = new com.arcrobotics.ftclib.geometry.Pose2d( absoluteX, absoluteY, new Rotation2d( pose.getHeading() ) );
-
-		previousAbsolutePose = absolutePose;
-
-		return absolutePose;
-
 	}
 
 

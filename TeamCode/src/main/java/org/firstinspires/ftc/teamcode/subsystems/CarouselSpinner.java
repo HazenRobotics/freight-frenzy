@@ -17,7 +17,7 @@ public class CarouselSpinner {
 
 	private void setup( HardwareMap hw ) {
 
-		spinner = hw.crservo.get( "spinner" );
+		spinner = hw.crservo.get( "spinnerLeft" );
 	}
 
 	public void setPower( double power ) {

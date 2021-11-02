@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHexWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
 		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-		RRMecanumDriveHexWood42 drive = new RRMecanumDriveHexWood42( hardwareMap );
+		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
 
 		Mode mode = Mode.TUNING_MODE;
 

@@ -51,9 +51,9 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 	// Perpendicular is perpendicular to the forward axis
 	private Encoder parallelEncoder, perpendicularEncoder;
 
-	private RRMecanumDriveHexWood42 drive;
+	private RRMecanumDriveHex42 drive;
 
-	public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, RRMecanumDriveHexWood42 drive) {
+	public TwoWheelTrackingLocalizer(HardwareMap hardwareMap, RRMecanumDriveHex42 drive) {
 		super(Arrays.asList(
 				new Pose2d(PARALLEL_X, PARALLEL_Y, 0),
 				new Pose2d(PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians(90))

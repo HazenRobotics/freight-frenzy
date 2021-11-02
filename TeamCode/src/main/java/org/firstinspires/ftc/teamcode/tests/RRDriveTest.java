@@ -6,18 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.spartronics4915.lib.T265Camera;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHexWood42;
-import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 @TeleOp(name = "Drive Test", group = "Test")
 public class RRDriveTest extends OpMode {
 
-	RRMecanumDriveHexWood42 drive;
+	RRMecanumDriveHex42 drive;
 
 	@Override
 	public void init( ) {
 
-		drive = new RRMecanumDriveHexWood42( hardwareMap );
+		drive = new RRMecanumDriveHex42( hardwareMap );
 	}
 
 	@Override
@@ -28,6 +27,7 @@ public class RRDriveTest extends OpMode {
 			telemetry.addLine("Ready!" );
 		}
 		telemetry.update();
+		drive.update();
 	}
 
 	@Override

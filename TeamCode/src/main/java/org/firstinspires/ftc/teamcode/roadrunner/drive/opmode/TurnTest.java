@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHexWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 /*
  * This is a simple routine to test turning capabilities.
@@ -19,7 +19,7 @@ public class TurnTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		RRMecanumDriveHexWood42 drive = new RRMecanumDriveHexWood42( hardwareMap );
+		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
 
 		waitForStart( );
 

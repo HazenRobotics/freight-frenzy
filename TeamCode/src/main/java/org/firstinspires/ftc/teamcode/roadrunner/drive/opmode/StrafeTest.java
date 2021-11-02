@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHexWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -25,7 +25,7 @@ public class StrafeTest extends LinearOpMode {
 	public void runOpMode( ) throws InterruptedException {
 		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-		RRMecanumDriveHexWood42 drive = new RRMecanumDriveHexWood42( hardwareMap );
+		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
 
 		Trajectory trajectory = drive.trajectoryBuilder( new Pose2d( ) )
 				.strafeRight( DISTANCE )
