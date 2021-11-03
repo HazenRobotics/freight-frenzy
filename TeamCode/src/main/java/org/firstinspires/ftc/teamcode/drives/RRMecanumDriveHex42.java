@@ -84,7 +84,7 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 	public static final double CAMERA_X = -4;
 	public static final double CAMERA_Y = 6.625;
 
-	public RRMecanumDriveHex42( HardwareMap hardwareMap ) {
+	public RRMecanumDriveHex42( HardwareMap hardwareMap, boolean loadMap ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
 
 		follower = new HolonomicPIDVAFollower( TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -138,10 +138,14 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
-		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 )) );
+		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap) );
 		//setLocalizer( new TrackingCameraLocalizerWheel( hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y ) ) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
+	}
+
+	public RRMecanumDriveHex42(HardwareMap hardwareMap) {
+		this(hardwareMap, false);
 	}
 
 	public TrajectoryBuilder trajectoryBuilder( Pose2d startPose ) {

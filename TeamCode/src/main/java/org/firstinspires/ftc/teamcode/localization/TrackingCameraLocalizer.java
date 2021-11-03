@@ -29,12 +29,13 @@ public class TrackingCameraLocalizer implements Localizer {
 	 * Constructs and starts a new VSLAM Camera instance
 	 * @param hardwareMap Robot's hardware map
 	 * @param cameraFromRobot The position of the camera in relation to the center of the robot
+	 * @param loadMap Whether the camera should load an already saved map or not
+	 * @param mapName File name of the relocalization map
 	 */
-	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot ) {
+	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap, String mapName ) {
 		if(slamra == null) {
-			File map = new File("/localization/maps/map");
-			if(map.exists()) {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0, "/localization/maps/map",  hardwareMap.appContext);
+			if(loadMap && new File(String.format("/localization/maps/%s", mapName)).exists()) {
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
 			}
 			else {
 				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0,  hardwareMap.appContext);
@@ -46,6 +47,14 @@ public class TrackingCameraLocalizer implements Localizer {
 
 		}
 		setPoseEstimate( new Pose2d(  ) );
+	}
+
+	public TrackingCameraLocalizer(HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap) {
+		this(hardwareMap, cameraFromRobot, loadMap, "map");
+	}
+
+	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot) {
+		this(hardwareMap, cameraFromRobot, false);
 	}
 
 	@NonNull
@@ -76,8 +85,14 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	}
 
+	public void exportMap(String fileName) {
+		slamra.exportRelocalizationMap(String.format("/localization/maps/%s", fileName));
+	}
+	public void exportMap() {
+		exportMap("map");
+	}
+
 	public void stopCamera() {
-		slamra.exportRelocalizationMap( "/localization/maps/map" );
 		slamra.stop();
 		slamra.free();
 	}
