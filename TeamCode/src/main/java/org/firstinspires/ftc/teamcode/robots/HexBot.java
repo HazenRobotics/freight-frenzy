@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
@@ -45,8 +46,8 @@ public class HexBot extends Robot {
 		mecanumDrive = (MecanumDrive) driveTrain;
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
-		lift = new Lift( hardwareMap );
-		bucket = new Bucket( hardwareMap );
+		lift = new Lift( hardwareMap, "lift", 10.25, (32 / 25.4) / 2, 55, AngleUnit.DEGREES );
+		bucket = new Bucket( hardwareMap, 55 );
 		intake = new NoodleIntake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
 		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
