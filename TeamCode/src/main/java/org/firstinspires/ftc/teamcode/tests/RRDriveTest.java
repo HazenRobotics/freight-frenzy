@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.tests;
 
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
+@Disabled
 @TeleOp(name = "Drive Test", group = "Test")
 public class RRDriveTest extends OpMode {
 

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class SplineTest extends LinearOpMode {
 
 	@Override
@@ -37,5 +37,6 @@ public class SplineTest extends LinearOpMode {
 						.splineTo( new Vector2d( 0, 0 ), Math.toRadians( 180 ) )
 						.build( )
 		);
+		drive.stopCamera();
 	}
 }

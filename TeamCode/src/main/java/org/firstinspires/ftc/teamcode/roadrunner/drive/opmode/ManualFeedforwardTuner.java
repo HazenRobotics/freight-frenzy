@@ -18,12 +18,12 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 import java.util.Objects;
 
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.kA;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.kStatic;
-import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.kV;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kA;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kStatic;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kV;
 
 /*
  * This routine is designed to tune the open-loop feedforward coefficients. Although it may seem unnecessary,

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.drives;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 /*
  * Constants shared between multiple drive types.
  *
@@ -32,8 +34,8 @@ public class RRDriveConstantsHex42 {
 	 * from DriveVelocityPIDTuner.
 	 */
 	public static final boolean RUN_USING_ENCODER = true;
-	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 0, 0, 0,
-			getMotorVelocityF( MAX_RPM / 60 * TICKS_PER_REV ) );
+	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 18, 0, 6,
+			14.8 );
 
 	/*
 	 * These are physical constants that can be determined from your robot (including the track
@@ -43,9 +45,9 @@ public class RRDriveConstantsHex42 {
 	 * angular distances although most angular parameters are wrapped in Math.toRadians() for
 	 * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
 	 */
-	public static double WHEEL_RADIUS = 50 / 25.4 ; // in - 48mm (new), 50mm (old)
-	public static double GEAR_RATIO = 30 / 48.0; // output (wheel) speed / input (motor) speed
-	public static double TRACK_WIDTH = 15.5; // in
+	public static double WHEEL_RADIUS = 48 / DistanceUnit.mmPerInch; // in - 48mm (new), 50mm (old)
+	public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+	public static double TRACK_WIDTH = 17; // in
 
 	/*
 	 * These are the feedforward parameters used to model the drive motor behavior. If you are using

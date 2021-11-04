@@ -24,7 +24,7 @@ import java.util.Objects;
 
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class MaxAngularVeloTuner extends LinearOpMode {
 
 	public static double RUNTIME = 4.0;

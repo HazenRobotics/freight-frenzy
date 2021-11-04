@@ -21,6 +21,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -56,10 +57,10 @@ import java.util.List;
 @Config
 public class RRMecanumDriveHex42 extends MecanumDrive {
 
-	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 0, 0, 0 );
-	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 0, 0, 0 );
+	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 6, 0, 0 );
+	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
 
-	public static double LATERAL_MULTIPLIER = 1;
+	public static double LATERAL_MULTIPLIER = 1.148;
 
 	public static double VX_WEIGHT = 1;
 	public static double VY_WEIGHT = 1;
@@ -139,7 +140,6 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
 		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap) );
-		//setLocalizer( new TrackingCameraLocalizerWheel( hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y ) ) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}

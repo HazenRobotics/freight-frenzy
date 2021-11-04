@@ -7,7 +7,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
@@ -15,8 +14,6 @@ import com.spartronics4915.lib.T265Camera;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class TrackingCameraLocalizer implements Localizer {
 
@@ -46,7 +43,7 @@ public class TrackingCameraLocalizer implements Localizer {
 		} catch( Exception e ) {
 
 		}
-		setPoseEstimate( new Pose2d(  ) );
+		setPoseEstimate( new Pose2d( 0, 0, 0 ) );
 	}
 
 	public TrackingCameraLocalizer(HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap) {
@@ -95,6 +92,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	public void stopCamera() {
 		slamra.stop();
 		slamra.free();
+		slamra = null;
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {
@@ -114,6 +112,10 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	public T265Camera.PoseConfidence getPoseConfidence( ) {
 		return confidence;
+	}
+
+	public void sendOdometryData(double vx, double vy) {
+		slamra.sendOdometry( vy * DistanceUnit.mPerInch, vx * DistanceUnit.mPerInch );
 	}
 
 
