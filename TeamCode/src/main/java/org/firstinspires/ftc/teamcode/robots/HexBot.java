@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
+import java.util.HashMap;
+
 public class HexBot extends Robot {
 
 	public OpMode opMode;
@@ -29,6 +31,8 @@ public class HexBot extends Robot {
 	public NoodleIntake intake;
 	public GyroTracker gyroTracker;
 	public EncoderTracker encoderTracker;
+
+	public static double LIFT_ANGLE;
 
 	public HexBot( OpMode op ) {
 
@@ -46,8 +50,8 @@ public class HexBot extends Robot {
 		mecanumDrive = (MecanumDrive) driveTrain;
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
-		lift = new Lift( hardwareMap, "lift", 10.25, (32 / 25.4) / 2, 55, AngleUnit.DEGREES );
-		bucket = new Bucket( hardwareMap, 55 );
+		lift = new Lift( hardwareMap, "lift", 10.25, (32 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE + 90, 180 );
 		intake = new NoodleIntake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
 		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );

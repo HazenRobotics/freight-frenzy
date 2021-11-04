@@ -7,31 +7,24 @@ public class Bucket {
 
 	public Servo bucket;
 
-	public int maxAngle;
+	public double maxAngle;
+
+	public double angleLimit;
 
 	public Bucket( HardwareMap hw ) {
-		setup( hw, "bucket", 0 );
+		setup( hw, "bucket", 0, 180 );
 	}
 
-	public Bucket( HardwareMap hw, int maxAngle ) {
+	public Bucket( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
 
-		setup( hw, "bucket", maxAngle );
+		setup( hw, bucketName, maxAngle, angleLimit );
 	}
 
-	public Bucket( HardwareMap hw, String bucketName ) {
-
-		setup( hw, bucketName, 0 );
-	}
-
-	public Bucket( HardwareMap hw, String bucketName, int maxAngle ) {
-
-		setup( hw, bucketName, maxAngle );
-	}
-
-	public void setup( HardwareMap hw, String bucketName, int maxAngle ) {
+	public void setup( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
 
 		bucket = hw.servo.get( bucketName );
 		this.maxAngle = maxAngle;
+		this.angleLimit = angleLimit;
 	}
 
 	/**
@@ -46,20 +39,20 @@ public class Bucket {
 	 * Bucket's programmatic position is between 0 & 1
 	 *
 	 * @param position angle between 0 & 1
-	 * @return that position converted to be between 0° & 180°
+	 * @return that position converted to be between 0° & angleLimit (default: 180)°
 	 */
-	public static double positionToAngle( double position ) {
-		return position * 180;
+	public double positionToAngle( double position ) {
+		return position * angleLimit;
 	}
 
 	/**
-	 * Bucket's physical position is between 0° & 180°
+	 * Bucket's physical position is between 0° & angleLimit (default: 180)°
 	 *
-	 * @param angle angle between 0° & 180°
+	 * @param angle angle between 0° & angleLimit (default: 180)°
 	 * @return that angle converted to be between 0 & 1
 	 */
-	public static double angleToPosition( double angle ) {
-		return (angle % 180) / 180;
+	public double angleToPosition( double angle ) {
+		return (angle % angleLimit) / angleLimit;
 	}
 
 	/**
