@@ -340,7 +340,7 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 	}
 
 	public void exportLocalizationMap(String mapName) {
-		((TrackingCameraLocalizer) getLocalizer()).exportMap(mapName);
+		((TrackingCameraLocalizer) getLocalizer()).exportMap(mapName + ".bin");
 	}
 	public void exportLocalizationMap() {
 		exportLocalizationMap( "map" );

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 public class CreateLocalizationMap extends OpMode {
 
 	RRMecanumDriveHex42 drive;
-	final String MAP_NAME = "hazen.bin";
+	final String MAP_NAME = "hazen";
 	GamepadEvents gamepad;
 
 
