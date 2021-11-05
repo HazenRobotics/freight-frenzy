@@ -64,9 +64,9 @@ public class HexRobotTeleOp extends OpMode {
 
 		// intake
 		if( player1.left_bumper.onPress( ) )
-			robot.intake.setPower( robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
-		else if( player1.right_bumper.onPress( ) )
 			robot.intake.setPower( robot.intake.getPower( ) < intakePower - 0.1 ? intakePower : 0 );
+		else if( player1.right_bumper.onPress( ) )
+			robot.intake.setPower( robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
 
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 )
@@ -126,8 +126,8 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "Rotate: Gp1: right stick x (axis)" );
 		telemetry.addLine( "Lift Up: Gp1: right trigger" );
 		telemetry.addLine( "Lift Down: Gp1: left trigger" );
-		telemetry.addLine( "Intake In: Gp1: left bumper" );
-		telemetry.addLine( "Intake Out: Gp1: right bumper" );
+		telemetry.addLine( "Intake In: Gp1: right bumper" );
+		telemetry.addLine( "Intake Out: Gp1: left bumper" );
 		telemetry.addLine( "Left Spinner: Gp1/2: x" );
 		telemetry.addLine( "Right Spinner: Gp1/2: y" );
 		telemetry.addLine( "Bucket: Gp1/2: dpad right - intake, up - top, left - middle, down - bottom" );
