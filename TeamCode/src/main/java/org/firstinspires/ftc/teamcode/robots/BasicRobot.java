@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
@@ -37,6 +38,11 @@ public class BasicRobot extends Robot {
 		bucket = new Bucket( hardwareMap );
 		intake = new SquareIntake( hardwareMap );
 
+	}
+
+	public static void addMultipleLines( Telemetry telemetry, String input ) {
+		for( String s : input.split( "\n" ) )
+			telemetry.addLine( s );
 	}
 
 }

@@ -25,8 +25,6 @@ import org.firstinspires.ftc.teamcode.robots.HexBot;
 @Disabled
 public class MotorDriveEncoderTest extends OpMode {
 
-	// Declare the variables of motors and distance sens
-
 	HexBot robot;
 
 	@Override

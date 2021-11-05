@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.robots.Robot;
 
 public class Bucket {
 
@@ -12,7 +16,7 @@ public class Bucket {
 	public double angleLimit;
 
 	public Bucket( HardwareMap hw ) {
-		setup( hw, "bucket", 0, 180 );
+		setup( hw, "bucket", -35, 180 );
 	}
 
 	public Bucket( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
@@ -20,6 +24,13 @@ public class Bucket {
 		setup( hw, bucketName, maxAngle, angleLimit );
 	}
 
+	/**
+	 *
+	 * @param hw the hardware map of the robot OpMode
+	 * @param bucketName the name of the bucket in the hardware map
+	 * @param maxAngle the max angle the servo can go relative to the ground (its angle at a position of 1)
+	 * @param angleLimit the angle range of the servo (default 180°)
+	 */
 	public void setup( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
 
 		bucket = hw.servo.get( bucketName );
@@ -30,9 +41,22 @@ public class Bucket {
 	/**
 	 * @param angleFromGround of the bucket
 	 */
-	public void setBucketAngle( double angleFromGround ) {
+	public void setAngle( double angleFromGround ) {
+		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
+		Log.e( "BUCKET_TEST", "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ) );
+		setPosition( angleToPosition( angleFromGround ) );
+	}
 
-		bucket.setPosition( angleToPosition( angleFromGround - maxAngle ) );
+	/*
+	* 	public static double exampleGetPositionFromAngle( double angle ) {
+	*		// range: 0 = 145, 1 = -35
+	*		// shifted = range of 180
+	*		return 1 - ((angle + 35) / 180);
+	*	}
+	 */
+
+	public void setPosition( double position ) {
+		bucket.setPosition( position );
 	}
 
 	/**
@@ -52,7 +76,8 @@ public class Bucket {
 	 * @return that angle converted to be between 0 & 1
 	 */
 	public double angleToPosition( double angle ) {
-		return (angle % angleLimit) / angleLimit;
+		Log.e( "ANG_POS", "Calc: " + (1 - ((angle - maxAngle) / angleLimit)) );
+		return 1 - ((angle - maxAngle) / angleLimit);
 	}
 
 	/**
@@ -60,7 +85,7 @@ public class Bucket {
 	 *
 	 * @return double position at where Servo is
 	 */
-	public double getBucketPosition( ) {
+	public double getPosition( ) {
 		return bucket.getPosition( );
 	}
 }

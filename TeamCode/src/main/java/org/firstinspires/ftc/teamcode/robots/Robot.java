@@ -21,10 +21,6 @@ public abstract class Robot {
 	// drive
 	public Drive driveTrain;
 
-//	public static final TensorFlowUtil.Stack STACK_NONE = TensorFlowUtil.Stack.NONE;
-//	public static final TensorFlowUtil.Stack STACK_SINGLE = TensorFlowUtil.Stack.SINGLE;
-//	public static final TensorFlowUtil.Stack STACK_QUAD = TensorFlowUtil.Stack.QUAD;
-
 	/**
 	 * Creates a Robot
 	 *
@@ -38,9 +34,8 @@ public abstract class Robot {
 		//vuforiaKey = hardwareMap.appContext.getResources().getString(R.string.vuforiakey);
 
 		//Bulk Caching to decrease cycle times
-		for( LynxModule module : hardwareMap.getAll( LynxModule.class ) ) {
+		for( LynxModule module : hardwareMap.getAll( LynxModule.class ) )
 			module.setBulkCachingMode( LynxModule.BulkCachingMode.AUTO );
-		}
 	}
 
 	public static void createMatchLogFile( String className ) {

@@ -32,11 +32,18 @@ public class HexBot extends Robot {
 	public GyroTracker gyroTracker;
 	public EncoderTracker encoderTracker;
 
-	public static double LIFT_ANGLE;
+	public static double LIFT_ANGLE = 55;
+
+	public static double BUCKET_ANGLE_INTAKE = 90;
+	public static double BUCKET_ANGLE_TOP = 45;
+	public static double BUCKET_ANGLE_MIDDLE = 0.0;
+	public static double BUCKET_ANGLE_BOTTOM = -45;
 
 	public HexBot( OpMode op ) {
 
 		super( op );
+
+		Robot.writeToDefaultFile( "", false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
@@ -51,11 +58,20 @@ public class HexBot extends Robot {
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
 		lift = new Lift( hardwareMap, "lift", 10.25, (32 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
-		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE + 90, 180 );
+		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
+		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
 		intake = new NoodleIntake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
 		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
 
+	}
+
+	/**
+	 * @param time wait time in seconds
+	 */
+	public void sleepRobot( double time ) {
+		double startTime = opMode.getRuntime( );
+		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) );
 	}
 
 }
