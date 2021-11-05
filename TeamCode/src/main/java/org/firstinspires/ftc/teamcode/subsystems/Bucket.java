@@ -1,72 +1,83 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**
- * This class sets up and holds methods for using the ring shooter mechanism
- * The ring shooter mechanism is the ______ that does _______
- */
+import org.firstinspires.ftc.teamcode.robots.Robot;
+
 public class Bucket {
 
-	// maybe objects for bucket length (for rotation radius)
-	// or for the (length of the string connecting) distance between the servo and connection to the bucket (probably at the end of the bucket)
+	public Servo bucket;
 
-	public Servo pusher;
+	public double maxAngle;
 
-	/**
-	 * Creates a RingShooter with default names for the motors
-	 *
-	 * @param hw robot's hardware map
-	 */
+	public double angleLimit;
+
 	public Bucket( HardwareMap hw ) {
-		setup( hw, "pusher" );
+		setup( hw, "bucket", -35, 180 );
+	}
+
+	public Bucket( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
+
+		setup( hw, bucketName, maxAngle, angleLimit );
 	}
 
 	/**
-	 * Creates a RingShooter with specified names for the motors
 	 *
-	 * @param hw         robot's hardware map
-	 * @param pusherName name of pusher servo in the hardware map
+	 * @param hw the hardware map of the robot OpMode
+	 * @param bucketName the name of the bucket in the hardware map
+	 * @param maxAngle the max angle the servo can go relative to the ground (its angle at a position of 1)
+	 * @param angleLimit the angle range of the servo (default 180°)
 	 */
-	public Bucket( HardwareMap hw, String pusherName ) {
+	public void setup( HardwareMap hw, String bucketName, double maxAngle, double angleLimit ) {
 
-		setup( hw, pusherName );
-	}
-
-	public void setup( HardwareMap hw, String pusherName ) {
-
-		pusher = hw.servo.get( pusherName );
+		bucket = hw.servo.get( bucketName );
+		this.maxAngle = maxAngle;
+		this.angleLimit = angleLimit;
 	}
 
 	/**
-	 * @param angle of the bucket
+	 * @param angleFromGround of the bucket
 	 */
-	public void setBucketAngle( double angle ) {
+	public void setAngle( double angleFromGround ) {
+		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
+		Log.e( "BUCKET_TEST", "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ) );
+		setPosition( angleToPosition( angleFromGround ) );
+	}
 
-		double conversion = angle * Math.sin( 4 + 3 );
-		// do conversions from bucket to angle ^ (lol)
-		pusher.setPosition( conversion );
+	/*
+	* 	public static double exampleGetPositionFromAngle( double angle ) {
+	*		// range: 0 = 145, 1 = -35
+	*		// shifted = range of 180
+	*		return 1 - ((angle + 35) / 180);
+	*	}
+	 */
+
+	public void setPosition( double position ) {
+		bucket.setPosition( position );
 	}
 
 	/**
-	 * Pusher's programmatic position is between 0 & 1
+	 * Bucket's programmatic position is between 0 & 1
 	 *
 	 * @param position angle between 0 & 1
-	 * @return that position converted to be between 0° & 180°
+	 * @return that position converted to be between 0° & angleLimit (default: 180)°
 	 */
-	public static double positionToAngle( double position ) {
-		return position * 180;
+	public double positionToAngle( double position ) {
+		return position * angleLimit;
 	}
 
 	/**
-	 * Pusher's physical position is between 0° & 180°
+	 * Bucket's physical position is between 0° & angleLimit (default: 180)°
 	 *
-	 * @param angle angle between 0° & 180°
+	 * @param angle angle between 0° & angleLimit (default: 180)°
 	 * @return that angle converted to be between 0 & 1
 	 */
-	public static double angleToPosition( double angle ) {
-		return angle / 180;
+	public double angleToPosition( double angle ) {
+		Log.e( "ANG_POS", "Calc: " + (1 - ((angle - maxAngle) / angleLimit)) );
+		return 1 - ((angle - maxAngle) / angleLimit);
 	}
 
 	/**
@@ -74,8 +85,8 @@ public class Bucket {
 	 *
 	 * @return double position at where Servo is
 	 */
-	public double getPusherPosition( ) {
-		return pusher.getPosition( );
+	public double getPosition( ) {
+		return bucket.getPosition( );
 	}
 }
 

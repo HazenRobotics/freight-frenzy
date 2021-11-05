@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.utils;
+package org.firstinspires.ftc.teamcode.vision.unused;
+
+import android.util.Log;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -89,9 +91,12 @@ public class TensorFlow {
 	 * @return current recognition
 	 */
 	public Recognition getRecognition( ) {
+
 		updateRecognitions( );
 		if( recognitions == null || recognitions.isEmpty( ) )
 			return null;
+
+		Log.e( "TFOD_TEST", "checked tfod recognitions " );
 
 		Recognition mostConfidentRecognition = null;
 		for( Recognition recognition : recognitions ) {
@@ -108,6 +113,7 @@ public class TensorFlow {
 	 */
 	public void updateRecognitions( ) {
 		recognitions = tfod.getRecognitions( );
+		Log.e( "TFOD_TEST", "got tfod recognitions: " + recognitions );
 	}
 
 

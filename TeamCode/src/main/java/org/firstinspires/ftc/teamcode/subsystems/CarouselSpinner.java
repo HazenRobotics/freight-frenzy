@@ -7,17 +7,17 @@ public class CarouselSpinner {
 
 	CRServo spinner;
 
-	// I don't think we'll need these since we have to use timed methods when rotating it.
-//	double wheelRadius = 2;
-//	final double GEAR_RATIO = 67;
-
 	public CarouselSpinner( HardwareMap hw ) {
-		setup( hw );
+		setup( hw, "spinner" );
 	}
 
-	private void setup( HardwareMap hw ) {
+	public CarouselSpinner( HardwareMap hw, String name ) {
+		setup( hw, name );
+	}
 
-		spinner = hw.crservo.get( "spinnerLeft" );
+	private void setup( HardwareMap hw, String name ) {
+
+		spinner = hw.crservo.get( name );
 	}
 
 	public void setPower( double power ) {
