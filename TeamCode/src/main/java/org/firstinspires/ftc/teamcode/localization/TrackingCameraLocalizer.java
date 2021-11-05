@@ -35,7 +35,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	 */
 	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap, String mapName ) {
 		if(slamra == null) {
-			if(loadMap && new File(String.format("/localization/maps/%s", mapName)).exists()) {
+			if(loadMap && new File(String.format("/sdcard/FIRST/localization/maps/%s", mapName)).exists()) {
 				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
 			}
 			else {

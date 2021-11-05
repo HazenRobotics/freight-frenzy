@@ -18,7 +18,7 @@ public class CreateLocalizationMap extends OpMode {
 
 	@Override
 	public void init( ) {
-		drive = new RRMecanumDriveHex42( hardwareMap, false );
+		drive = new RRMecanumDriveHex42( hardwareMap );
 		gamepad = new GamepadEvents( gamepad1 );
 	}
 
