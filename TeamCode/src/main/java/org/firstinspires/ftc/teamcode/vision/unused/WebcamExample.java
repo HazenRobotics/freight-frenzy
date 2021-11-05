@@ -21,6 +21,7 @@
 
 package org.firstinspires.ftc.teamcode.vision.unused;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -35,7 +36,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp
+@TeleOp(name = "Webcam Example", group = "Test")
+@Disabled
 public class WebcamExample extends LinearOpMode {
 
 	OpenCvWebcam webcam;

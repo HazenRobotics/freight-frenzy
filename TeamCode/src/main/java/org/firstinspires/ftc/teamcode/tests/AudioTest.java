@@ -9,23 +9,28 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 @TeleOp(name = "AudioTest", group = "Test")
-//@Disabled
+@Disabled
 public class AudioTest extends OpMode {
 
-	GamepadEvents gamepad1;
+	GamepadEvents gamepad;
 	SoundLibrary library;
 
-	boolean showAudios = true;
+	int selected = 0;
+	String[] audios;
 
 	@Override
 	public void init( ) {
 
 		Robot.createMatchLogFile( this.getClass( ).getSimpleName( ) );
 
-		gamepad1 = new GamepadEvents( super.gamepad1 );
+		gamepad = new GamepadEvents( super.gamepad1 );
 		library = new SoundLibrary( hardwareMap );
 
-		telemetry.addLine( "Initialization Complete" );
+		audios = SoundLibrary.getAudios( );
+
+		telemetry.addLine( "x - random" );
+		telemetry.addLine( "y - ps startup" );
+		telemetry.addLine( "a - selected" );
 		telemetry.update( );
 
 		Robot.writeToMatchFile( "Init Finished", true );
@@ -34,19 +39,25 @@ public class AudioTest extends OpMode {
 	@Override
 	public void loop( ) {
 
-		if( gamepad1.x.onPress( ) )
+		if( gamepad.x.onPress( ) )
 			telemetry.addLine( SoundLibrary.playRandomSound( ) );
 
-		if( gamepad1.y.onPress( ) )
+		if( gamepad.y.onPress( ) )
 			telemetry.addLine( SoundLibrary.playAudio( "ps_startup" ) );
 
-		if( gamepad1.right_bumper.onPress( ) )
-			showAudios = !showAudios;
+		if( gamepad.a.onPress( ) )
+			telemetry.addLine( SoundLibrary.playAudio( audios[selected] ) );
 
-		if( showAudios )
-			telemetry.addLine( SoundLibrary.getAudios( ) );
+		if( gamepad.dpad_up.onPress( ) && selected - 1 >= 0 )
+			selected--;
+
+		if( gamepad.dpad_down.onPress( ) && selected + 1 <= audios.length - 1 )
+			selected++;
+
+		for( int i = 0; i < audios.length; i++ )
+			telemetry.addLine( (i == selected ? "* " : "- ") + audios[i] );
 
 		telemetry.update( );
-		gamepad1.update( );
+		gamepad.update( );
 	}
 }

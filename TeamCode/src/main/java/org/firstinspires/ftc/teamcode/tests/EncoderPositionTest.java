@@ -12,7 +12,7 @@ import java.text.DecimalFormat;
 //import org.firstinspires.ftc.teamcode.utils.Tracking;
 
 @TeleOp(name = "EncoderPositionTest", group = "test")
-//@Disabled
+@Disabled
 public class EncoderPositionTest extends OpMode {
 
 	DcMotor[] encoder;
