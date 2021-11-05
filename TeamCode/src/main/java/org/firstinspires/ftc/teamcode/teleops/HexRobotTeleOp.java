@@ -37,6 +37,9 @@ public class HexRobotTeleOp extends OpMode {
 	@Override
 	public void init( ) {
 
+		telemetry.addData( "Mode", "Initiating..." );
+		telemetry.update( );
+
 		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
 		robot = new HexBot( this );
@@ -71,10 +74,10 @@ public class HexRobotTeleOp extends OpMode {
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 )
 			robot.lift.setPower( gamepad1.right_trigger );
-		else if( gamepad1.left_trigger > 0 )
+		else //if( gamepad1.left_trigger >= 0 )
 			robot.lift.setPower( -gamepad1.left_trigger );
-		else
-			robot.lift.setPower( 0 );
+//		else // add this back if the greater than or equal sign doesn't work
+//			robot.lift.setPower( 0 );
 
 		// bucket control
 		// dpad right - intake
@@ -90,18 +93,20 @@ public class HexRobotTeleOp extends OpMode {
 		else if( gamepad1.dpad_down || gamepad2.dpad_down )
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
 
-		if( gamepad1.a || gamepad2.a )
-			robot.bucket.setPosition( 0 );
-		else if( gamepad1.b || gamepad2.b )
-			robot.bucket.setPosition( 1 );
+		if( player1.y.onPress( ) )
+			intakePower += 0.05;
+		else if( player1.a.onPress( ) )
+			intakePower -= 0.05;
 
 		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
+		telemetry.addLine( "intakePower: " + intakePower );
 
+		// x is doing the wrong one and the wrong direction
 		// carousel spinner control
 		if( player1.x.onPress( ) ) // toggles carousel spinner
-			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : 1 );
-		else if( player1.y.onPress( ) )
-			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -1 );
+			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) < 0 ? 0 : -1 );
+		else if( player1.b.onPress( ) )
+			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) > 0 ? 0 : 1 );
 
 		//updates
 		telemetry.update( );
