@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.localization;
 
+import android.os.Environment;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -14,6 +17,7 @@ import com.spartronics4915.lib.T265Camera;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.io.File;
+import java.io.IOException;
 
 public class TrackingCameraLocalizer implements Localizer {
 
@@ -83,16 +87,18 @@ public class TrackingCameraLocalizer implements Localizer {
 	}
 
 	public void exportMap(String fileName) {
-		slamra.exportRelocalizationMap(String.format("/localization/maps/%s", fileName));
-	}
-	public void exportMap() {
-		exportMap("map");
+		stopCamera();
+		File mapFilePath = new File( "/sdcard/FIRST/localization/maps/");
+		if (!mapFilePath.exists()) {
+			mapFilePath.mkdirs();
+		}
+		slamra.exportRelocalizationMap( new File(mapFilePath, fileName).getAbsolutePath());
+		slamra.free();
+		slamra = null;
 	}
 
 	public void stopCamera() {
 		slamra.stop();
-		slamra.free();
-		slamra = null;
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {

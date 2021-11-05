@@ -338,4 +338,11 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 	public T265Camera.PoseConfidence getPoseConfidence() {
 		return ((TrackingCameraLocalizer) getLocalizer()).getPoseConfidence();
 	}
+
+	public void exportLocalizationMap(String mapName) {
+		((TrackingCameraLocalizer) getLocalizer()).exportMap(mapName);
+	}
+	public void exportLocalizationMap() {
+		exportLocalizationMap( "map" );
+	}
 }
