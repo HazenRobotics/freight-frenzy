@@ -32,7 +32,7 @@ public class HexRobotTeleOp extends OpMode {
 
 	HexBot robot;
 
-	double intakePower = 0.9;
+	double intakePower = 0.7;
 
 	@Override
 	public void init( ) {
@@ -74,10 +74,14 @@ public class HexRobotTeleOp extends OpMode {
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 )
 			robot.lift.setPower( gamepad1.right_trigger );
-		else //if( gamepad1.left_trigger >= 0 )
+		else
 			robot.lift.setPower( -gamepad1.left_trigger );
-//		else // add this back if the greater than or equal sign doesn't work
-//			robot.lift.setPower( 0 );
+
+		telemetry.addLine( "Lift Pos (in): " + robot.lift.getLiftPositionInch( ) );
+		if( robot.lift.getLiftPositionInch( ) > 1 )
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MOVING );
+		else
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
 
 		// bucket control
 		// dpad right - intake
@@ -102,7 +106,7 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "intakePower: " + intakePower );
 
 		// x is doing the wrong one and the wrong direction
-		// carousel spinner control
+		// carousel spinners control
 		if( player1.x.onPress( ) ) // toggles carousel spinner
 			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) < 0 ? 0 : -1 );
 		else if( player1.b.onPress( ) )

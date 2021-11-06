@@ -42,7 +42,7 @@ public class Lift {
 		motor = hw.get( DcMotorEx.class, leftMotorName );
 
 		motor.setDirection( DcMotorSimple.Direction.REVERSE );
-//		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+		motor.setMode( DcMotor.RunMode.RESET_ENCODERS );
 		liftPosition = 0;
 
 		setGroundBucketHeight( groundBucketHeight );
@@ -163,6 +163,10 @@ public class Lift {
 		runDistancePowAsync( power, distanceToMove );
 	}
 
+	public void setDefaultHeightPow( double power ) {
+		setLiftHeightPow( power, groundBucketHeight );
+	}
+
 	/**
 	 * @param velocity the velocity at which to move the lift
 	 * @param height   the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
@@ -248,5 +252,21 @@ public class Lift {
 
 	public double getLiftAngle( ) {
 		return liftAngle;
+	}
+
+	public double getCurrentBucketDistance( ) {
+		return calcBucketDistanceFromPosition( getCurrentPosition( ) );
+	}
+
+	public double calcBucketDistanceFromPosition( double liftPosition ) {
+		return liftPosition * Math.cos( Math.toRadians( getLiftAngle( ) ) );
+	}
+
+	public double calcBucketDistanceFromHeight( double height ) {
+		return height / Math.tan( Math.toRadians( getLiftAngle( ) ) );
+	}
+
+	public double getLiftPositionInch( ) {
+		return convertTicksDist( motor.getCurrentPosition(), 2 * spoolRadius * Math.PI );
 	}
 }

@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
@@ -25,6 +26,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	private Pose2d _poseVelocity;
 	private T265Camera.PoseConfidence confidence;
 	private static T265Camera slamra;
+	private Pose2d _dumbMathOffset = new Pose2d(  ); //Was in the shop way to late and now hate math, this is the answer to the secrets of the universe.
 
 	/**
 	 * Constructs and starts a new VSLAM Camera instance
@@ -61,13 +63,21 @@ public class TrackingCameraLocalizer implements Localizer {
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
-		return _poseEstimate;
+		return _poseEstimate.minus( _dumbMathOffset );
+
 	}
 
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
 		_poseEstimate = pose2d;
-		slamra.setPose(rrPose2dToFtclib(pose2d));
+		com.arcrobotics.ftclib.geometry.Pose2d newPose = rrPose2dToFtclib(new Pose2d( -pose2d.getX(), -pose2d.getY(), pose2d.getHeading() ));
+		slamra.setPose(newPose);
+
+
+		//TODO: Figure out why math doesn't work. Need to counteract rotational component that is added in camera code, because the camera's outputed values are not what we are putting in.
+		Vector2d wanted = new Vector2d( pose2d.getX(), pose2d.getY() ).minus( new Vector2d( slamra.getLastReceivedCameraUpdate().pose.getY() / DistanceUnit.mPerInch, slamra.getLastReceivedCameraUpdate().pose.getX() / DistanceUnit.mPerInch) );
+		Vector2d given = new Vector2d( pose2d.getX(), pose2d.getY() ).minus( new Vector2d( slamra.getLastReceivedCameraUpdate().pose.getY() / DistanceUnit.mPerInch, slamra.getLastReceivedCameraUpdate().pose.getX() / DistanceUnit.mPerInch) ).rotateBy( slamra.getLastReceivedCameraUpdate().pose.getHeading() );
+		_dumbMathOffset = new Pose2d( given.minus( wanted ).getX(), given.minus( wanted ).getY() );
 	}
 
 	@Nullable

@@ -82,7 +82,7 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 	private final BNO055IMU imu;
 	private final VoltageSensor batteryVoltageSensor;
 
-	public static final double CAMERA_X = -4;
+	public static final double CAMERA_X = 0;
 	public static final double CAMERA_Y = 6.625;
 
 	public RRMecanumDriveHex42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {

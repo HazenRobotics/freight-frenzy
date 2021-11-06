@@ -50,7 +50,7 @@ import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kV;
  */
 @Config
 @Autonomous(group = "drive")
-//@Disabled
+@Disabled
 public class DriveVelocityPIDTuner extends LinearOpMode {
 
 	public static double DISTANCE = 72; // in

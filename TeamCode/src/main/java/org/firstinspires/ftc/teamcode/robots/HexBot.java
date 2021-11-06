@@ -34,9 +34,10 @@ public class HexBot extends Robot {
 
 	public static double LIFT_ANGLE = 55;
 
-	public static double BUCKET_ANGLE_INTAKE = 90;
-	public static double BUCKET_ANGLE_TOP = 55;
-	public static double BUCKET_ANGLE_MIDDLE = 0.0;
+	public static double BUCKET_ANGLE_INTAKE = 55; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public static double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
+	public static double BUCKET_ANGLE_TOP = -20;
+	public static double BUCKET_ANGLE_MIDDLE = -27.5;
 	public static double BUCKET_ANGLE_BOTTOM = -35;
 
 	public HexBot( OpMode op ) {

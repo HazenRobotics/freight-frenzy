@@ -41,10 +41,11 @@ public class BarcodeUtil {
 
 	public void openCameraDevice( ) {
 
+
 		webcam.openCameraDeviceAsync( new OpenCvCamera.AsyncCameraOpenListener( ) {
 			@Override
 			public void onOpened( ) {
-				webcam.startStreaming( 320, 240, OpenCvCameraRotation.UPRIGHT );
+				webcam.startStreaming( 1280, 720, OpenCvCameraRotation.UPRIGHT );
 			}
 
 			@Override
@@ -57,5 +58,9 @@ public class BarcodeUtil {
 
 	public BarcodePositionDetector.BarcodePosition getBarcodePosition( ) {
 		return pipeline.getBarcodePosition( );
+	}
+
+	public void stopCamera( ) {
+		webcam.stopStreaming( );
 	}
 }
