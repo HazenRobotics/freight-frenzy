@@ -46,7 +46,6 @@ public class TrackingCameraLocalizer implements Localizer {
 		} catch( Exception e ) {
 
 		}
-		setPoseEstimate( new Pose2d( 0, 0, 0 ) );
 	}
 
 	public TrackingCameraLocalizer(HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap) {
@@ -69,8 +68,8 @@ public class TrackingCameraLocalizer implements Localizer {
 		_poseEstimate = pose2d;
 		com.arcrobotics.ftclib.geometry.Pose2d newPose = rrPose2dToFtclib(new Pose2d( -pose2d.getX(), -pose2d.getY(), pose2d.getHeading() ));
 		Translation2d wanted = newPose.getTranslation().minus(slamra.getLastReceivedCameraUpdate().pose.getTranslation());
-		Translation2d given = newPose.getTranslation().minus(slamra.getLastReceivedCameraUpdate().pose.getTranslation()).rotateBy( slamra.getLastReceivedCameraUpdate().pose.getRotation() );
-		_dumbMathOffset = ftclibPose2dToRR( new com.arcrobotics.ftclib.geometry.Pose2d( wanted.minus( given ), new Rotation2d(  ) ) );
+		Translation2d given = newPose.getTranslation().minus(slamra.getLastReceivedCameraUpdate().pose.getTranslation()).rotateBy( slamra.getLastReceivedCameraUpdate().pose.getRotation().unaryMinus() );
+		_dumbMathOffset = ftclibPose2dToRR( new com.arcrobotics.ftclib.geometry.Pose2d( given.minus( wanted ), new Rotation2d(  ) ) );
 		slamra.setPose(newPose);
 	}
 

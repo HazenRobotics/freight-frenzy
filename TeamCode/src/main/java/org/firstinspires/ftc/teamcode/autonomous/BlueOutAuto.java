@@ -33,7 +33,7 @@ public class BlueOutAuto extends LinearOpMode {
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( robot.barcodeUtil.getBarcodePosition() );
 
 		//set start position
-		robot.drive.setPoseEstimate( new Pose2d( -42.375, 62.1875, Math.toRadians( -90 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -29.75, 62.1875, Math.toRadians( -90 ) ) );
 		robot.drive.followTrajectorySequence( robot.getTrajectorySequenceBuilder()
 				.splineToConstantHeading( new Vector2d( -12, 24 + 2 + robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height ) ) ), -90 )
 				.addDisplacementMarker( () -> {
