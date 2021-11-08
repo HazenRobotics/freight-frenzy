@@ -25,13 +25,13 @@ public class BarcodePositionDetector extends OpenCvPipeline {
 
 	static final Rect LEFT_ROI = new Rect(
 			new Point( 0, 0 ),
-			new Point( 106, 240 ) );
+			new Point( 426, 720 ) );
 	static final Rect MIDDLE_ROI = new Rect(
-			new Point( 106, 0 ),
-			new Point( 224, 240 ) );
+			new Point( 426, 0 ),
+			new Point( 852, 720 ) );
 	static final Rect RIGHT_ROI = new Rect(
-			new Point( 224, 0 ),
-			new Point( 320, 240 ) );
+			new Point( 852, 0 ),
+			new Point( 1278, 720 ) );
 
 	static double PERCENT_COLOR_THRESHOLD = 0.02;
 

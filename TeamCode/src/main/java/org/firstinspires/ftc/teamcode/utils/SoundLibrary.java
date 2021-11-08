@@ -69,7 +69,8 @@ public class SoundLibrary {
 
 		// checks all of the sounds and removes the ones that aren't found
 		for( int i = 0; i < audioList.size( ); i++ )
-			if( !audioList.get( i ).exists( ) ) audioList.remove( i-- );
+			if( !audioList.get( i ).exists( ) )
+				audioList.remove( i-- );
 	}
 
 	public static String playAudio( String audioName ) {
@@ -99,11 +100,20 @@ public class SoundLibrary {
 		return playAudio( audioList.get( randomPos ).getName( ) );
 	}
 
-	public static String getAudios( ) {
-		String audios = "", listSeparater = "\n";
+	public static String[] getAudios( ) {
+		String[] audios = new String[audioList.size( )];
 
 		for( int i = 0; i < audioList.size( ); i++ )
-			audios += "- " + audioList.get( i ).getName( ) + (i != audioList.size( ) - 1 ? listSeparater : "");
+			audios[i] = audioList.get( i ).getName( );
+
+		return audios;
+	}
+
+	public String toString( ) {
+		String audios = "", listSeparator = "\n";
+
+		for( int i = 0; i < audioList.size( ); i++ )
+			audios += "- " + audioList.get( i ).getName( ) + (i != audioList.size( ) - 1 ? listSeparator : "");
 
 		return audios;
 	}

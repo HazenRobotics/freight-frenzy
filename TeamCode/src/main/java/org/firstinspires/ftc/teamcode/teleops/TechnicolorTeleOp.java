@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 
 @TeleOp(name = "TechnicolorTeleOp", group = "TeleOp")
+@Disabled
 public class TechnicolorTeleOp extends OpMode {
 
 	public static String CLASS_NAME = "TechnicolorTeleOp";

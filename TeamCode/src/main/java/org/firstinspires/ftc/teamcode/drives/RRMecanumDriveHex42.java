@@ -1,33 +1,27 @@
 package org.firstinspires.ftc.teamcode.drives;
 
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.kA;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.kStatic;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTechnicolor.kV;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kA;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kStatic;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kV;
 
 import androidx.annotation.NonNull;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.canvas.Canvas;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -36,7 +30,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,87 +39,57 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.spartronics4915.lib.T265Camera;
 
-import org.firstinspires.ftc.teamcode.roadrunner.util.DashboardUtil;
+import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class RRMecanumDriveWood extends MecanumDrive {
+public class RRMecanumDriveHex42 extends MecanumDrive {
 
-	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 0, 0, 0 );
-	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 0, 0, 0 );
+	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 6, 0, 0 );
+	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
 
-	public static double LATERAL_MULTIPLIER = 1;
+	public static double LATERAL_MULTIPLIER = 1.148;
 
 	public static double VX_WEIGHT = 1;
 	public static double VY_WEIGHT = 1;
 	public static double OMEGA_WEIGHT = 1;
 
-	public static int POSE_HISTORY_LIMIT = 100;
+	private final TrajectorySequenceRunner trajectorySequenceRunner;
 
-	public enum Mode {
-		IDLE,
-		TURN,
-		FOLLOW_TRAJECTORY
-	}
+	private static final TrajectoryVelocityConstraint VEL_CONSTRAINT = getVelocityConstraint( MAX_VEL, MAX_ANG_VEL, TRACK_WIDTH );
+	private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint( MAX_ACCEL );
 
-	private final FtcDashboard dashboard;
-	private final NanoClock clock;
-
-	private Mode mode;
-
-	private final PIDFController turnController;
-	private MotionProfile turnProfile;
-	private double turnStart;
-
-	private final TrajectoryVelocityConstraint velConstraint;
-	private final TrajectoryAccelerationConstraint accelConstraint;
 	private final TrajectoryFollower follower;
-
-	private final LinkedList<Pose2d> poseHistory;
 
 	private final DcMotorEx leftFront;
 	private final DcMotorEx leftRear;
 	private final DcMotorEx rightRear;
 	private final DcMotorEx rightFront;
 	private final List<DcMotorEx> motors;
-	private final BNO055IMU imu;
 
+	private final BNO055IMU imu;
 	private final VoltageSensor batteryVoltageSensor;
 
-	private Pose2d lastPoseOnTurn;
+	public static final double CAMERA_X = 0;
+	public static final double CAMERA_Y = 6.625;
 
-
-	public RRMecanumDriveWood( HardwareMap hardwareMap ) {
+	public RRMecanumDriveHex42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
 
-		dashboard = FtcDashboard.getInstance( );
-		dashboard.setTelemetryTransmissionInterval( 25 );
-
-		clock = NanoClock.system( );
-
-		mode = Mode.IDLE;
-
-		turnController = new PIDFController( HEADING_PID );
-		turnController.setInputBounds( 0, 2 * Math.PI );
-
-		velConstraint = new MinVelocityConstraint( Arrays.asList(
-				new AngularVelocityConstraint( MAX_ANG_VEL ),
-				new MecanumVelocityConstraint( MAX_VEL, TRACK_WIDTH )
-		) );
-		accelConstraint = new ProfileAccelerationConstraint( MAX_ACCEL );
 		follower = new HolonomicPIDVAFollower( TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
 				new Pose2d( 0.5, 0.5, Math.toRadians( 5.0 ) ), 0.5 );
-
-		poseHistory = new LinkedList<>( );
 
 		LynxModuleUtil.ensureMinimumFirmwareVersion( hardwareMap );
 
@@ -175,36 +138,45 @@ public class RRMecanumDriveWood extends MecanumDrive {
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
+		if(!(mapName == null)) {
+			mapName = mapName + ".bin";
+		}
+		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName) );
 
-		//setLocalizer(new RoadRunnerTwoWheelTrackingLocalizer(hardwareMap, this));
+		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
+	}
+
+	public RRMecanumDriveHex42(HardwareMap hardwareMap) {
+		this(hardwareMap, false, null);
 	}
 
 	public TrajectoryBuilder trajectoryBuilder( Pose2d startPose ) {
-		return new TrajectoryBuilder( startPose, velConstraint, accelConstraint );
+		return new TrajectoryBuilder( startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT );
 	}
 
 	public TrajectoryBuilder trajectoryBuilder( Pose2d startPose, boolean reversed ) {
-		return new TrajectoryBuilder( startPose, reversed, velConstraint, accelConstraint );
+		return new TrajectoryBuilder( startPose, reversed, VEL_CONSTRAINT, ACCEL_CONSTRAINT );
 	}
 
 	public TrajectoryBuilder trajectoryBuilder( Pose2d startPose, double startHeading ) {
-		return new TrajectoryBuilder( startPose, startHeading, velConstraint, accelConstraint );
+		return new TrajectoryBuilder( startPose, startHeading, VEL_CONSTRAINT, ACCEL_CONSTRAINT );
+	}
+
+	public TrajectorySequenceBuilder trajectorySequenceBuilder( Pose2d startPose ) {
+		return new TrajectorySequenceBuilder(
+				startPose,
+				VEL_CONSTRAINT, ACCEL_CONSTRAINT,
+				MAX_ANG_VEL, MAX_ANG_ACCEL
+		);
 	}
 
 	public void turnAsync( double angle ) {
-		double heading = getPoseEstimate( ).getHeading( );
-
-		lastPoseOnTurn = getPoseEstimate( );
-
-		turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-				new MotionState( heading, 0, 0, 0 ),
-				new MotionState( heading + angle, 0, 0, 0 ),
-				MAX_ANG_VEL,
-				MAX_ANG_ACCEL
+		trajectorySequenceRunner.followTrajectorySequenceAsync(
+				trajectorySequenceBuilder( getPoseEstimate( ) )
+						.turn( angle )
+						.build( )
 		);
-
-		turnStart = clock.seconds( );
-		mode = Mode.TURN;
 	}
 
 	public void turn( double angle ) {
@@ -213,8 +185,11 @@ public class RRMecanumDriveWood extends MecanumDrive {
 	}
 
 	public void followTrajectoryAsync( Trajectory trajectory ) {
-		follower.followTrajectory( trajectory );
-		mode = Mode.FOLLOW_TRAJECTORY;
+		trajectorySequenceRunner.followTrajectorySequenceAsync(
+				trajectorySequenceBuilder( trajectory.start( ) )
+						.addTrajectory( trajectory )
+						.build( )
+		);
 	}
 
 	public void followTrajectory( Trajectory trajectory ) {
@@ -222,113 +197,32 @@ public class RRMecanumDriveWood extends MecanumDrive {
 		waitForIdle( );
 	}
 
+	public void followTrajectorySequenceAsync( TrajectorySequence trajectorySequence ) {
+		trajectorySequenceRunner.followTrajectorySequenceAsync( trajectorySequence );
+	}
+
+	public void followTrajectorySequence( TrajectorySequence trajectorySequence ) {
+		followTrajectorySequenceAsync( trajectorySequence );
+		waitForIdle( );
+	}
+
 	public Pose2d getLastError( ) {
-		switch( mode ) {
-			case FOLLOW_TRAJECTORY:
-				return follower.getLastError( );
-			case TURN:
-				return new Pose2d( 0, 0, turnController.getLastError( ) );
-			case IDLE:
-				return new Pose2d( );
-		}
-		throw new AssertionError( );
+		return trajectorySequenceRunner.getLastPoseError( );
 	}
 
 	public void update( ) {
 		updatePoseEstimate( );
-
-		Pose2d currentPose = getPoseEstimate( );
-		Pose2d lastError = getLastError( );
-
-		poseHistory.add( currentPose );
-
-		if( POSE_HISTORY_LIMIT > -1 && poseHistory.size( ) > POSE_HISTORY_LIMIT ) {
-			poseHistory.removeFirst( );
-		}
-
-		TelemetryPacket packet = new TelemetryPacket( );
-		Canvas fieldOverlay = packet.fieldOverlay( );
-
-		packet.put( "mode", mode );
-
-		packet.put( "x", currentPose.getX( ) );
-		packet.put( "y", currentPose.getY( ) );
-		packet.put( "heading (deg)", Math.toDegrees( currentPose.getHeading( ) ) );
-
-		packet.put( "xError", lastError.getX( ) );
-		packet.put( "yError", lastError.getY( ) );
-		packet.put( "headingError (deg)", Math.toDegrees( lastError.getHeading( ) ) );
-
-		switch( mode ) {
-			case IDLE:
-				// do nothing
-				break;
-			case TURN: {
-				double t = clock.seconds( ) - turnStart;
-
-				MotionState targetState = turnProfile.get( t );
-
-				turnController.setTargetPosition( targetState.getX( ) );
-
-				double correction = turnController.update( currentPose.getHeading( ) );
-
-				double targetOmega = targetState.getV( );
-				double targetAlpha = targetState.getA( );
-				setDriveSignal( new DriveSignal( new Pose2d(
-						0, 0, targetOmega + correction
-				), new Pose2d(
-						0, 0, targetAlpha
-				) ) );
-
-				Pose2d newPose = lastPoseOnTurn.copy( lastPoseOnTurn.getX( ), lastPoseOnTurn.getY( ), targetState.getX( ) );
-
-				fieldOverlay.setStroke( "#4CAF50" );
-				DashboardUtil.drawRobot( fieldOverlay, newPose );
-
-				if( t >= turnProfile.duration( ) ) {
-					mode = Mode.IDLE;
-					setDriveSignal( new DriveSignal( ) );
-				}
-
-				break;
-			}
-			case FOLLOW_TRAJECTORY: {
-				setDriveSignal( follower.update( currentPose, getPoseVelocity( ) ) );
-
-				Trajectory trajectory = follower.getTrajectory( );
-
-				fieldOverlay.setStrokeWidth( 1 );
-				fieldOverlay.setStroke( "#4CAF50" );
-				DashboardUtil.drawSampledPath( fieldOverlay, trajectory.getPath( ) );
-				double t = follower.elapsedTime( );
-				DashboardUtil.drawRobot( fieldOverlay, trajectory.get( t ) );
-
-				fieldOverlay.setStroke( "#3F51B5" );
-				DashboardUtil.drawPoseHistory( fieldOverlay, poseHistory );
-
-				if( !follower.isFollowing( ) ) {
-					mode = Mode.IDLE;
-					setDriveSignal( new DriveSignal( ) );
-				}
-
-				break;
-			}
-		}
-
-		fieldOverlay.setStroke( "#3F51B5" );
-		DashboardUtil.drawRobot( fieldOverlay, currentPose );
-
-		dashboard.sendTelemetryPacket( packet );
+		DriveSignal signal = trajectorySequenceRunner.update( getPoseEstimate( ), getPoseVelocity( ) );
+		if( signal != null ) setDriveSignal( signal );
 	}
 
 	public void waitForIdle( ) {
-		while( !Thread.currentThread( ).isInterrupted( ) && isBusy( ) ) {
+		while( !Thread.currentThread( ).isInterrupted( ) && isBusy( ) )
 			update( );
-		}
 	}
 
 	public boolean isBusy( ) {
-		return mode != Mode.IDLE;
+		return trajectorySequenceRunner.isBusy( );
 	}
 
 	public void setMode( DcMotor.RunMode runMode ) {
@@ -348,6 +242,7 @@ public class RRMecanumDriveWood extends MecanumDrive {
 				coefficients.p, coefficients.i, coefficients.d,
 				coefficients.f * 12 / batteryVoltageSensor.getVoltage( )
 		);
+
 		for( DcMotorEx motor : motors ) {
 			motor.setPIDFCoefficients( runMode, compensatedCoefficients );
 		}
@@ -407,6 +302,50 @@ public class RRMecanumDriveWood extends MecanumDrive {
 
 	@Override
 	public Double getExternalHeadingVelocity( ) {
+		// TODO: This must be changed to match your configuration
+		//                           | Z axis
+		//                           |
+		//     (Motor Port Side)     |   / X axis
+		//                       ____|__/____
+		//          Y axis     / *   | /    /|   (IO Side)
+		//          _________ /______|/    //      I2C
+		//                   /___________ //     Digital
+		//                  |____________|/      Analog
+		//
+		//                 (Servo Port Side)
+		//
+		// The positive x axis points toward the USB port(s)
+		//
+		// Adjust the axis rotation rate as necessary
+		// Rotate about the z axis is the default assuming your REV Hub/Control Hub is laying
+		// flat on a surface
+
 		return (double) imu.getAngularVelocity( ).zRotationRate;
+	}
+
+	public static TrajectoryVelocityConstraint getVelocityConstraint( double maxVel, double maxAngularVel, double trackWidth ) {
+		return new MinVelocityConstraint( Arrays.asList(
+				new AngularVelocityConstraint( maxAngularVel ),
+				new MecanumVelocityConstraint( maxVel, trackWidth )
+		) );
+	}
+
+	public static TrajectoryAccelerationConstraint getAccelerationConstraint( double maxAccel ) {
+		return new ProfileAccelerationConstraint( maxAccel );
+	}
+
+	public void stopCamera() {
+		((TrackingCameraLocalizer) getLocalizer()).stopCamera();
+	}
+
+	public T265Camera.PoseConfidence getPoseConfidence() {
+		return ((TrackingCameraLocalizer) getLocalizer()).getPoseConfidence();
+	}
+
+	public void exportLocalizationMap(String mapName) {
+		((TrackingCameraLocalizer) getLocalizer()).exportMap(mapName + ".bin");
+	}
+	public void exportLocalizationMap() {
+		exportLocalizationMap( "map" );
 	}
 }

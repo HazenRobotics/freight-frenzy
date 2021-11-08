@@ -34,10 +34,11 @@ public class HexBot extends Robot {
 
 	public static double LIFT_ANGLE = 55;
 
-	public static double BUCKET_ANGLE_INTAKE = 90;
-	public static double BUCKET_ANGLE_TOP = 45;
-	public static double BUCKET_ANGLE_MIDDLE = 0.0;
-	public static double BUCKET_ANGLE_BOTTOM = -45;
+	public static double BUCKET_ANGLE_INTAKE = 55; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public static double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
+	public static double BUCKET_ANGLE_TOP = -20;
+	public static double BUCKET_ANGLE_MIDDLE = -27.5;
+	public static double BUCKET_ANGLE_BOTTOM = -35;
 
 	public HexBot( OpMode op ) {
 
@@ -57,7 +58,7 @@ public class HexBot extends Robot {
 		mecanumDrive = (MecanumDrive) driveTrain;
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
-		lift = new Lift( hardwareMap, "lift", 10.25, (32 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", 3, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
 		intake = new NoodleIntake( hardwareMap );

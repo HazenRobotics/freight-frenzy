@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
+import org.firstinspires.ftc.teamcode.robots.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -21,24 +26,26 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "LiftTeleOpTest", group = "TeleOp")
-//@Disabled
-public class LiftTeleOpTest extends OpMode {
+@TeleOp(name = "BucketTest", group = "Test")
+public class BucketTest extends OpMode {
 
-	HexBot robot;
+	Bucket bucket;
 
 	GamepadEvents player;
 
-	double distance = 0;
-
-	double height = 0;
+	double bucketAngle = 0;
 
 	@Override
 	public void init( ) {
 
-		robot = new HexBot( this );
+		telemetry.addData( "Mode", "Initiating..." );
+		telemetry.update( );
 
 		player = new GamepadEvents( gamepad1 );
+
+//		Robot.createMatchLogFile( "HexRobotTeleOp" );
+
+		bucket = new Bucket( hardwareMap, "bucket", 55 - 90, 180 );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
@@ -48,27 +55,18 @@ public class LiftTeleOpTest extends OpMode {
 	public void loop( ) {
 
 		if( player.dpad_up.onPress( ) )
-			height += 4;
+			bucketAngle += 22.5;
 		else if( player.dpad_down.onPress( ) )
-			height -= 4;
-
-		else if( player.dpad_right.onPress( ) )
-			distance += 2;
-		else if( player.dpad_left.onPress( ) )
-			distance -= 2;
+			bucketAngle -= 22.5;
 
 		if( gamepad1.a )
-			robot.lift.setLiftHeightVel( 400, height );
-		else if( gamepad1.y )
-			robot.lift.runDistanceVelAsync( 250, distance );
+			bucket.setAngle( bucketAngle );
 
-		telemetry.addLine( "Height (a): " + height );
-		telemetry.addLine( "Distance (y): " + distance );
-		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( ) );
+		telemetry.addLine( "bucketAngle" + bucketAngle );
+		telemetry.addLine( "bucketPosition" + bucket.getPosition( ) );
 
 		//updates
 		telemetry.update( );
 		player.update( );
 	}
-
 }
