@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.teleops;
 
-import android.util.Log;
+package org.firstinspires.ftc.teamcode.teleops;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -32,6 +31,10 @@ public class HexRobotTeleOp extends OpMode {
 
 	HexBot robot;
 
+	double minDrive = 0.5, maxDrive = 0.8;
+	double minStrafe = 0.7, maxStrafe = 1.0;
+	double minRotate = 0.7, maxRotate = 1.0;
+
 	double intakePower = 0.9;
 
 	@Override
@@ -55,7 +58,9 @@ public class HexRobotTeleOp extends OpMode {
 		addControlTelemetry( );
 
 		//gamepad inputs
-		robot.mecanumDrive.drive( -gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x );
+		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
+				gamepad1.left_stick_x * (gamepad1.left_stick_button ? maxStrafe : minStrafe),
+				gamepad1.right_stick_x * (gamepad1.right_stick_button ? maxRotate : minRotate) );
 
 		telemetry.addLine( "front left: " + robot.mecanumDrive.getFrontLeftPosition( ) );
 		telemetry.addLine( "back left: " + robot.mecanumDrive.getBackLeftPosition( ) );
