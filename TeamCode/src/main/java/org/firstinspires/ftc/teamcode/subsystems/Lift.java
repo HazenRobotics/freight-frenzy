@@ -36,13 +36,17 @@ public class Lift {
 		setup( hw, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
+	public void setModeTeleOp( ) {
+		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
+	}
+
 	public void setup( HardwareMap hw, String leftMotorName, double groundBucketHeight,
 					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
 		motor = hw.get( DcMotorEx.class, leftMotorName );
 
 		motor.setDirection( DcMotorSimple.Direction.REVERSE );
-		motor.setMode( DcMotor.RunMode.RESET_ENCODERS );
+//		motor.setMode( DcMotor.RunMode.RESET_ENCODERS );
 		liftPosition = 0;
 
 		setGroundBucketHeight( groundBucketHeight );

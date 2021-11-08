@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.utils.GyroTracker;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
-import org.firstinspires.ftc.teamcode.vision.unused.Webcam;
 
 public class RRHexBot extends Robot {
 
@@ -26,6 +25,7 @@ public class RRHexBot extends Robot {
 	public BarcodeUtil barcodeUtil;
 
 	public RRMecanumDriveHex42 drive;
+	public MecanumDrive mecanumDrive;
 	public CarouselSpinner spinnerLeft;
 	public CarouselSpinner spinnerRight;
 	public Lift lift;
@@ -53,7 +53,7 @@ public class RRHexBot extends Robot {
 
 		super( op );
 
-		Robot.writeToDefaultFile( "", false, false );
+//		Robot.writeToDefaultFile( "", false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
@@ -81,14 +81,14 @@ public class RRHexBot extends Robot {
 	 */
 	public void sleepRobot( double time ) {
 		double startTime = opMode.getRuntime( );
-		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) );
+		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
 	}
 
-	public TrajectorySequenceBuilder getTrajectorySequenceBuilder() {
-		return drive.trajectorySequenceBuilder( drive.getPoseEstimate() );
+	public TrajectorySequenceBuilder getTrajectorySequenceBuilder( ) {
+		return drive.trajectorySequenceBuilder( drive.getPoseEstimate( ) );
 	}
 
-	public double shippingHubHeightToInches(ShippingHubHeight height) {
+	public double shippingHubHeightToInches( ShippingHubHeight height ) {
 		switch( height ) {
 			case LOW:
 				return 6;
@@ -101,10 +101,10 @@ public class RRHexBot extends Robot {
 		}
 	}
 
-	public void liftToShippingHubHeight(ShippingHubHeight height) {
+	public void liftToShippingHubHeight( ShippingHubHeight height ) {
 		switch( height ) {
 			case LOW:
-				lift.setLiftHeightPow( 0.8, 6  );
+				lift.setLiftHeightPow( 0.8, 6 );
 				break;
 			case MIDDLE:
 				lift.setLiftHeightPow( 0.8, 11.5 );
@@ -134,7 +134,7 @@ public class RRHexBot extends Robot {
 		return height;
 	}
 
-	public void dumpBucket() {
+	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
 		sleepRobot( 1000 );
 		bucket.setAngle( BUCKET_ANGLE_INTAKE );

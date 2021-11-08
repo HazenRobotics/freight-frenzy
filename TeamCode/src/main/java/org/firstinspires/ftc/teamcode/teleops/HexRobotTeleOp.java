@@ -1,10 +1,13 @@
 
 package org.firstinspires.ftc.teamcode.teleops;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
+import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
@@ -40,16 +43,36 @@ public class HexRobotTeleOp extends OpMode {
 	@Override
 	public void init( ) {
 
-		Robot.createMatchLogFile( "HexRobotTeleOp" );
+//		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
-		robot = new HexBot( this );
+		telemetry.update( );
 		player1 = new GamepadEvents( gamepad1 );
 		player2 = new GamepadEvents( gamepad2 );
 
+		robot = new HexBot( this );
+		robot.lift.setModeTeleOp( );
+
 		SoundLibrary.playRandomStartup( );
 
+		telemetry.addData( "Mode", "about to create RR Robot" );
+		telemetry.update( );
+
+		RRHexBot robot2 = new RRHexBot( this );
+
+		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
+	}
+
+	public void setLiftHeight( boolean top ) {
+		new Thread( ( ) -> {
+//			if( top ) {
+//				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+//			} else {
+//				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+//			}
+		} ) {
+		}.start( );
 	}
 
 	@Override
@@ -76,10 +99,8 @@ public class HexRobotTeleOp extends OpMode {
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 )
 			robot.lift.setPower( gamepad1.right_trigger );
-		else if( gamepad1.left_trigger > 0 )
+		else // if( gamepad1.left_trigger >= 0 )
 			robot.lift.setPower( -gamepad1.left_trigger );
-		else
-			robot.lift.setPower( 0 );
 
 		// bucket control
 		// dpad right - intake
@@ -95,17 +116,18 @@ public class HexRobotTeleOp extends OpMode {
 		else if( gamepad1.dpad_down || gamepad2.dpad_down )
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
 
-		if( gamepad1.a || gamepad2.a )
-			robot.bucket.setPosition( 0 );
-		else if( gamepad1.b || gamepad2.b )
-			robot.bucket.setPosition( 1 );
+//		if( gamepad1.a || gamepad2.a )
+//			robot.bucket.setPosition( 0 );
+//		else if( gamepad1.b || gamepad2.b )
+//			robot.bucket.setPosition( 1 );
 
-		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
+//		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );a
+		telemetry.addLine( "lift: " + robot.lift.getLiftPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
 
 		// carousel spinner control
-		if( player1.x.onPress( ) ) // toggles carousel spinner
+		if( player1.x.onPress( ) || player2.x.onPress( ) ) // toggles carousel spinner
 			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : 1 );
-		else if( player1.y.onPress( ) )
+		else if( player1.b.onPress( ) || player2.b.onPress( ) )
 			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -1 );
 
 		//updates
