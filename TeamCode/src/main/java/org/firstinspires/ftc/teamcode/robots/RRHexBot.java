@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -36,7 +37,7 @@ public class RRHexBot extends Robot {
 
 	public final double LIFT_ANGLE = 55;
 
-	public final double BUCKET_ANGLE_INTAKE = 55; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public final double BUCKET_ANGLE_INTAKE = 68; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
 	public final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
 	public final double BUCKET_ANGLE_TOP = 45;
 	public final double BUCKET_ANGLE_MIDDLE = 0.0;
@@ -88,38 +89,26 @@ public class RRHexBot extends Robot {
 		return drive.trajectorySequenceBuilder( drive.getPoseEstimate( ) );
 	}
 
+	public TrajectoryBuilder getTrajectoryBuilder( ) {
+		return drive.trajectoryBuilder( drive.getPoseEstimate( ) );
+	}
+
 	public double shippingHubHeightToInches( ShippingHubHeight height ) {
 		switch( height ) {
 			case LOW:
-				return 6;
+				return 10;
 			case MIDDLE:
-				return 11.5;
+				return 16;
 			case HIGH:
-				return 17.75;
+				return 20;
 			default:
-				return 5.9;
+				return 9;
 		}
 	}
 
 	public void liftToShippingHubHeight( ShippingHubHeight height ) {
-		switch( height ) {
-			case LOW:
-				lift.setLiftHeightVel( 750, 6 );
-//				lift.setLiftHeightPow( 0.8, 6 );
-				opMode.telemetry.addLine( "LOW" );
-				break;
-			case MIDDLE:
-				lift.setLiftHeightVel( 750, 11.5 );
-//				lift.setLiftHeightPow( 0.8, 11.5 );
-				opMode.telemetry.addLine( "MIDDLE" );
-				break;
-			case HIGH:
-				lift.setLiftHeightVel( 750, 17.75 );
-//				lift.setLiftHeightPow( 0.8, 17.75 );
-				opMode.telemetry.addLine( "HIGH" );
-				break;
-		}
-		opMode.telemetry.update( );
+		lift.setLiftHeightVel( 750, shippingHubHeightToInches( height ) );
+		bucket.setAngle( BUCKET_ANGLE_MOVING );
 	}
 
 	public ShippingHubHeight barcodePosToShippingHubHeight( BarcodePositionDetector.BarcodePosition position ) {

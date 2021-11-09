@@ -43,6 +43,8 @@ public class HexRobotTeleOp extends OpMode {
 	@Override
 	public void init( ) {
 
+		gamepad1.rumble( 10000 );
+
 		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
 		telemetry.update( );
@@ -50,7 +52,7 @@ public class HexRobotTeleOp extends OpMode {
 		player2 = new GamepadEvents( gamepad2 );
 
 		robot = new HexBot( this );
-		robot.lift.resetTeleOp( );
+		robot.lift.setModeTeleOp( );
 
 		SoundLibrary.playRandomStartup( );
 
@@ -63,8 +65,7 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
 
-		gamepad1.rumble( 10000 );
-//		gamepad1.stopRumble();
+		gamepad1.stopRumble();
 //		gamepad1.runRumbleEffect( Gamepad.RumbleEffect.Builder(  ) );
 	}
 
@@ -85,7 +86,6 @@ public class HexRobotTeleOp extends OpMode {
 		addControlTelemetry( );
 
 		if( gamepad1.left_stick_button || gamepad1.right_stick_button )
-			gamepad1.rumble( 5 );
 
 		//gamepad inputs
 		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
@@ -99,19 +99,15 @@ public class HexRobotTeleOp extends OpMode {
 
 		// intake
 		if( player1.left_bumper.onPress( ) ) {
-			gamepad1.rumble( 5 );
 			robot.intake.setPower( robot.intake.getPower( ) < intakePower - 0.1 ? intakePower : 0 );
 		} else if( player1.right_bumper.onPress( ) ) {
-			gamepad1.rumble( 5 );
 			robot.intake.setPower( robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
 		}
 
 		// lift velocity control
 		if( gamepad1.right_trigger > 0 ) {
-			gamepad1.rumble( 5 );
 			robot.lift.setPower( gamepad1.right_trigger );
 		} else  if( gamepad1.left_trigger >= 0 ) {
-			gamepad1.rumble( 5 );
 			robot.lift.setPower( -gamepad1.left_trigger );
 		}
 
@@ -121,43 +117,45 @@ public class HexRobotTeleOp extends OpMode {
 		// dpad left - middle layer
 		// dpad down - bottom layer
 		if( gamepad1.dpad_right || gamepad2.dpad_right ) {
-			gamepad1.rumble( 5 );
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
 		} else if( gamepad1.dpad_up || gamepad2.dpad_up ) {
-			gamepad1.rumble( 5 );
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_TOP );
 		} else if( gamepad1.dpad_left || gamepad2.dpad_left ) {
-			gamepad1.rumble( 5 );
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
 		} else if( gamepad1.dpad_down || gamepad2.dpad_down ) {
-			gamepad1.rumble( 5 );
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
 		}
 
 		if( gamepad1.a || gamepad2.a ) {
-			gamepad1.rumble( 5 );
 			intakePower += 0.05;
 		} else if( gamepad1.y || gamepad2.y ) {
-			gamepad1.rumble( 5 );
 			intakePower -= 0.05;
 		}
 
 //		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );a
-		telemetry.addLine( "lift: " + robot.lift.getLiftPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
+		telemetry.addLine( "lift: " + robot.lift.getMotorPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
 
 		/*
-		if( robot.lift.getLiftPositionInch( ) > 0.5 )
+
+		if( Math.abs( robot.lift.getLiftPositionInch( ) ) > 0.25 )
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MOVING );
 		 */
+		if( gamepad2.dpad_right ) {
+//			robot.shippingHubHeightToInches( );
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
+		} else if( gamepad2.dpad_up ) {
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_TOP );
+		} else if( gamepad2.dpad_left ) {
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
+		} else if( gamepad2.dpad_down ) {
+			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
+		}
 
 		// carousel spinner control
-		if( player1.x.onPress( ) || player2.x.onPress( ) ) { // toggles carousel spinner
-			gamepad1.rumble( 5 );
+		if( player1.x.onPress( ) || player2.x.onPress( ) ) // toggles carousel spinner
 			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : intakePower );
-		} else if( player1.b.onPress( ) || player2.b.onPress( ) ) {
-			gamepad1.rumble( 5 );
+		else if( player1.b.onPress( ) || player2.b.onPress( ) )
 			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -intakePower );
-		}
 
 		//updates
 		telemetry.update( );
