@@ -97,7 +97,7 @@ public class RRHexBot extends Robot {
 			case HIGH:
 				return 17.75;
 			default:
-				return 6;
+				return 5.9;
 		}
 	}
 
