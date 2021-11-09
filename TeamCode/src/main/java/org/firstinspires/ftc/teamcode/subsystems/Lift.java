@@ -36,10 +36,6 @@ public class Lift {
 		setup( hw, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setModeTeleOp( ) {
-		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
-	}
-
 	public void setup( HardwareMap hw, String leftMotorName, double groundBucketHeight,
 					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
@@ -47,12 +43,23 @@ public class Lift {
 
 		motor.setDirection( DcMotorSimple.Direction.REVERSE );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
-		liftPosition = convertDistTicks( groundBucketHeight, 2 * spoolRadius * Math.PI );
+		liftPosition = 0;
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+	}
+
+	/**
+	 * resets encoder and sets the run mode to run without
+	 */
+	public void resetTeleOp( ) {
+
+		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
+//		motor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
+		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
+//		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 	}
 
 	/**
@@ -156,42 +163,34 @@ public class Lift {
 
 	 */
 
-	public void setDefaultHeightPow( double power ) {
-		setLiftHeightPow( power, groundBucketHeight );
-	}
-
-
-	public void setDefaultHeightVel( double velocity ) {
-		setLiftHeightVel( velocity, groundBucketHeight );
-	}
-
 	/**
 	 * @param power  the power at which to move the lift
 	 * @param height the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
 	 */
 	public void setLiftHeightPow( double power, double height ) {
 		if( height - groundBucketHeight < 0 )
-			height = groundBucketHeight;
+			return;
 		double distanceToMove = calcLiftDistanceFromHeight( height - groundBucketHeight ) - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI );
 		runDistancePowAsync( power, distanceToMove );
 	}
 
+	public void setDefaultHeightPow( double power ) {
+		setLiftHeightPow( power, groundBucketHeight );
+	}
+
 	/**
 	 * @param velocity the velocity at which to move the lift
-	 * @param height   the height from the ground to the new pos, bottom of the bucket (closed), to move the lift to, in inches
+	 * @param height   the height from the ground to the bottom of the bucket (closed) to move the lift to in inches
 	 */
 	public void setLiftHeightVel( double velocity, double height ) {
 		if( height - groundBucketHeight < 0 )
-			height = groundBucketHeight;
-		stopAndRest( );
-		double distanceToMove = calcLiftDistanceFromHeight( height - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI ) );
-		if( distanceToMove < 0 )
-			velocity *= -1;
+			return;
+		double distanceToMove = calcLiftDistanceFromHeight( height - groundBucketHeight ) - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI );
 		runDistanceVelAsync( velocity, distanceToMove );
 	}
 
 	public double calcLiftDistanceFromHeight( double height ) {
-		Log.d( "LOGGER", "calcLiftDistanceFromHeight: " + (height / Math.sin( Math.toRadians( liftAngle ) )) );
+		Log.e( "LOGGER", "calcLiftDistanceFromHeight: " + (height / Math.sin( Math.toRadians( liftAngle ) )) );
 		return height / Math.sin( Math.toRadians( liftAngle ) );
 	}
 
@@ -216,7 +215,7 @@ public class Lift {
 
 	public void stopAndRest( ) {
 
-		Log.d( "LOGGER", "motor position: " + motor.getCurrentPosition( ) );
+		Log.e( "LOGGER", "motor position: " + motor.getCurrentPosition( ) );
 		liftPosition += motor.getCurrentPosition( );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		// stop and reset encoder sets the encoder position to zero
@@ -230,12 +229,8 @@ public class Lift {
 		motor.setVelocity( velocity, angleUnit );
 	}
 
-	public static int getCurrentPosition( boolean statics ) {
+	public static int getCurrentPosition( ) {
 		return liftPosition;
-	}
-
-	public int getCurrentPosition( ) {
-		return liftPosition + motor.getCurrentPosition( );
 	}
 
 	// setters and getters for angleUnit
@@ -282,7 +277,7 @@ public class Lift {
 		return height / Math.tan( Math.toRadians( getLiftAngle( ) ) );
 	}
 
-	public double getMotorPositionInch( ) {
+	public double getLiftPositionInch( ) {
 		return convertTicksDist( motor.getCurrentPosition( ), 2 * spoolRadius * Math.PI );
 	}
 }
