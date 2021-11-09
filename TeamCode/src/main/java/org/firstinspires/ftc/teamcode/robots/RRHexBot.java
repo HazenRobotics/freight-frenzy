@@ -67,7 +67,7 @@ public class RRHexBot extends Robot {
 
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
-		lift = new Lift( hardwareMap, "lift", 3, (32 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", 3, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
 		intake = new NoodleIntake( hardwareMap );
@@ -104,15 +104,22 @@ public class RRHexBot extends Robot {
 	public void liftToShippingHubHeight( ShippingHubHeight height ) {
 		switch( height ) {
 			case LOW:
-				lift.setLiftHeightPow( 0.8, 6 );
+				lift.setLiftHeightVel( 750, 6 );
+//				lift.setLiftHeightPow( 0.8, 6 );
+				opMode.telemetry.addLine( "LOW" );
 				break;
 			case MIDDLE:
-				lift.setLiftHeightPow( 0.8, 11.5 );
+				lift.setLiftHeightVel( 750, 11.5 );
+//				lift.setLiftHeightPow( 0.8, 11.5 );
+				opMode.telemetry.addLine( "MIDDLE" );
 				break;
 			case HIGH:
-				lift.setLiftHeightPow( 0.8, 17.75 );
+				lift.setLiftHeightVel( 750, 17.75 );
+//				lift.setLiftHeightPow( 0.8, 17.75 );
+				opMode.telemetry.addLine( "HIGH" );
 				break;
 		}
+		opMode.telemetry.update( );
 	}
 
 	public ShippingHubHeight barcodePosToShippingHubHeight( BarcodePositionDetector.BarcodePosition position ) {

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
-import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
@@ -43,7 +42,7 @@ public class HexRobotTeleOp extends OpMode {
 	@Override
 	public void init( ) {
 
-//		Robot.createMatchLogFile( "HexRobotTeleOp" );
+		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
 		telemetry.update( );
 		player1 = new GamepadEvents( gamepad1 );
@@ -57,11 +56,13 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addData( "Mode", "about to create RR Robot" );
 		telemetry.update( );
 
-		RRHexBot robot2 = new RRHexBot( this );
+//		RRHexBot robot2 = new RRHexBot( this );
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
+
+		gamepad1.rumble( 1000 );
 	}
 
 	public void setLiftHeight( boolean top ) {
@@ -122,7 +123,7 @@ public class HexRobotTeleOp extends OpMode {
 //			robot.bucket.setPosition( 1 );
 
 //		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );a
-		telemetry.addLine( "lift: " + robot.lift.getLiftPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
+		telemetry.addLine( "lift: " + robot.lift.getMotorPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
 
 		// carousel spinner control
 		if( player1.x.onPress( ) || player2.x.onPress( ) ) // toggles carousel spinner

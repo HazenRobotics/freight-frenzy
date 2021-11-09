@@ -36,6 +36,8 @@ public class LiftTeleOpTest extends OpMode {
 	@Override
 	public void init( ) {
 
+		gamepad1.rumble( 2000 );
+
 		robot = new HexBot( this );
 
 		player = new GamepadEvents( gamepad1 );
@@ -58,13 +60,13 @@ public class LiftTeleOpTest extends OpMode {
 			distance -= 2;
 
 		if( gamepad1.a )
-			robot.lift.setLiftHeightVel( 400, height );
+			robot.lift.setLiftHeightVel( 500, height );
 		else if( gamepad1.y )
-			robot.lift.runDistanceVelAsync( 250, distance );
+			robot.lift.runDistanceVelAsync( 750, distance );
 
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );
-		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( ) );
+		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( true ) );
 
 		//updates
 		telemetry.update( );
