@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
  */
 
 @TeleOp(name = "BucketTest", group = "Test")
+//@Disabled
 public class BucketTest extends OpMode {
 
 	Bucket bucket;

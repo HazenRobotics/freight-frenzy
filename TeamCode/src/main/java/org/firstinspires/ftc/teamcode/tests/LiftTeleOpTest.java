@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
  */
 
 @TeleOp(name = "LiftTeleOpTest", group = "TeleOp")
-//@Disabled
+@Disabled
 public class LiftTeleOpTest extends OpMode {
 
 	HexBot robot;
@@ -66,7 +67,7 @@ public class LiftTeleOpTest extends OpMode {
 
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );
-		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( true ) );
+		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( ) );
 
 		//updates
 		telemetry.update( );

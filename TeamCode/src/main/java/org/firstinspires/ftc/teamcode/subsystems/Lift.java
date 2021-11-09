@@ -177,6 +177,9 @@ public class Lift {
 	public void setDefaultHeightPow( double power ) {
 		setLiftHeightPow( power, groundBucketHeight );
 	}
+	public void setDefaultHeightVel( double velocity ) {
+		setLiftHeightVel( velocity, groundBucketHeight );
+	}
 
 	/**
 	 * @param velocity the velocity at which to move the lift

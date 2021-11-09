@@ -143,7 +143,7 @@ public class RRHexBot extends Robot {
 
 	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
-		sleepRobot( 1000 );
+		sleepRobot( 1 );
 		bucket.setAngle( BUCKET_ANGLE_INTAKE );
 	}
 

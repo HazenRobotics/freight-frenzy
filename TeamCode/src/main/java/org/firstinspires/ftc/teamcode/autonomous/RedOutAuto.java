@@ -38,27 +38,15 @@ public class RedOutAuto extends LinearOpMode {
 		robot.barcodeUtil.stopCamera( );
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( robot.barcodeUtil.getBarcodePosition( ) );
 
-		robot.lift.setLiftHeightVel( 750, 16 );
-
-		while( robot.lift.isBusy( ) );
-		robot.sleepRobot( 3 );
-
-		robot.liftToShippingHubHeight( height );
-
-		while( !isStopRequested() );
-		/*
 		TrajectorySequence dropFreight = robot.getTrajectorySequenceBuilder( )
 				.splineToConstantHeading( new Vector2d( -12, -50 ), 90 )
-				.lineToConstantHeading( new Vector2d( -12, -24 - 12 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height ) ) ) )
+				.lineToConstantHeading( new Vector2d( -12, -24 - 14 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height ) ) ) )
 				.build( );
 		robot.drive.followTrajectorySequence( dropFreight );
-		telemetry.addLine( "lift (in) before tall: " + robot.lift.getLiftPositionInch( ) );
 		robot.liftToShippingHubHeight( height );
-		telemetry.addLine( "lift (in) after tall: " + robot.lift.getLiftPositionInch( ) );
+		while( robot.lift.isBusy( ) );
 		//robot.dumpBucket();
 		robot.lift.setDefaultHeightVel( 750 );
-		telemetry.addLine( "lift (in) after short: " + robot.lift.getLiftPositionInch( ) );
-		telemetry.update( );
 
 		TrajectorySequence duckSpinner = robot.getTrajectorySequenceBuilder( )
 				.lineToConstantHeading( new Vector2d( -12, -50 ) )
@@ -78,14 +66,17 @@ public class RedOutAuto extends LinearOpMode {
 		robot.intake.setPower( 0 );
 
 		TrajectorySequence dropDuck = robot.getTrajectorySequenceBuilder( )
-				.splineToLinearHeading( new Pose2d( -12, -24 - 12 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ) ), Math.toRadians( 90 ) ), 90 )
+				.splineToLinearHeading( new Pose2d( -12, -45, Math.toRadians( 90 ) ), 90 )
+				.lineToConstantHeading( new Vector2d( -12, -24 - 14 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ) ) ) )
 				.build( );
 		robot.drive.followTrajectorySequence( dropDuck );
 		robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+		while( robot.lift.isBusy( ) );
 		//robot.dumpBucket();
 		robot.lift.setDefaultHeightPow( 0.8 );
 
 		TrajectorySequence driveToBumps = robot.getTrajectorySequenceBuilder( )
+				.lineToConstantHeading( new Vector2d( -12, -45 ) )
 				.splineToLinearHeading( new Pose2d( 0, -42, 0 ), 0 )
 				.build( );
 		robot.drive.followTrajectorySequence( driveToBumps );
@@ -98,6 +89,5 @@ public class RedOutAuto extends LinearOpMode {
 				.build( );
 
 		robot.drive.followTrajectorySequence( park );
-*/
 	}
 }
