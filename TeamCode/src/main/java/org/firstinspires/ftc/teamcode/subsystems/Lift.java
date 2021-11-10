@@ -23,6 +23,8 @@ public class Lift {
 	double spoolRadius;
 	double groundBucketHeight;
 
+	boolean allowLoops = true;
+
 	double liftAngle; // the angle of the lift from the ground angle unit
 	AngleUnit angleUnit; // the angle unit for the lift angle i.e. degrees or radians
 
@@ -39,8 +41,8 @@ public class Lift {
 	public void setModeTeleOp( ) {
 //		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 //		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
-		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
-//		motor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
+//		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
+		motor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
 	}
 
 	public void setup( HardwareMap hw, String leftMotorName, double groundBucketHeight,
@@ -72,7 +74,7 @@ public class Lift {
 
 		setPower( power );
 
-		while( isBusy( ) ) ;
+		while( isBusy( ) && allowLoops ) ;
 
 		setPower( 0 );
 	}
@@ -92,7 +94,7 @@ public class Lift {
 		setPower( power );
 
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
-			while( isBusy( ) ) ;
+			while( isBusy( ) && allowLoops ) ;
 			setPower( 0 );
 		} ).start( );
 	}
@@ -111,7 +113,7 @@ public class Lift {
 
 		setVelocity( velocity );
 
-		while( isBusy( ) ) ;
+		while( isBusy( ) && allowLoops ) ;
 
 		setVelocity( 0 );
 	}
@@ -131,7 +133,7 @@ public class Lift {
 		setVelocity( velocity );
 
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
-			while( isBusy( ) ) ;
+			while( isBusy( ) && allowLoops ) ;
 			setVelocity( 0 );
 		} ).start( );
 	}
@@ -167,7 +169,7 @@ public class Lift {
 	public void setDefaultHeightVel( double velocity ) {
 		setLiftHeightVel( velocity, groundBucketHeight );
 		new Thread( () -> {
-			while( isBusy() );
+			while( isBusy() && allowLoops );
 			motor.setMotorDisable();
 		} ).start();
 	}
@@ -229,6 +231,13 @@ public class Lift {
 		// stop and reset encoder sets the encoder position to zero
 	}
 
+	public void toggleLoops( long waitTimeMillis ) {
+		 allowLoops = false;
+		 long start = System.currentTimeMillis();
+		 while( System.currentTimeMillis() < start + waitTimeMillis );
+		allowLoops = true;
+	}
+
 	public void setPower( double power ) {
 		motor.setPower( power );
 	}
@@ -242,12 +251,19 @@ public class Lift {
 		motor.setVelocity( velocity, angleUnit );
 	}
 
-	public static int getCurrentPosition( boolean statics ) {
+	public static int getPosition( boolean statics ) {
 		return liftPosition;
 	}
 
-	public int getCurrentPosition( ) {
+	public int getPosition( ) {
 		return liftPosition + motor.getCurrentPosition( );
+	}
+
+	public double getPositionInch( ) {
+		return convertTicksDist( getPosition( ), 2 * spoolRadius * Math.PI );
+	}
+	public double getMotorPositionInch( ) {
+		return convertTicksDist( motor.getCurrentPosition( ), 2 * spoolRadius * Math.PI );
 	}
 
 	// setters and getters for angleUnit
@@ -283,7 +299,7 @@ public class Lift {
 	}
 
 	public double getCurrentBucketDistance( ) {
-		return calcBucketDistanceFromPosition( getCurrentPosition( ) );
+		return calcBucketDistanceFromPosition( getPosition( ) );
 	}
 
 	public double calcBucketDistanceFromPosition( double liftPosition ) {
@@ -292,9 +308,5 @@ public class Lift {
 
 	public double calcBucketDistanceFromHeight( double height ) {
 		return height / Math.tan( Math.toRadians( getLiftAngle( ) ) );
-	}
-
-	public double getMotorPositionInch( ) {
-		return convertTicksDist( motor.getCurrentPosition( ), 2 * spoolRadius * Math.PI );
 	}
 }

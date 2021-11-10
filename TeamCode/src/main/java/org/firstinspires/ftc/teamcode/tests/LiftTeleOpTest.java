@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -67,7 +66,7 @@ public class LiftTeleOpTest extends OpMode {
 
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );
-		telemetry.addLine( "Lift Position: " + Lift.getCurrentPosition( true ) );
+		telemetry.addLine( "Lift Position: " + Lift.getPosition( true ) );
 
 		//updates
 		telemetry.update( );

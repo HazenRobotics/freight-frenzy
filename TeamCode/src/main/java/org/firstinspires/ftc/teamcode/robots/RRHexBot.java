@@ -27,13 +27,17 @@ public class RRHexBot extends Robot {
 
 	public RRMecanumDriveHex42 drive;
 	public MecanumDrive mecanumDrive;
+
 	public CarouselSpinner spinnerLeft;
 	public CarouselSpinner spinnerRight;
+
 	public Lift lift;
 	public Bucket bucket;
+
 	public NoodleIntake intake;
-	public GyroTracker gyroTracker;
-	public EncoderTracker encoderTracker;
+
+//	public GyroTracker gyroTracker;
+//	public EncoderTracker encoderTracker;
 
 	public final double LIFT_ANGLE = 55;
 
@@ -65,15 +69,19 @@ public class RRHexBot extends Robot {
 		new SoundLibrary( hardwareMap );
 
 		drive = new RRMecanumDriveHex42( hardwareMap );
+		mecanumDrive = new MecanumDrive( hardwareMap );
 
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
+
 		lift = new Lift( hardwareMap, "lift", 3, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
+
 		intake = new NoodleIntake( hardwareMap );
-		gyroTracker = new GyroTracker( hardwareMap, false );
-		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
+
+//		gyroTracker = new GyroTracker( hardwareMap, false );
+//		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
 
 	}
 

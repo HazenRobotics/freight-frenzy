@@ -5,9 +5,9 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
+import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
@@ -32,7 +32,7 @@ public class HexRobotTeleOp extends OpMode {
 	GamepadEvents player1;
 	GamepadEvents player2;
 
-	HexBot robot;
+	RRHexBot robot;
 
 	double minDrive = 0.5, maxDrive = 0.8;
 	double minStrafe = 0.7, maxStrafe = 1.0;
@@ -40,44 +40,32 @@ public class HexRobotTeleOp extends OpMode {
 
 	double intakePower = 0.7;
 
+	boolean inDriverAssist = false;
+
 	@Override
 	public void init( ) {
 
-		gamepad1.rumble( 10000 );
+		telemetry.addData( "Mode", "Initiating robot..." );
+		telemetry.update( );
 
 		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
-		telemetry.update( );
+		gamepad1.rumble( 10000 );
+
 		player1 = new GamepadEvents( gamepad1 );
 		player2 = new GamepadEvents( gamepad2 );
 
-		robot = new HexBot( this );
+		robot = new RRHexBot( this );
 		robot.lift.setModeTeleOp( );
 
 		SoundLibrary.playRandomStartup( );
-
-		telemetry.addData( "Mode", "about to create RR Robot" );
-		telemetry.update( );
-
-//		RRHexBot robot2 = new RRHexBot( this );
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
 
-		gamepad1.stopRumble();
+		gamepad1.stopRumble( );
 //		gamepad1.runRumbleEffect( Gamepad.RumbleEffect.Builder(  ) );
-	}
-
-	public void setLiftHeight( boolean top ) {
-		new Thread( ( ) -> {
-//			if( top ) {
-//				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-//			} else {
-//				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-//			}
-		} ) {
-		}.start( );
 	}
 
 	@Override
@@ -85,70 +73,73 @@ public class HexRobotTeleOp extends OpMode {
 
 		addControlTelemetry( );
 
-		if( gamepad1.left_stick_button || gamepad1.right_stick_button )
-
 		//gamepad inputs
 		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
 				gamepad1.left_stick_x * (gamepad1.left_stick_button ? maxStrafe : minStrafe),
 				gamepad1.right_stick_x * (gamepad1.right_stick_button ? maxRotate : minRotate) );
-
-		telemetry.addLine( "front left: " + robot.mecanumDrive.getFrontLeftPosition( ) );
-		telemetry.addLine( "back left: " + robot.mecanumDrive.getBackLeftPosition( ) );
-		telemetry.addLine( "front right: " + robot.mecanumDrive.getFrontRightPosition( ) );
-		telemetry.addLine( "back right: " + robot.mecanumDrive.getBackRightPosition( ) );
+//
+//		telemetry.addLine( "front left: " + robot.mecanumDrive.getFrontLeftPosition( ) );
+//		telemetry.addLine( "back left: " + robot.mecanumDrive.getBackLeftPosition( ) );
+//		telemetry.addLine( "front right: " + robot.mecanumDrive.getFrontRightPosition( ) );
+//		telemetry.addLine( "back right: " + robot.mecanumDrive.getBackRightPosition( ) );
 
 		// intake
-		if( player1.left_bumper.onPress( ) ) {
-			robot.intake.setPower( robot.intake.getPower( ) < intakePower - 0.1 ? intakePower : 0 );
-		} else if( player1.right_bumper.onPress( ) ) {
-			robot.intake.setPower( robot.intake.getPower( ) > -intakePower + 0.1 ? -intakePower : 0 );
-		}
-
-		// lift velocity control
-		if( gamepad1.right_trigger > 0 ) {
-			robot.lift.setPower( gamepad1.right_trigger );
-		} else  if( gamepad1.left_trigger >= 0 ) {
-			robot.lift.setPower( -gamepad1.left_trigger );
-		}
+		if( player1.left_bumper.onPress( ) )
+			robot.intake.setPower( robot.intake.getPower( ) > 0 ? 0 : intakePower );
+		else if( player1.right_bumper.onPress( ) )
+			robot.intake.setPower( robot.intake.getPower( ) < 0 ? 0 : -intakePower );
 
 		// bucket control
 		// dpad right - intake
 		// dpad up - top layer
 		// dpad left - middle layer
 		// dpad down - bottom layer
-		if( gamepad1.dpad_right || gamepad2.dpad_right ) {
+		if( gamepad1.dpad_up ) {
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
-		} else if( gamepad1.dpad_up || gamepad2.dpad_up ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_TOP );
-		} else if( gamepad1.dpad_left || gamepad2.dpad_left ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
-		} else if( gamepad1.dpad_down || gamepad2.dpad_down ) {
+		} else if( gamepad1.dpad_down ) {
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
+		} else if( gamepad1.dpad_right) {
+			robot.lift.toggleLoops( 500 );
 		}
 
-		if( gamepad1.a || gamepad2.a ) {
-			intakePower += 0.05;
-		} else if( gamepad1.y || gamepad2.y ) {
+		// if you touch either of the triggers, it will exit the driver assist method
+		if( gamepad1.right_trigger > 0.2 || gamepad1.left_trigger > 0.2 )
+			inDriverAssist = false;
+
+		// lift velocity control
+		if( gamepad1.right_trigger > 0 && !inDriverAssist )
+			robot.lift.setTeleOPower( gamepad1.right_trigger );
+		else if( gamepad1.left_trigger >= 0 && !inDriverAssist )
+			robot.lift.setTeleOPower( -gamepad1.left_trigger );
+
+		if( gamepad1.a || gamepad2.a )
 			intakePower -= 0.05;
-		}
+		else if( gamepad1.y || gamepad2.y )
+			intakePower += 0.05;
 
-//		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );a
-		telemetry.addLine( "lift: " + robot.lift.getMotorPositionInch( ) + ", " + robot.lift.getGroundBucketHeight( ) );
+		telemetry.addLine( "intakePower: " + intakePower );
+		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
+		telemetry.addLine( "lift: " + robot.lift.getPositionInch( ) + "(" + robot.lift.getPosition( ) + "), " + robot.lift.getGroundBucketHeight( ) );
 
 		/*
 
 		if( Math.abs( robot.lift.getLiftPositionInch( ) ) > 0.25 )
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MOVING );
 		 */
-		if( gamepad2.dpad_right ) {
-//			robot.shippingHubHeightToInches( );
+
+		/*if( gamepad2.dpad_right ) {
+
+			robot.shippingHubHeightToInches( );
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
-		} else if( gamepad2.dpad_up ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_TOP );
+		} else*/
+		if( gamepad2.dpad_up ) {
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 		} else if( gamepad2.dpad_left ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
-		} else if( gamepad2.dpad_down ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
+			robot.lift.setLiftHeightVel( 850,0 );
+//			robot.bucket.setAngle( robot.BUCKET_ANGLE_INTAKE );
+//			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
+		}  else if( gamepad2.dpad_down ) {
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 		}
 
 		// carousel spinner control
