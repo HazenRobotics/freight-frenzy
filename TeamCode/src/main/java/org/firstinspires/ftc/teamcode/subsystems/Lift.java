@@ -58,6 +58,7 @@ public class Lift {
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+
 	}
 
 	/**
@@ -168,10 +169,10 @@ public class Lift {
 
 	public void setDefaultHeightVel( double velocity ) {
 		setLiftHeightVel( velocity, groundBucketHeight );
-		new Thread( () -> {
-			while( isBusy() && allowLoops );
-			motor.setMotorDisable();
-		} ).start();
+		new Thread( ( ) -> {
+			while( isBusy( ) && allowLoops ) ;
+			motor.setMotorDisable( );
+		} ).start( );
 	}
 
 	/**
@@ -231,11 +232,16 @@ public class Lift {
 		// stop and reset encoder sets the encoder position to zero
 	}
 
-	public void toggleLoops( long waitTimeMillis ) {
-		 allowLoops = false;
-		 long start = System.currentTimeMillis();
-		 while( System.currentTimeMillis() < start + waitTimeMillis );
+	public void exitLoops( long waitTimeMillis ) {
+		motor.setPower( 0 );
+		allowLoops = false;
+		long start = System.currentTimeMillis( );
+		while( System.currentTimeMillis( ) < start + waitTimeMillis ) ;
 		allowLoops = true;
+	}
+
+	public double getPower( ) {
+		return motor.getPower( );
 	}
 
 	public void setPower( double power ) {
@@ -245,6 +251,10 @@ public class Lift {
 	public void setTeleOPower( double power ) {
 		setModeTeleOp( );
 		setPower( power );
+	}
+
+	public double getVelocity( ) {
+		return motor.getVelocity( angleUnit );
 	}
 
 	public void setVelocity( double velocity ) {
@@ -262,6 +272,7 @@ public class Lift {
 	public double getPositionInch( ) {
 		return convertTicksDist( getPosition( ), 2 * spoolRadius * Math.PI );
 	}
+
 	public double getMotorPositionInch( ) {
 		return convertTicksDist( motor.getCurrentPosition( ), 2 * spoolRadius * Math.PI );
 	}

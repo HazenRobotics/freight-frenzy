@@ -5,11 +5,12 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robots.HexBot;
 import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.Logger;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 /**
@@ -42,8 +43,12 @@ public class HexRobotTeleOp extends OpMode {
 
 	boolean inDriverAssist = false;
 
+	double prevLiftPos = 0;
+
 	@Override
 	public void init( ) {
+
+		Logger.createMatchLogFile( getClass( ).getSimpleName( ) );
 
 		telemetry.addData( "Mode", "Initiating robot..." );
 		telemetry.update( );
@@ -65,7 +70,7 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.update( );
 
 		gamepad1.stopRumble( );
-//		gamepad1.runRumbleEffect( Gamepad.RumbleEffect.Builder(  ) );
+		Gamepad.RumbleEffect effect = new Gamepad.RumbleEffect.Builder( ).addStep( 2, 3, 4 ).build( );
 	}
 
 	@Override
@@ -95,11 +100,13 @@ public class HexRobotTeleOp extends OpMode {
 		// dpad left - middle layer
 		// dpad down - bottom layer
 		if( gamepad1.dpad_up ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
 		} else if( gamepad1.dpad_down ) {
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_BOTTOM );
-		} else if( gamepad1.dpad_right) {
-			robot.lift.toggleLoops( 500 );
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
+		} else if( gamepad1.dpad_right ) {
+			robot.lift.exitLoops( 500 );
+		} else if( gamepad1.dpad_left ) {
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
 		}
 
 		// if you touch either of the triggers, it will exit the driver assist method
@@ -107,38 +114,42 @@ public class HexRobotTeleOp extends OpMode {
 			inDriverAssist = false;
 
 		// lift velocity control
-		if( gamepad1.right_trigger > 0 && !inDriverAssist )
+		String liftPower = "settingLiftPower: false";
+		if( gamepad1.right_trigger > 0 && !inDriverAssist ) {
+			liftPower = "settingLiftPower: true";
 			robot.lift.setTeleOPower( gamepad1.right_trigger );
-		else if( gamepad1.left_trigger >= 0 && !inDriverAssist )
+		} else if( gamepad1.left_trigger >= 0 && !inDriverAssist ) {
+			liftPower = "settingLiftPower: true";
 			robot.lift.setTeleOPower( -gamepad1.left_trigger );
+		}
 
-		if( gamepad1.a || gamepad2.a )
-			intakePower -= 0.05;
-		else if( gamepad1.y || gamepad2.y )
+		if( gamepad1.y || gamepad2.y )
 			intakePower += 0.05;
+		else if( gamepad1.a || gamepad2.a )
+			intakePower -= 0.05;
 
+		telemetry.addLine( liftPower );
+		telemetry.addLine( "inDriverAssist: " + inDriverAssist );
 		telemetry.addLine( "intakePower: " + intakePower );
 		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
 		telemetry.addLine( "lift: " + robot.lift.getPositionInch( ) + "(" + robot.lift.getPosition( ) + "), " + robot.lift.getGroundBucketHeight( ) );
 
-		/*
-
-		if( Math.abs( robot.lift.getLiftPositionInch( ) ) > 0.25 )
+/*
+		if( robot.lift.getPositionInch( ) >= 0.25 && prevLiftPos < 0.25 )
 			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MOVING );
-		 */
+		else if lift statement here
+		prevLiftPos = robot.lift.getPositionInch( );
+*/
 
-		/*if( gamepad2.dpad_right ) {
-
-			robot.shippingHubHeightToInches( );
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_INTAKE );
-		} else*/
 		if( gamepad2.dpad_up ) {
+			inDriverAssist = true;
 			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 		} else if( gamepad2.dpad_left ) {
-			robot.lift.setLiftHeightVel( 850,0 );
-//			robot.bucket.setAngle( robot.BUCKET_ANGLE_INTAKE );
-//			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MIDDLE );
-		}  else if( gamepad2.dpad_down ) {
+			inDriverAssist = true;
+			robot.lift.setLiftHeightVel( 850, 0 );
+//			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		} else if( gamepad2.dpad_down ) {
+			inDriverAssist = true;
 			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 		}
 

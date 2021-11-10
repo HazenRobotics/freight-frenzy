@@ -21,7 +21,7 @@ public class AudioTest extends OpMode {
 	@Override
 	public void init( ) {
 
-		Robot.createMatchLogFile( this.getClass( ).getSimpleName( ) );
+		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
 		gamepad = new GamepadEvents( super.gamepad1 );
 		library = new SoundLibrary( hardwareMap );

@@ -39,14 +39,11 @@ public class RRHexBot extends Robot {
 //	public GyroTracker gyroTracker;
 //	public EncoderTracker encoderTracker;
 
-	public final double LIFT_ANGLE = 55;
+	public static final double LIFT_ANGLE = 55;
 
-	public final double BUCKET_ANGLE_INTAKE = 68; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
-	public final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
-	public final double BUCKET_ANGLE_TOP = 45;
-	public final double BUCKET_ANGLE_MIDDLE = 0.0;
-	public final double BUCKET_ANGLE_BOTTOM = -45;
-	public final double BUCKET_ANGLE_DUMP = -35;
+	public static final double BUCKET_ANGLE_INTAKE = 75; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
+	public static final double BUCKET_ANGLE_DUMP = -35;
 
 	public enum ShippingHubHeight {
 		LOW,
@@ -58,7 +55,7 @@ public class RRHexBot extends Robot {
 
 		super( op );
 
-//		Robot.writeToDefaultFile( "", false, false );
+		Robot.writeToDefaultFile( "", false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
