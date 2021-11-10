@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.robots.Robot;
 
 public class Lift {
 
@@ -61,6 +62,8 @@ public class Lift {
 
 	}
 
+	// basic lift setters
+
 	/**
 	 * @param power    the power at which to move the lift
 	 * @param distance the distance to move the lift in inches
@@ -81,6 +84,8 @@ public class Lift {
 	}
 
 	/**
+	 * creates a new thread that sets the power to zero after the motor has reached its position
+	 *
 	 * @param power    the power at which to move the lift
 	 * @param distance the distance to move the lift in inches
 	 */
@@ -120,6 +125,8 @@ public class Lift {
 	}
 
 	/**
+	 * creates a new thread that sets the velocity to zero after the motor has reached its position
+	 *
 	 * @param velocity the velocity at which to move the lift
 	 * @param distance the distance to move the lift in inches
 	 */
@@ -139,33 +146,11 @@ public class Lift {
 		} ).start( );
 	}
 
-	/*
-						/|
-			 (lift) c  / |
-	  		          /  |  b the height of this side of the triangle
-(bottom of bucket)   /___|  h (height given from the ground)
-      B (this angle) ^   |
-					_____|
- 		  	       (ground)
-
-		* given h
-		* find c (the distance to set the lift to)
-		* g is the distance the bucket is off the ground
-		* B is the lift angle (either 40 or 45°)
-
-		sin(θ) = b/c
-		b = h-g
-		θ = B
-
-		c = (h-g)/(sin(B)
-		liftPosition = (height - groundBucketHeight/( sin(liftAngle) )
-
-	 */
+	// simple lift setters
 
 	public void setDefaultHeightPow( double power ) {
 		setLiftHeightPow( power, groundBucketHeight );
 	}
-
 
 	public void setDefaultHeightVel( double velocity ) {
 		setLiftHeightVel( velocity, groundBucketHeight );
@@ -182,7 +167,7 @@ public class Lift {
 	public void setLiftHeightPow( double power, double height ) {
 		if( height - groundBucketHeight < 0 )
 			height = groundBucketHeight;
-		double distanceToMove = calcLiftDistanceFromHeight( height - groundBucketHeight ) - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI );
+		double distanceToMove = calcLiftDistanceFromHeight( height - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI ) );
 		runDistancePowAsync( power, distanceToMove );
 	}
 
@@ -200,28 +185,13 @@ public class Lift {
 		runDistanceVelAsync( velocity, distanceToMove );
 	}
 
-	public double calcLiftDistanceFromHeight( double height ) {
-		Log.d( "LOGGER", "calcLiftDistanceFromHeight: " + (height / Math.sin( Math.toRadians( liftAngle ) )) );
-		return height / Math.sin( Math.toRadians( liftAngle ) );
-	}
 
-	/**
-	 * @param distanceToTravel the distance to move in inches
-	 * @param circumference    the circumference of the wheel that has the encoder
-	 * @return totalTicks - the amount of ticks to move forward
-	 */
-	public int convertDistTicks( double distanceToTravel, double circumference ) {
-		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
-	}
-
-	public double convertTicksDist( double ticksToTravel, double circumference ) {
-		return (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION;
-	}
-
-	// getters and setters
-
-	public boolean isBusy( ) {
-		return motor.isBusy( );
+	public void exitLoops( long waitTimeMillis ) {
+		motor.setPower( 0 );
+		allowLoops = false;
+		long start = System.currentTimeMillis( );
+		while( System.currentTimeMillis( ) < start + waitTimeMillis ) ;
+		allowLoops = true;
 	}
 
 	public void stopAndRest( ) {
@@ -232,13 +202,76 @@ public class Lift {
 		// stop and reset encoder sets the encoder position to zero
 	}
 
-	public void exitLoops( long waitTimeMillis ) {
-		motor.setPower( 0 );
-		allowLoops = false;
-		long start = System.currentTimeMillis( );
-		while( System.currentTimeMillis( ) < start + waitTimeMillis ) ;
-		allowLoops = true;
+	public void runAfterBusy( Runnable runnable ) {
+		while( isBusy( ) && allowLoops ) ;
+		runnable.run( );
 	}
+
+	// converters and calculators
+
+	/**
+	 * @param distance      the distance to move in inches
+	 * @param circumference the circumference of the wheel that has the encoder
+	 * @return the number of ticks in that distance
+	 */
+	public int convertDistTicks( double distance, double circumference ) {
+		return (int) Math.round( ((distance / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
+	}
+
+	/**
+	 * @param ticks         the distance to move in ticks
+	 * @param circumference the circumference of the wheel that has the encoder
+	 * @return the distance in that number of ticks
+	 */
+	public double convertTicksDist( double ticks, double circumference ) {
+		return (ticks * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION;
+	}
+
+	/*
+						/|
+			 (lift) c  / |
+	  		          /  |  b the height of this side of the triangle
+(bottom of bucket)   /___|  h (height given from the ground)
+      B (this angle) ^   |
+					_____|
+ 		  	       (ground)
+
+		* given h
+		* find c (the distance to set the lift to)
+		* g is the distance the bucket is off the ground
+		* B is the lift angle (55°)
+
+		sin(θ) = b/c
+		b = h-g
+		θ = B
+
+		c = (h-g)/(sin(B)
+		liftPosition = (height - groundBucketHeight/( sin(liftAngle) )
+
+	 */
+
+	public double calcLiftDistanceFromHeight( double height ) {
+		Robot.writeToDefaultFile( "calcLiftDistanceFromHeight: " + (height / Math.sin( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+		return height / Math.sin( getLiftAngle( AngleUnit.RADIANS ) );
+	}
+
+	public double calcBucketDistanceFromPosition( double liftPosition ) {
+		Robot.writeToDefaultFile( "calcLiftDistanceFromHeight: " + (liftPosition * Math.cos( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+		return liftPosition * Math.cos( getLiftAngle( AngleUnit.RADIANS ) );
+	}
+
+	public double calcBucketDistanceFromHeight( double height ) {
+		Robot.writeToDefaultFile( "calcLiftDistanceFromHeight: " + (height * Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+		return height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) );
+	}
+
+	// getters and setters
+
+	public boolean isBusy( ) {
+		return motor.isBusy( );
+	}
+
+	// getters and setters for power and velocity
 
 	public double getPower( ) {
 		return motor.getPower( );
@@ -261,6 +294,8 @@ public class Lift {
 		motor.setVelocity( velocity, angleUnit );
 	}
 
+	// getters for the lift position
+
 	public static int getPosition( boolean statics ) {
 		return liftPosition;
 	}
@@ -277,7 +312,12 @@ public class Lift {
 		return convertTicksDist( motor.getCurrentPosition( ), 2 * spoolRadius * Math.PI );
 	}
 
+	public double getBucketDistance( ) {
+		return calcBucketDistanceFromPosition( getPosition( ) );
+	}
+
 	// setters and getters for angleUnit
+
 	public void setAngleUnit( AngleUnit angleUnit ) {
 		this.angleUnit = angleUnit;
 	}
@@ -287,13 +327,18 @@ public class Lift {
 	}
 
 	// setters and getters for spoolRadius
+
+	public double getSpoolRadius( ) {
+		return spoolRadius;
+	}
+
 	public void setSpoolRadius( double newRadius ) {
 		spoolRadius = newRadius;
 	}
 
 	// setters and getters for groundBucketHeight
-	public void setGroundBucketHeight( double newBucketHeight ) {
-		groundBucketHeight = newBucketHeight;
+	public void setGroundBucketHeight( double height ) {
+		groundBucketHeight = height;
 	}
 
 	public double getGroundBucketHeight( ) {
@@ -309,15 +354,14 @@ public class Lift {
 		return liftAngle;
 	}
 
-	public double getCurrentBucketDistance( ) {
-		return calcBucketDistanceFromPosition( getPosition( ) );
-	}
+	public double getLiftAngle( AngleUnit angle ) {
 
-	public double calcBucketDistanceFromPosition( double liftPosition ) {
-		return liftPosition * Math.cos( Math.toRadians( getLiftAngle( ) ) );
-	}
-
-	public double calcBucketDistanceFromHeight( double height ) {
-		return height / Math.tan( Math.toRadians( getLiftAngle( ) ) );
+		if( angle.equals( angleUnit ) )
+			return liftAngle;
+		else if( angle.equals( AngleUnit.RADIANS ) )
+			return Math.toRadians( liftAngle );
+		else if( angle.equals( AngleUnit.DEGREES ) )
+			return Math.toDegrees( liftAngle );
+		return liftAngle;
 	}
 }

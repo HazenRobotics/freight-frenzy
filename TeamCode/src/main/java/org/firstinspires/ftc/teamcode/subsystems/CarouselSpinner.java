@@ -7,17 +7,17 @@ public class CarouselSpinner {
 
 	CRServo spinner;
 
-	public CarouselSpinner( HardwareMap hw ) {
-		setup( hw, "spinner" );
+	public CarouselSpinner( HardwareMap hardwareMap ) {
+		setup( hardwareMap, "spinner" );
 	}
 
-	public CarouselSpinner( HardwareMap hw, String name ) {
-		setup( hw, name );
+	public CarouselSpinner( HardwareMap hardwareMap, String name ) {
+		setup( hardwareMap, name );
 	}
 
-	private void setup( HardwareMap hw, String name ) {
+	private void setup( HardwareMap hardwareMap, String name ) {
 
-		spinner = hw.crservo.get( name );
+		spinner = hardwareMap.crservo.get( name );
 	}
 
 	public void setPower( double power ) {
