@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.Logger;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
+import java.text.DecimalFormat;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -35,6 +37,8 @@ public class HexRobotTeleOp extends OpMode {
 
 	RRHexBot robot;
 
+	DecimalFormat df = new DecimalFormat( "0.##" );
+
 	double minDrive = 0.5, maxDrive = 0.8;
 	double minStrafe = 0.7, maxStrafe = 1.0;
 	double minRotate = 0.7, maxRotate = 1.0;
@@ -44,6 +48,8 @@ public class HexRobotTeleOp extends OpMode {
 	boolean inDriverAssist = false;
 
 	double prevLiftPos = 0;
+
+	double liftSwitchLimit = 0.75;
 
 	@Override
 	public void init( ) {
@@ -62,6 +68,7 @@ public class HexRobotTeleOp extends OpMode {
 
 		robot = new RRHexBot( this );
 		robot.lift.setModeTeleOp( );
+		liftSwitchLimit += robot.lift.getGroundBucketHeight( );
 
 		SoundLibrary.playRandomStartup( );
 
@@ -132,14 +139,14 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "inDriverAssist: " + inDriverAssist );
 		telemetry.addLine( "intakePower: " + intakePower );
 		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
-		telemetry.addLine( "lift: " + robot.lift.getPositionInch( ) + "(" + robot.lift.getPosition( ) + "), " + robot.lift.getGroundBucketHeight( ) );
+		telemetry.addLine( "lift: " + df.format( robot.lift.getPositionInch( ) ) + "(" + robot.lift.getPosition( ) + "), " + robot.lift.getGroundBucketHeight( ) );
+		telemetry.addLine( "lift diff: " + df.format( robot.lift.getPositionInch( ) ) + " - " + df.format( prevLiftPos ) );
 
-/*
-		if( robot.lift.getPositionInch( ) >= 0.25 && prevLiftPos < 0.25 )
-			robot.bucket.setAngle( HexBot.BUCKET_ANGLE_MOVING );
-		else if lift statement here
+		if( robot.lift.getPositionInch( ) < liftSwitchLimit )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		else if( robot.lift.getPositionInch( ) >= liftSwitchLimit && prevLiftPos < liftSwitchLimit )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
-*/
 
 		if( gamepad2.dpad_up ) {
 			inDriverAssist = true;

@@ -214,8 +214,8 @@ public class Lift {
 		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
 	}
 
-	public int convertTicksDist( double ticksToTravel, double circumference ) {
-		return (int) Math.round( (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION );
+	public double convertTicksDist( double ticksToTravel, double circumference ) {
+		return (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION;
 	}
 
 	// getters and setters
