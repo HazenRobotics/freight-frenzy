@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 
 public class Lift {
 
-	public static final double MAX_VELOCITY = 30;
-
 	final double PULSES_PER_REVOLUTION = 537.7;
 	final double GEAR_RATIO = 1/*9.2*/;
 
@@ -24,19 +22,22 @@ public class Lift {
 	double spoolRadius;
 	double groundBucketHeight;
 
+	static final double LIFT_SWITCH_LIMIT_DISTANCE = 0.75;
+	public static double LIFT_SWITCH_LIMIT;
+
 	boolean allowLoops = true;
 
 	double liftAngle; // the angle of the lift from the ground angle unit
 	AngleUnit angleUnit; // the angle unit for the lift angle i.e. degrees or radians
 
-	public Lift( HardwareMap hw ) {
-		this( hw, "lift", 10.25,
-				(32 / 25.4) / 2, 45, AngleUnit.DEGREES ); // diameter of 45mm
+	public Lift( HardwareMap hardwareMap ) {
+		this( hardwareMap, "lift", 3.25,
+				(32 / 25.4) / 2, 55, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
-	public Lift( HardwareMap hw, String motorName, double groundBucketHeight,
+	public Lift( HardwareMap hardwareMap, String motorName, double groundBucketHeight,
 				 double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
-		setup( hw, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
+		setup( hardwareMap, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
 	public void setModeTeleOp( ) {
@@ -46,20 +47,20 @@ public class Lift {
 		motor.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
 	}
 
-	public void setup( HardwareMap hw, String leftMotorName, double groundBucketHeight,
+	public void setup( HardwareMap hardwareMap, String leftMotorName, double groundBucketHeight,
 					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
-		motor = hw.get( DcMotorEx.class, leftMotorName );
+		motor = hardwareMap.get( DcMotorEx.class, leftMotorName );
 
 		motor.setDirection( DcMotorSimple.Direction.REVERSE );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		liftPosition = convertDistTicks( groundBucketHeight, 2 * spoolRadius * Math.PI );
 
+		LIFT_SWITCH_LIMIT = LIFT_SWITCH_LIMIT_DISTANCE + groundBucketHeight;
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
-
 	}
 
 	// basic lift setters
@@ -81,6 +82,7 @@ public class Lift {
 		while( isBusy( ) && allowLoops ) ;
 
 		setPower( 0 );
+		disableMotorIfUnused( );
 	}
 
 	/**
@@ -102,6 +104,7 @@ public class Lift {
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
 			while( isBusy( ) && allowLoops ) ;
 			setPower( 0 );
+			disableMotorIfUnused( );
 		} ).start( );
 	}
 
@@ -122,6 +125,7 @@ public class Lift {
 		while( isBusy( ) && allowLoops ) ;
 
 		setVelocity( 0 );
+		disableMotorIfUnused( );
 	}
 
 	/**
@@ -143,6 +147,7 @@ public class Lift {
 		new Thread( ( ) -> { // create a new thread so that it doesn't interfere with other mechanisms
 			while( isBusy( ) && allowLoops ) ;
 			setVelocity( 0 );
+			disableMotorIfUnused( );
 		} ).start( );
 	}
 
@@ -185,6 +190,12 @@ public class Lift {
 		runDistanceVelAsync( velocity, distanceToMove );
 	}
 
+	// util methods
+
+	public void disableMotorIfUnused( ) {
+		if( getPositionInch( ) <= LIFT_SWITCH_LIMIT )
+			motor.setMotorDisable( );
+	}
 
 	public void exitLoops( long waitTimeMillis ) {
 		motor.setPower( 0 );
@@ -295,6 +306,14 @@ public class Lift {
 	}
 
 	// getters for the lift position
+
+	public int getTargetPosition( ) {
+		return motor.getTargetPosition( );
+	}
+
+	public double getTargetPositionInch( ) {
+		return convertTicksDist( motor.getTargetPosition( ), 2 * spoolRadius * Math.PI );
+	}
 
 	public static int getPosition( boolean statics ) {
 		return liftPosition;

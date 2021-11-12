@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
+import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
@@ -33,6 +35,7 @@ public class RRHexBot extends Robot {
 
 	public Lift lift;
 	public Bucket bucket;
+	public Capper capper;
 
 	public NoodleIntake intake;
 
@@ -41,9 +44,13 @@ public class RRHexBot extends Robot {
 
 	public static final double LIFT_ANGLE = 55;
 
-	public static final double BUCKET_ANGLE_INTAKE = 75; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public static final double BUCKET_ANGLE_INTAKE = 85; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
 	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
 	public static final double BUCKET_ANGLE_DUMP = -35;
+
+	public static final double CAPPER_POS_0 = 0;
+	public static final double CAPPER_POS_0_5 = 0.5;
+	public static final double CAPPER_POS_1 = 1;
 
 	public enum ShippingHubHeight {
 		LOW,
@@ -71,9 +78,10 @@ public class RRHexBot extends Robot {
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
 
-		lift = new Lift( hardwareMap, "lift", 3, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", 3.25, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
-		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
+		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
+		capper = new Capper( hardwareMap, "capper" );
 
 		intake = new NoodleIntake( hardwareMap );
 
@@ -105,14 +113,14 @@ public class RRHexBot extends Robot {
 			case MIDDLE:
 				return 16;
 			case HIGH:
-				return 20;
+				return 18;
 			default:
 				return 9;
 		}
 	}
 
 	public void liftToShippingHubHeight( ShippingHubHeight height ) {
-		lift.setLiftHeightVel( 750, shippingHubHeightToInches( height ) );
+		lift.setLiftHeightVel( 800, shippingHubHeightToInches( height ) );
 		bucket.setAngle( BUCKET_ANGLE_MOVING );
 	}
 
@@ -137,7 +145,7 @@ public class RRHexBot extends Robot {
 
 	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
-		sleepRobot( 1 );
+		sleepRobot( 0.7 );
 		bucket.setAngle( BUCKET_ANGLE_INTAKE );
 	}
 

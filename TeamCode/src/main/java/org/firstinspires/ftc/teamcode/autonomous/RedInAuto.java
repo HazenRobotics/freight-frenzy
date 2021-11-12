@@ -7,65 +7,102 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
 
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 
 @Autonomous
 public class RedInAuto extends LinearOpMode {
 
 	RRHexBot robot;
-	final int PARKING_ZONE = 3;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
+
 		robot = new RRHexBot( this );
-		robot.barcodeUtil.init();
+
+		robot.barcodeUtil.init( );
+
 		do {
 			telemetry.addLine( "Getting pose estimate. Please wait..." );
-			telemetry.update();
-			robot.drive.update();
-		} while( !isStopRequested() && !isStarted() && robot.drive.getPoseConfidence().compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
+			telemetry.update( );
+			robot.drive.update( );
+		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
+
+		robot.drive.setPoseEstimate( new Pose2d( 2.125, -62.1875, Math.toRadians( 90 ) ) );
 
 		telemetry.addLine( "Ready!" );
-		telemetry.update();
+		telemetry.update( );
 
+		while( !isStopRequested( ) && !isStarted( ) )
+			robot.drive.update( );
 
-		waitForStart();
-		robot.barcodeUtil.stopCamera();
-		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( robot.barcodeUtil.getBarcodePosition() );
+		waitForStart( );
 
-		//set start position
-		robot.drive.setPoseEstimate( new Pose2d( 5.625, -62.1875, Math.toRadians( 90 ) ) );
-		robot.drive.followTrajectorySequence( robot.getTrajectorySequenceBuilder()
-				.splineToConstantHeading( new Vector2d( -12, -24 - 2 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height ) ) ), 0 )
-				.addDisplacementMarker( () -> {
+		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( robot.barcodeUtil.getBarcodePosition( ) );
+		robot.barcodeUtil.stopCamera( );
+
+		TrajectorySequence mainTrajectory = robot.getTrajectorySequenceBuilder( )
+
+				//Drop block in Shipping Hub
+				//.lineToConstantHeading( new Vector2d( -52, -36 ) )
+				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( height );
-					robot.dumpBucket();
-					robot.lift.setDefaultHeightPow(0.8);
+					robot.liftToShippingHubHeight( height );
 				} )
-				.splineToLinearHeading( new Pose2d( -52, -52,0 ), 0 )
-				.addDisplacementMarker( () -> {
-					robot.spinnerRight.setPower( 0.5 );
-					robot.sleepRobot( 1500 );
+				.splineToConstantHeading( new Vector2d( -12, -54 ), Math.toRadians( 90 )  )
+				.lineToConstantHeading( new Vector2d( -12 , -24 - 10.5 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height ) )  ) )
+				.addTemporalMarker( ( ) -> {
+					robot.dumpBucket( );
+					robot.lift.setDefaultHeightVel( 1000 );
+					robot.lift.setDefaultHeightVel( 1000 );
+				} )
+				.waitSeconds( 0.7 )
+
+				//Duck spin
+				.lineToConstantHeading( new Vector2d( -12, -54 ) )
+				.lineToLinearHeading( new Pose2d( -56.5, -57.5, Math.toRadians( 0 ) ) )
+				.addTemporalMarker( ( ) -> {
+					robot.spinnerRight.setPower( 0.75 );
+				} )
+				.waitSeconds( 3.2 )
+				.addTemporalMarker( ( ) -> {
 					robot.spinnerRight.setPower( 0 );
 				} )
-				.splineTo(new Vector2d( -62, -50 ), 0)
-				.addDisplacementMarker( () -> {
-					robot.intake.setPower( 1 );
-					robot.sleepRobot( 800 );
+
+				//Pickup duck from ground
+				.lineToConstantHeading( new Vector2d( -60, -51 ) )
+				.addTemporalMarker( ( ) -> {
+					robot.intake.setPower( -0.6 );
+				} )
+				.waitSeconds( 1 )
+				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 				} )
-				.splineToLinearHeading( new Pose2d( -12, -24 - 2 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ) ), 90 ), 0 )
-				.addDisplacementMarker( () -> {
+
+				//Drop duck in Shipping Hub
+				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-					robot.dumpBucket();
-					robot.lift.setDefaultHeightPow(0.8);
+					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 				} )
-				.splineToLinearHeading( new Pose2d( 0, -42, 0 ), 0 )
-				.setVelConstraint(new MecanumVelocityConstraint(50, 17))
-				.lineTo( new Vector2d( 36, 42 ) )
-				.resetVelConstraint()
-				.splineTo( new Vector2d( 60, 36 ), 0 )
-				.build() );
+				.lineToLinearHeading( new Pose2d( -12, -54, Math.toRadians( 90 ) ) )
+				.lineToConstantHeading( new Vector2d( -12 , -24 - 10.5 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ) ) ) )
+				.addTemporalMarker( ( ) -> {
+					robot.dumpBucket( );
+					robot.lift.setDefaultHeightVel( 1000 );
+					robot.lift.setDefaultHeightVel( 1000 );
+				} )
+				.waitSeconds( 0.7 )
+
+				//Park in Warehouse
+				.lineToLinearHeading( new Pose2d( -12, -54, 0 ) )
+				.splineToConstantHeading( new Vector2d( 10, -40 ), Math.toRadians( 90 ) )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
+				.lineTo( new Vector2d( 36, -42 ) )
+				.resetVelConstraint( )
+				.splineTo( new Vector2d( 60, -44 ), 0 )
+				.build( );
+
+		robot.drive.followTrajectorySequence( mainTrajectory );
 
 	}
 }
