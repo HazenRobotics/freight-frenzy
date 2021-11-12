@@ -62,6 +62,7 @@ public class SoundLibrary {
 		audioList.add( new Audio( "nooo", hardwareMap ) );
 		audioList.add( new Audio( "windows_startup", hardwareMap ) );
 		audioList.add( new Audio( "gamecube_startup", hardwareMap ) );
+		audioList.add( new Audio( "hallelujah_chorus", hardwareMap ) );
 		//audioList.add( new Audio("", hardwareMap) );
 
 		//audioList.add( new Audio("gold", hardwareMap) );
