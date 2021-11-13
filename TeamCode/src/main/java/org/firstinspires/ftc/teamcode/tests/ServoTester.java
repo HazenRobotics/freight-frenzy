@@ -17,16 +17,15 @@ public class ServoTester extends OpMode {
 		servo = hardwareMap.servo.get( "servo" );
 		telemetry.addLine( "finished init" );
 		telemetry.update( );
-
 	}
 
 	@Override
 	public void loop( ) {
 
 		if( gamepad1.right_trigger > 0 )
-			servo.setPosition( servo.getPosition( ) + 0.001 );
+			servo.setPosition( servo.getPosition( ) + 0.01 );
 		else if( gamepad1.left_trigger > 0 )
-			servo.setPosition( servo.getPosition( ) - 0.001 );
+			servo.setPosition( servo.getPosition( ) - 0.01 );
 
 		if( gamepad1.a )
 			servo.setPosition( 1.0 );
@@ -34,6 +33,8 @@ public class ServoTester extends OpMode {
 			servo.setPosition( 0.0 );
 
 		telemetry.addLine( "Servo position: " + servo.getPosition( ) );
+
+		telemetry.addLine( "Triggers to increase and decrease, a & b to toggle a & 1" );
 		telemetry.update( );
 
 	}

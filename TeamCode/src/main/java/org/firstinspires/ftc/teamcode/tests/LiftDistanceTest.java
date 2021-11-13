@@ -22,11 +22,9 @@ public class LiftDistanceTest extends LinearOpMode {
 
 		waitForStart( );
 
-		lift.setLiftHeightPow( 0.75, 20 );
+		lift.setHeightPower( 0.75, 17 );
 
-
-
-		telemetry.addLine( "set position" );
+		telemetry.addLine( "set position to 17" );
 		telemetry.update( );
 
 		while( !isStopRequested( ) ) ;

@@ -29,14 +29,14 @@ public class TensorFlow {
 	 * @param tfodModelAssetName  name of the model asset, found in the assets folder
 	 * @param minResultConfidence minimum result confidence to be considered a "Recognition". Value from 0 to 1.
 	 * @param monitorCamera       if the camera monitor should run
-	 * @param hw                  robot's hardware map
+	 * @param hardwareMap         robot's hardware map
 	 * @param labels              labels of the entries in the .tflite file
 	 */
-	public TensorFlow( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hw, String... labels ) {
+	public TensorFlow( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hardwareMap, String... labels ) {
 		if( !vuforia.isRunning( ) )
 			vuforia.start( );
 
-		initTfod( tfodModelAssetName, minResultConfidence, monitorCamera, hw, labels );
+		initTfod( tfodModelAssetName, minResultConfidence, monitorCamera, hardwareMap, labels );
 	}
 
 	/**
@@ -45,12 +45,12 @@ public class TensorFlow {
 	 * @param tfodModelAssetName  name of the model asset, found in the assets folder
 	 * @param minResultConfidence minimum result confidence to be considered a "Recognition". Value from 0 to 1.
 	 * @param monitorCamera       if the camera monitor should run
-	 * @param hw                  robot's hardware map
+	 * @param hardwareMap         robot's hardware map
 	 * @param labels              labels of the entries in the .tflite file
 	 */
-	private void initTfod( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hw, String... labels ) {
-		TFObjectDetector.Parameters tfodParameters = monitorCamera ? new TFObjectDetector.Parameters( hw.appContext.getResources( ).getIdentifier(
-				"tfodMonitorViewId", "id", hw.appContext.getPackageName( ) ) ) : new TFObjectDetector.Parameters( );
+	private void initTfod( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hardwareMap, String... labels ) {
+		TFObjectDetector.Parameters tfodParameters = monitorCamera ? new TFObjectDetector.Parameters( hardwareMap.appContext.getResources( ).getIdentifier(
+				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) ) ) : new TFObjectDetector.Parameters( );
 		tfodParameters.minResultConfidence = minResultConfidence;
 		tfod = ClassFactory.getInstance( ).createTFObjectDetector( tfodParameters, vuforia.getLocalizer( ) );
 		tfod.loadModelFromAsset( tfodModelAssetName, labels );

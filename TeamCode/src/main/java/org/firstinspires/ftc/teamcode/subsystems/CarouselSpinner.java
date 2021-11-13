@@ -7,25 +7,36 @@ public class CarouselSpinner {
 
 	CRServo spinner;
 
+	/**
+	 * creates a default carousel spinner with a spinnerName of "spinner"
+	 *
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 */
 	public CarouselSpinner( HardwareMap hardwareMap ) {
 		setup( hardwareMap, "spinner" );
 	}
 
-	public CarouselSpinner( HardwareMap hardwareMap, String name ) {
-		setup( hardwareMap, name );
+	/**
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 * @param spinnerName the name of the spinner servo in the hardware map
+	 */
+	public CarouselSpinner( HardwareMap hardwareMap, String spinnerName ) {
+		setup( hardwareMap, spinnerName );
 	}
 
-	private void setup( HardwareMap hardwareMap, String name ) {
+	private void setup( HardwareMap hardwareMap, String spinnerName ) {
 
-		spinner = hardwareMap.crservo.get( name );
+		spinner = hardwareMap.crservo.get( spinnerName );
+	}
+
+	// getters and setters
+
+	public double getPower( ) {
+		return spinner.getPower( );
 	}
 
 	public void setPower( double power ) {
 		spinner.setPower( power );
-	}
-
-	public double getPower( ) {
-		return spinner.getPower( );
 	}
 
 }

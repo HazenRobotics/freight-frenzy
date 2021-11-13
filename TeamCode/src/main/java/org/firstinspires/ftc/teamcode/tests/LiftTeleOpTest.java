@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.robots.HexBot;
-import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
@@ -64,9 +62,9 @@ public class LiftTeleOpTest extends OpMode {
 			distance -= 2;
 
 		if( player.a.onPress() )
-			lift.setLiftHeightVel( 500, height );
+			lift.setHeightVelocity( 500, height );
 		else if( player.y.onPress() )
-			lift.runDistanceVelAsync( 750, distance );
+			lift.moveDistanceVelocity( 750, distance, true );
 
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );

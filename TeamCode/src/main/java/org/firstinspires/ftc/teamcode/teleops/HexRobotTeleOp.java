@@ -115,10 +115,8 @@ public class HexRobotTeleOp extends OpMode {
 		String liftPower = "false";
 		if( !inDriverAssist ) {
 			liftPower = "true";
-			if( gamepad1.right_trigger > 0 ) {
-				robot.lift.setTeleOPower( gamepad1.right_trigger );
-			} else if( gamepad1.left_trigger > 0 ) {
-				robot.lift.setTeleOPower( -gamepad1.left_trigger );
+			if( gamepad1.right_trigger + gamepad1.left_trigger > 0 ) {
+				robot.lift.setTeleOPower( gamepad1.right_trigger - gamepad1.left_trigger );
 			} else {
 				robot.lift.setTeleOPower( 0 );
 				robot.lift.disableMotorIfUnused( );
@@ -138,15 +136,10 @@ public class HexRobotTeleOp extends OpMode {
 
 		robot.capper.setPosition( capperPosition );
 
-//		if( gamepad1.y && intakePower > 0 )
-//			intakePower -= 0.05;
-//		else if( gamepad1.a && intakePower < 1 )
-//			intakePower += 0.05;
-
 		// bucket auto slant while moving up '(or below min height)
 		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos /*< Lift.LIFT_SWITCH_LIMIT*/ )
+		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
 
@@ -156,7 +149,7 @@ public class HexRobotTeleOp extends OpMode {
 			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 		} else if( gamepad2.dpad_left ) {
 			inDriverAssist = true;
-			robot.lift.setLiftHeightVel( 850, 0 );
+			robot.lift.setHeightVelocity( 850, 0 );
 //			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
 		} else if( gamepad2.dpad_down ) {
 			inDriverAssist = true;

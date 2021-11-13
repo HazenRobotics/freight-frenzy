@@ -17,15 +17,15 @@ public class BarcodeUtil {
 	private OpenCvWebcam webcam;
 	private BarcodePositionDetector pipeline;
 
-	public BarcodeUtil( HardwareMap hw, String webcamName, Telemetry telemetry ) {
+	public BarcodeUtil( HardwareMap hardwareMap, String webcamName, Telemetry telemetry ) {
 		this.telemetry = telemetry;
-		setup( hw, webcamName );
+		setup( hardwareMap, webcamName );
 	}
 
-	public void setup( HardwareMap hw, String webcamName ) {
+	public void setup( HardwareMap hardwareMap, String webcamName ) {
 
-		int cameraMonitorViewId = hw.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hw.appContext.getPackageName( ) );
-		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hw.get( WebcamName.class, webcamName ), cameraMonitorViewId );
+		int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
+		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
 		pipeline = new BarcodePositionDetector( telemetry );
 		webcam.setPipeline( pipeline );
 	}
@@ -40,7 +40,6 @@ public class BarcodeUtil {
 	}
 
 	public void openCameraDevice( ) {
-
 
 		webcam.openCameraDeviceAsync( new OpenCvCamera.AsyncCameraOpenListener( ) {
 			@Override

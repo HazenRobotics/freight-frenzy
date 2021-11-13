@@ -17,34 +17,34 @@ public class EncoderTracker {
 
 	double encoderRadius;
 
-	public EncoderTracker( HardwareMap hw ) {
-		this( hw, "intake", "perpendicular" );
+	public EncoderTracker( HardwareMap hardwareMap ) {
+		this( hardwareMap, "intake", "perpendicular" );
 	}
 
-	public EncoderTracker( HardwareMap hw, int encoderRad ) {
+	public EncoderTracker( HardwareMap hardwareMap, int encoderRad ) {
 
-		this( hw, encoderRad, "intake", "perpendicular" );
+		this( hardwareMap, encoderRad, "intake", "perpendicular" );
 
 		encoderRadius = encoderRad;
 	}
 
-	public EncoderTracker( HardwareMap hw, String parallelName, String perpendicularName ) {
+	public EncoderTracker( HardwareMap hardwareMap, String parallelName, String perpendicularName ) {
 
-		hardwareMap = hw;
+		this.hardwareMap = hardwareMap;
 
 		initEncoders( parallelName, perpendicularName );
 	}
 
-	public EncoderTracker( HardwareMap hw, String parallel1Name, String parallel2Name, String perpendicularName ) {
+	public EncoderTracker( HardwareMap hardwareMap, String parallel1Name, String parallel2Name, String perpendicularName ) {
 
-		hardwareMap = hw;
+		this.hardwareMap = hardwareMap;
 
 		initEncoders( parallel1Name, parallel2Name, perpendicularName );
 	}
 
-	public EncoderTracker( HardwareMap hw, int encoderRad, String parallelName, String perpendicularName ) {
+	public EncoderTracker( HardwareMap hardwareMap, int encoderRad, String parallelName, String perpendicularName ) {
 
-		this( hw, parallelName, perpendicularName );
+		this( hardwareMap, parallelName, perpendicularName );
 
 		encoderRadius = encoderRad;
 	}
