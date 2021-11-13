@@ -14,8 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
-public class RedInAutoFreight extends LinearOpMode {
-
+public class BlueInAutoFreight extends LinearOpMode {
 	RRHexBot robot;
 
 	@Override
@@ -62,54 +61,54 @@ public class RedInAutoFreight extends LinearOpMode {
 				.build();
 		robot.drive.followTrajectorySequence( cameraFix );
 		robot.drive.setLocalizer( localizer );
-		robot.drive.setPoseEstimate( new Pose2d( 5.625, -62.1875, Math.toRadians( 90 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( 5.625, 62.1875, Math.toRadians( -90 ) ) );
 
 		TrajectorySequence mainTrajectory = robot.getTrajectorySequenceBuilder()
 				//move element out of the way
-				.lineToLinearHeading( new Pose2d( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT ? 8 : barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT ? 10 : 10 , -48, Math.toRadians( 180 ) ) )
+				.lineToLinearHeading( new Pose2d( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT ? 10 : barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT ? 8 : 10 , 48, Math.toRadians( 180 ) ) )
 				.addTemporalMarker( () -> {
 					robot.liftToShippingHubHeight( height );
 				} )
-				.strafeRight( 30 )
+				.strafeLeft( 30 )
 				//Drop block in shipping hub
-				.lineToConstantHeading( new Vector2d( 10, -24 ) )
-				.lineToConstantHeading( new Vector2d( -12 + robot.distanceFromShippingHub( height ), -24 ))
+				.lineToConstantHeading( new Vector2d( 10, 24 ) )
+				.lineToConstantHeading( new Vector2d( -12 + robot.distanceFromShippingHub( height ), 24 ))
 				.addTemporalMarker( () -> {
 					robot.dumpBucket();
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.lineToConstantHeading( new Vector2d( 10, -24 ) )
+				.lineToConstantHeading( new Vector2d( 10, 24 ) )
 
 				//Drive over bumps
-				.lineToConstantHeading( new Vector2d( 10, -40 ) )
-				.lineToConstantHeading( new Vector2d( 40, -40 ) )
+				.lineToConstantHeading( new Vector2d( 10, 40 ) )
+				.lineToConstantHeading( new Vector2d( 40, 40 ) )
 				//Pick up freight
 				.addTemporalMarker( () -> {
 					robot.intake.setPower( -0.6 );
 				} )
-				.lineToLinearHeading( new Pose2d( 48, -48, Math.toRadians( 135 ) ) )
+				.lineToLinearHeading( new Pose2d( 48, 48, Math.toRadians( 225 ) ) )
 				.waitSeconds( 2 )
 				.addTemporalMarker( () -> {
 					robot.intake.setPower( 0 );
 				} )
 				//Drive over bumps
-				.lineToLinearHeading( new Pose2d( 40, -40, Math.toRadians( 180 ) ) )
-				.lineToConstantHeading( new Vector2d( 10, -40 ) )
+				.lineToLinearHeading( new Pose2d( 40, 40, Math.toRadians( 180 ) ) )
+				.lineToConstantHeading( new Vector2d( 10, 40 ) )
 				//Drop freight in shipping hub
 				.addTemporalMarker( () -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 				} )
-				.lineToConstantHeading( new Vector2d( 10, -24 ) )
-				.lineToConstantHeading( new Vector2d( -12 + robot.distanceFromShippingHub( RRHexBot.ShippingHubHeight.LOW ), -24 ))
+				.lineToConstantHeading( new Vector2d( 10, 24 ) )
+				.lineToConstantHeading( new Vector2d( -12 + robot.distanceFromShippingHub( RRHexBot.ShippingHubHeight.LOW ), 24 ))
 				.addTemporalMarker( () -> {
 					robot.dumpBucket();
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.lineToConstantHeading( new Vector2d( 10, -24 ) )
+				.lineToConstantHeading( new Vector2d( 10, 24 ) )
 
 				//Drive over bumps
-				.lineToConstantHeading( new Vector2d( 10, -40 ) )
-				.lineToConstantHeading( new Vector2d( 40, -40 ) )
+				.lineToConstantHeading( new Vector2d( 10, 40 ) )
+				.lineToConstantHeading( new Vector2d( 40, 40 ) )
 				//Park
 				.splineTo( new Vector2d( 60, -44 ), 0 )
 

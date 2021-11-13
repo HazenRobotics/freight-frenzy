@@ -12,7 +12,7 @@ import com.spartronics4915.lib.T265Camera;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
-@Autonomous
+//@Autonomous
 public class AutoLocalizationMap extends LinearOpMode {
 
     RRMecanumDriveHex42 drive;

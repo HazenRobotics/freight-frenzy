@@ -8,7 +8,7 @@ import com.spartronics4915.lib.T265Camera;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
-@TeleOp
+//@TeleOp
 public class CreateLocalizationMap extends OpMode {
 
 	RRMecanumDriveHex42 drive;

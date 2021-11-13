@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import java.io.File;
 
-@TeleOp
+//@TeleOp
 public class DeleteMaps extends LinearOpMode {
 
 	@Override
