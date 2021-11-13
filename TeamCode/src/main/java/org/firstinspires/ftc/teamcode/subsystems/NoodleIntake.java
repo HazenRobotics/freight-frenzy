@@ -25,9 +25,9 @@ public class NoodleIntake {
 		setup( hardwareMap, intakeName );
 	}
 
-	public void setup( HardwareMap hw, String intakeName ) {
+	public void setup( HardwareMap hardwareMap, String intakeName ) {
 
-		intakeMotor = hw.dcMotor.get( intakeName );
+		intakeMotor = hardwareMap.dcMotor.get( intakeName );
 
 		intakeMotor.setDirection( DcMotorSimple.Direction.REVERSE );
 	}

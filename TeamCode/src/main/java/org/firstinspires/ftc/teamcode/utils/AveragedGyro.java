@@ -12,10 +12,10 @@ public class AveragedGyro {
 	BNO055IMU imu2;
 	List<LynxModule> hubs;
 
-	public AveragedGyro( HardwareMap hw, String imu1Name, String imu2Name, BNO055IMU.Parameters params ) {
-		imu1 = hw.get( BNO055IMU.class, imu1Name );
-		imu2 = hw.get( BNO055IMU.class, imu2Name );
-		hubs = hw.getAll( LynxModule.class );
+	public AveragedGyro( HardwareMap hardwareMap, String imu1Name, String imu2Name, BNO055IMU.Parameters params ) {
+		imu1 = hardwareMap.get( BNO055IMU.class, imu1Name );
+		imu2 = hardwareMap.get( BNO055IMU.class, imu2Name );
+		hubs = hardwareMap.getAll( LynxModule.class );
 		imu1.initialize( params );
 		imu2.initialize( params );
 	}

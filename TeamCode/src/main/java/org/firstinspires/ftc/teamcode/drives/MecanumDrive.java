@@ -12,23 +12,23 @@ public class MecanumDrive extends FourWheelDrive {
 	/**
 	 * Creates a MechanumDrive with default names for the wheels
 	 *
-	 * @param hw robot's hardware map
+	 * @param hardwareMap robot's hardware map
 	 */
-	public MecanumDrive( HardwareMap hw ) {
-		super( hw );
+	public MecanumDrive( HardwareMap hardwareMap ) {
+		super( hardwareMap );
 	}
 
 	/**
 	 * Creates a MechanumDrive with specified names for the wheels
 	 *
-	 * @param hw                  robot's hardware map
+	 * @param hardwareMap         robot's hardware map
 	 * @param frontLeftMotorName  name of front left motor in the hardware map
 	 * @param backLeftMotorName   name of back left motor in the hardware map
 	 * @param frontRightMotorName name of front right motor in the hardware map
 	 * @param backRightMotorName  name of back right motor in the hardware map
 	 */
-	public MecanumDrive( HardwareMap hw, String frontLeftMotorName, String backLeftMotorName, String frontRightMotorName, String backRightMotorName ) {
-		super( hw, frontLeftMotorName, backLeftMotorName, frontRightMotorName, backRightMotorName );
+	public MecanumDrive( HardwareMap hardwareMap, String frontLeftMotorName, String backLeftMotorName, String frontRightMotorName, String backRightMotorName ) {
+		super( hardwareMap, frontLeftMotorName, backLeftMotorName, frontRightMotorName, backRightMotorName );
 	}
 
 	public int convertDistTicks( double distanceToTravel ) {

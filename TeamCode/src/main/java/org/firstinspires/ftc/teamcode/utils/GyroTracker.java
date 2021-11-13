@@ -18,18 +18,18 @@ public class GyroTracker {
 	Orientation angles;
 	Acceleration gravity;
 
-	public GyroTracker( HardwareMap hw ) {
-		this( hw, false );
+	public GyroTracker( HardwareMap hardwareMap ) {
+		this( hardwareMap, false );
 	}
 
-	public GyroTracker( HardwareMap hw, boolean twoGyros ) {
+	public GyroTracker( HardwareMap hardwareMap, boolean twoGyros ) {
 
-		initGyro( hw, twoGyros );
+		initGyro( hardwareMap, twoGyros );
 	}
 
-	public void initGyro( HardwareMap hw, boolean twoGyros ) {
+	public void initGyro( HardwareMap hardwareMap, boolean twoGyros ) {
 
-		hardwareMap = hw;
+		this.hardwareMap = hardwareMap;
 
 		BNO055IMU.Parameters parameters = new BNO055IMU.Parameters( );
 		parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -39,11 +39,11 @@ public class GyroTracker {
 		parameters.loggingTag = "IMU";
 		parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator( );
 
-		gyro1 = hw.get( BNO055IMU.class, "imu" );
+		gyro1 = hardwareMap.get( BNO055IMU.class, "imu" );
 		gyro1.initialize( parameters );
 
 		if( twoGyros ) {
-			gyro2 = hw.get( BNO055IMU.class, "imu2" );
+			gyro2 = hardwareMap.get( BNO055IMU.class, "imu2" );
 			gyro2.initialize( parameters );
 		}
 

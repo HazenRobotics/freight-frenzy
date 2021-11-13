@@ -19,12 +19,12 @@ public class TwoWheelDrive implements Drive {
 
 	private Drive.State currentState = Drive.State.STOPPED;
 
-	public TwoWheelDrive( HardwareMap hw ) {
-		this( hw, "left", "right" );
+	public TwoWheelDrive( HardwareMap hardwareMap ) {
+		this( hardwareMap, "left", "right" );
 	}
 
-	public TwoWheelDrive( HardwareMap hw, String leftName, String rightName ) {
-		setUpMotors( hw, leftName, rightName );
+	public TwoWheelDrive( HardwareMap hardwareMap, String leftName, String rightName ) {
+		setUpMotors( hardwareMap, leftName, rightName );
 	}
 
 	/**
@@ -52,13 +52,13 @@ public class TwoWheelDrive implements Drive {
 	/**
 	 * Sets up motors from the hardware map
 	 *
-	 * @param hw        robot's hardware map
-	 * @param leftName  name of front left motor in the hardware map
-	 * @param rightName name of front right motor in the hardware map
+	 * @param hardwareMap robot's hardware map
+	 * @param leftName    name of front left motor in the hardware map
+	 * @param rightName   name of front right motor in the hardware map
 	 */
-	private void setUpMotors( HardwareMap hw, String leftName, String rightName ) {
-		left = hw.get( DcMotorEx.class, leftName );
-		right = hw.get( DcMotorEx.class, rightName );
+	private void setUpMotors( HardwareMap hardwareMap, String leftName, String rightName ) {
+		left = hardwareMap.get( DcMotorEx.class, leftName );
+		right = hardwareMap.get( DcMotorEx.class, rightName );
 
 		setMotorDirections( FORWARD, REVERSE );
 		setZeroPowerBehavior( BRAKE, BRAKE );

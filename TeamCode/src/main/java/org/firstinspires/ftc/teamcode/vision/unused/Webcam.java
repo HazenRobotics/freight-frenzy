@@ -26,18 +26,18 @@ public class Webcam {
 		RIGHT
 	}
 
-	public Webcam( HardwareMap hw ) {
-		this( hw, "webcam" );
+	public Webcam( HardwareMap hardwareMap ) {
+		this( hardwareMap, "webcam" );
 	}
 
-	public Webcam( HardwareMap hw, String webcamName ) {
-		setup( hw, webcamName );
+	public Webcam( HardwareMap hardwareMap, String webcamName ) {
+		setup( hardwareMap, webcamName );
 	}
 
-	public void setup( HardwareMap hw, String webcamName ) {
+	public void setup( HardwareMap hardwareMap, String webcamName ) {
 
-		int cameraMonitorViewId = hw.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hw.appContext.getPackageName( ) );
-		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hw.get( WebcamName.class, webcamName ), cameraMonitorViewId );
+		int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
+		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
 		pipeline = new BarcodePipeline( );
 		setPipeline( pipeline );
 	}

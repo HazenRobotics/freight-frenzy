@@ -24,12 +24,12 @@ public class FourWheelDrive implements Drive {
 
 	private State currentState = State.STOPPED;
 
-	public FourWheelDrive( HardwareMap hw ) {
-		this( hw, "frontLeft", "frontRight", "backLeft", "backRight" );
+	public FourWheelDrive( HardwareMap hardwareMap ) {
+		this( hardwareMap, "frontLeft", "frontRight", "backLeft", "backRight" );
 	}
 
-	public FourWheelDrive( HardwareMap hw, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
-		setUpMotors( hw, frontLeftName, frontRightName, backLeftName, backRightName );
+	public FourWheelDrive( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
+		setUpMotors( hardwareMap, frontLeftName, frontRightName, backLeftName, backRightName );
 	}
 
 	/**
@@ -54,17 +54,17 @@ public class FourWheelDrive implements Drive {
 	/**
 	 * Sets up motors from the hardware map
 	 *
-	 * @param hw             robot's hardware map
+	 * @param hardwareMap    robot's hardware map
 	 * @param frontRightName name of front right motor in the hardware map
 	 * @param frontLeftName  name of front left motor in the hardware map
 	 * @param backRightName  name of back right motor in the hardware map
 	 * @param backLeftName   name of back left motor in the hardware map
 	 */
-	private void setUpMotors( HardwareMap hw, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
-		frontLeft = hw.get( DcMotorEx.class, frontLeftName );
-		frontRight = hw.get( DcMotorEx.class, frontRightName );
-		backLeft = hw.get( DcMotorEx.class, backLeftName );
-		backRight = hw.get( DcMotorEx.class, backRightName );
+	private void setUpMotors( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
+		frontLeft = hardwareMap.get( DcMotorEx.class, frontLeftName );
+		frontRight = hardwareMap.get( DcMotorEx.class, frontRightName );
+		backLeft = hardwareMap.get( DcMotorEx.class, backLeftName );
+		backRight = hardwareMap.get( DcMotorEx.class, backRightName );
 
 		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );
 		setZeroPowerBehavior( BRAKE, BRAKE, BRAKE, BRAKE );
