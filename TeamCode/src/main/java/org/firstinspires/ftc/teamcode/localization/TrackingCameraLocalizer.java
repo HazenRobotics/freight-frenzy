@@ -106,6 +106,7 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	public void resetCamera() {
 		slamra.free();
+		slamra = null;
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {

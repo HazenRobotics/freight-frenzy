@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robots.HexBot;
+import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
@@ -25,9 +27,11 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 //@Disabled
 public class LiftTeleOpTest extends OpMode {
 
-	HexBot robot;
-
 	GamepadEvents player;
+
+//	HexBot robot;
+
+	Lift lift;
 
 	double distance = 0;
 
@@ -36,9 +40,9 @@ public class LiftTeleOpTest extends OpMode {
 	@Override
 	public void init( ) {
 
-		gamepad1.rumble( 2000 );
+		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
-		robot = new HexBot( this );
+		gamepad1.rumble( 2000 );
 
 		player = new GamepadEvents( gamepad1 );
 
@@ -59,13 +63,15 @@ public class LiftTeleOpTest extends OpMode {
 		else if( player.dpad_left.onPress( ) )
 			distance -= 2;
 
-		if( gamepad1.a )
-			robot.lift.setLiftHeightVel( 500, height );
-		else if( gamepad1.y )
-			robot.lift.runDistanceVelAsync( 750, distance );
+		if( player.a.onPress() )
+			lift.setLiftHeightVel( 500, height );
+		else if( player.y.onPress() )
+			lift.runDistanceVelAsync( 750, distance );
 
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );
+		telemetry.addLine( );
+		telemetry.addLine( "Lift Power: " + lift.getPower( ) );
 		telemetry.addLine( "Lift Position: " + Lift.getPosition( true ) );
 
 		//updates

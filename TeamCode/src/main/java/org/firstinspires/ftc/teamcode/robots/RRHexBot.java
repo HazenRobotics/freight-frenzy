@@ -62,7 +62,8 @@ public class RRHexBot extends Robot {
 
 		super( op );
 
-		Robot.writeToDefaultFile( "", false, false );
+		Robot.createDefaultMatchLogFile( );
+		Robot.writeToDefaultFile( "***Created Default Log File***", false, true );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
@@ -70,7 +71,7 @@ public class RRHexBot extends Robot {
 		// initialize util objects/classes
 		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", opMode.telemetry );
 
-		new SoundLibrary( hardwareMap );
+//		new SoundLibrary( hardwareMap );
 
 		drive = new RRMecanumDriveHex42( hardwareMap );
 		mecanumDrive = new MecanumDrive( hardwareMap );
@@ -78,12 +79,14 @@ public class RRHexBot extends Robot {
 		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
 
-		lift = new Lift( hardwareMap, "lift", 3.25, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
 		capper = new Capper( hardwareMap, "capper" );
 
 		intake = new NoodleIntake( hardwareMap );
+
+		capper.setPosition( 0 );
 
 //		gyroTracker = new GyroTracker( hardwareMap, false );
 //		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
@@ -107,9 +110,12 @@ public class RRHexBot extends Robot {
 	}
 
 	public double shippingHubHeightToInches( ShippingHubHeight height ) {
+
+		telemetry.addLine( "shippingHubHeightToInches: " + height );
+		telemetry.update( );
 		switch( height ) {
 			case LOW:
-				return 10;
+				return 9;
 			case MIDDLE:
 				return 16;
 			case HIGH:
@@ -147,6 +153,19 @@ public class RRHexBot extends Robot {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
 		sleepRobot( 0.7 );
 		bucket.setAngle( BUCKET_ANGLE_INTAKE );
+	}
+
+	public double distanceFromShippingHub(ShippingHubHeight height) {
+		switch( height ) {
+			case LOW:
+				return 11 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
+			case MIDDLE:
+				return 8.5 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
+			case HIGH:
+				return 6 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
+			default:
+				return 11 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
+		}
 	}
 
 }

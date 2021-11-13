@@ -124,15 +124,14 @@ public class SoundLibrary {
 	}
 
 	private static String playRandomAudioOfType( String audioType ) {
-		int num = 0;
-		ArrayList<Audio> list = new ArrayList<Audio>( );
+		ArrayList<Audio> list = new ArrayList<>( );
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( audioList.get( i ).getName( ).contains( audioType ) )
-				list.add( num++, audioList.get( i ) );
-		if( !list.get( 0 ).getName( ).contains( audioType ) )
+				list.add( audioList.get( i ) );
+		// changed this
+		if( list.size( ) == 0 )
 			return "No " + audioType + " audio found";
-		int randomPos = (int) (Math.random( ) * num);
+		int randomPos = (int) (Math.random( ) * list.size( ) );
 		return playAudio( list.get( randomPos ).getName( ) );
-
 	}
 }

@@ -11,8 +11,6 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
-import org.firstinspires.ftc.teamcode.utils.Logger;
-import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 import java.text.DecimalFormat;
 
@@ -55,12 +53,10 @@ public class HexRobotTeleOp extends OpMode {
 	@Override
 	public void init( ) {
 
-		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
-
 		telemetry.addData( "Mode", "Initiating robot..." );
 		telemetry.update( );
 
-		Robot.createMatchLogFile( "HexRobotTeleOp" );
+		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
 //		gamepad1.rumble( 10000 );
 
@@ -68,18 +64,17 @@ public class HexRobotTeleOp extends OpMode {
 		player2 = new GamepadEvents( gamepad2 );
 
 		robot = new RRHexBot( this );
-		robot.lift.setModeTeleOp( );
 
-		SoundLibrary.playRandomStartup( );
+//		SoundLibrary.playRandomStartup( );
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
 
 		Gamepad.RumbleEffect effect = new Gamepad.RumbleEffect.Builder( )
-				.addStep( 1, 1, 100 )
-				.addStep( 0, 0, 100 )
-				.addStep( 1, 1, 100 )
+				.addStep( 1, 1, 70 )
+				.addStep( 0, 0, 70 )
+				.addStep( 1, 1, 70 )
 				.build( );
 		gamepad1.runRumbleEffect( effect );
 //		gamepad1.stopRumble( );
@@ -120,7 +115,7 @@ public class HexRobotTeleOp extends OpMode {
 		String liftPower = "false";
 		if( !inDriverAssist ) {
 			liftPower = "true";
-			if( gamepad1.right_trigger > 0  ) {
+			if( gamepad1.right_trigger > 0 ) {
 				robot.lift.setTeleOPower( gamepad1.right_trigger );
 			} else if( gamepad1.left_trigger > 0 ) {
 				robot.lift.setTeleOPower( -gamepad1.left_trigger );
@@ -137,9 +132,9 @@ public class HexRobotTeleOp extends OpMode {
 			capperPosition = 1;
 
 		if( gamepad2.y )
-			capperPosition -= 0.005;
+			capperPosition -= 0.01;
 		else if( gamepad2.a )
-			capperPosition += 0.005;
+			capperPosition += 0.01;
 
 		robot.capper.setPosition( capperPosition );
 
@@ -174,6 +169,9 @@ public class HexRobotTeleOp extends OpMode {
 		else if( player1.b.onPress( ) || player2.b.onPress( ) )
 			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -intakePower );
 
+		// reset the lift position to its current zero position
+		if( player1.ps.onPress( ) )
+			robot.lift.resetLift( );
 
 //		telemetry.addLine( "FL: " + robot.mecanumDrive.getFrontLeftPosition( ) );
 //		telemetry.addLine( "BL: " + robot.mecanumDrive.getBackLeftPosition( ) );

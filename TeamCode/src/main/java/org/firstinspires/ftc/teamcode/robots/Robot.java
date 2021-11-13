@@ -42,6 +42,10 @@ public abstract class Robot {
 		Logger.createMatchLogFile( className );
 	}
 
+	public static void createDefaultMatchLogFile() {
+		Logger.writeToDefaultFile( "reated Default Log Fil", false, true );
+	}
+
 	/**
 	 * writes to the default match file
 	 *

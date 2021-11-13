@@ -13,9 +13,8 @@ public class ResetCamera extends LinearOpMode {
 	@Override
 	public void runOpMode( ) throws InterruptedException {
 		robot = new RRHexBot( this );
+		telemetry.addLine( "This will reset the robot controller app. Continue?" );
 		waitForStart();
-		robot.drive.resetCamera();
-		telemetry.addLine( "Camera Reset" );
-		telemetry.update();
+		System.exit( 0 );
 	}
 }

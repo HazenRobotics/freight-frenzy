@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.localization.Localizer;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -32,39 +35,61 @@ public class RedOutAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( /*-29.375*/-42.375, -62.1875, Math.toRadians( 90 ) ) );
-
 		telemetry.addLine( "Ready!" );
 		telemetry.update( );
 
-		while( !isStopRequested( ) && !isStarted( ) )
+		while( !isStopRequested( ) && !isStarted( ) ) {
 			robot.drive.update( );
+			telemetry.addData( "Element position", robot.barcodeUtil.getBarcodePosition() );
+			telemetry.addLine(  );
+			telemetry.addData( "Current pose estimate", robot.drive.getPoseEstimate() );
+			telemetry.addLine(  );
+			telemetry.addLine( "Pose estimate should be somewhere close to (0, 0, 0). If not, run the \"ResetCamera\" Autonomous." );
+			telemetry.update();
+		}
+
 
 		waitForStart( );
+
+		//set it to mecanum wheels in very beginning
+
+		Localizer localizer = robot.drive.getLocalizer();
+		robot.drive.setLocalizer( new MecanumDrive.MecanumLocalizer( robot.drive ) );
+
 
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
 
+		TrajectorySequence cameraFix = robot.getTrajectorySequenceBuilder()
+				.forward( 6 )
+				.back( 6 )
+				.build();
+		robot.drive.followTrajectorySequence( cameraFix );
+		robot.drive.setLocalizer( localizer );
+		robot.drive.setPoseEstimate( new Pose2d( /*-29.375*/-42.375, -62.1875, Math.toRadians( 90 ) ) );
+
+
 		TrajectorySequence mainTrajectory = robot.getTrajectorySequenceBuilder( )
 
 				//Drop block in Shipping Hub
 				.lineToLinearHeading( new Pose2d( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT ? -40 : barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT ? -32 : -36 , -48, 0 ) )
+
+				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( height ) )
 				.strafeLeft( 30 )
 				//.splineToLinearHeading( new Pose2d( -58, -36, Math.toRadians( -45 ) ), Math.toRadians( 90 ) )
-				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( height ) )
 				.lineToConstantHeading( new Vector2d( -36, -24 ))
-				.lineToConstantHeading( new Vector2d( -12 - 10.5 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( height )), -24 ))
+				.lineToConstantHeading( new Vector2d( -12 - robot.distanceFromShippingHub( height ), -24 ))
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.waitSeconds( 0.7 )
+				.waitSeconds( 1.2 )
 
 				//Duck spin
 				.lineToConstantHeading( new Vector2d( -36, -24 ) )
-				.lineToConstantHeading( new Vector2d( -56.5, -57.5 ) )
+				.lineToConstantHeading( new Vector2d( -56, -58.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.spinnerRight.setPower( 0.75 );
 				} )
@@ -76,7 +101,9 @@ public class RedOutAuto extends LinearOpMode {
 					robot.intake.setPower( -0.6 );
 				} )
 				.lineToConstantHeading( new Vector2d( -60, -51 ) )
-				.waitSeconds( 1 )
+				.strafeRight( 2 )
+				.strafeLeft( 12 )
+
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 				} )
@@ -86,19 +113,18 @@ public class RedOutAuto extends LinearOpMode {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 				} )
 				.splineToConstantHeading( new Vector2d( -36, -24 ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( -12 - 10.5 - robot.lift.calcBucketDistanceFromHeight( robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ) ), -24 ) )
+				.lineToConstantHeading( new Vector2d( -12 - robot.distanceFromShippingHub( RRHexBot.ShippingHubHeight.LOW ), -24 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.waitSeconds( 0.7 )
+				.waitSeconds( 1.2 )
 
 				//Park in Warehouse
 				.lineToConstantHeading( new Vector2d( -36, -24 ) )
-				.splineToConstantHeading( new Vector2d( -36, -50 ), Math.toRadians( 270 ) )
-				//.setVelConstraint( new MecanumVelocityConstraint( 35, 17 ) )
+				.splineToConstantHeading( new Vector2d( -36, -32 ), Math.toRadians( 270 ) )
 				.splineToConstantHeading( new Vector2d( -10, -50 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( 0, -50 ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 6, -50 ), Math.toRadians( 0 ) )
 				.splineToConstantHeading( new Vector2d( 10, -40 ), Math.toRadians( 90 ) )
 
 
