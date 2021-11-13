@@ -8,31 +8,38 @@ public class NoodleIntake {
 
 	DcMotor intakeMotor;
 
-	public NoodleIntake( HardwareMap hw ) {
-		setup( hw );
+	/**
+	 * creates a default noodle intake with a intakeName of "intake"
+	 *
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 */
+	public NoodleIntake( HardwareMap hardwareMap ) {
+		setup( hardwareMap, "intake" );
 	}
 
-	public void setup( HardwareMap hw ) {
+	/**
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 * @param intakeName  the name of the intake motor in the hardware map
+	 */
+	public void NoodleIntake( HardwareMap hardwareMap, String intakeName ) {
+		setup( hardwareMap, intakeName );
+	}
 
-		intakeMotor = hw.dcMotor.get( "intake" );
+	public void setup( HardwareMap hw, String intakeName ) {
+
+		intakeMotor = hw.dcMotor.get( intakeName );
 
 		intakeMotor.setDirection( DcMotorSimple.Direction.REVERSE );
+	}
+
+	// getters and setters
+
+	public double getPower( ) {
+		return intakeMotor.getPower( );
 	}
 
 	public void setPower( double power ) {
 
 		intakeMotor.setPower( power );
-	}
-
-	public void eject( ) {
-		setPower( -1 );
-	}
-
-	public void stop( ) {
-		setPower( 0 );
-	}
-
-	public double getPower( ) {
-		return intakeMotor.getPower( );
 	}
 }

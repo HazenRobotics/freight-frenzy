@@ -5,31 +5,39 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Capper {
 
-	// maybe objects for bucket length (for rotation radius)
-	// or for the (length of the string connecting) distance between the servo and connection to the bucket (probably at the end of the bucket)
+	Servo capper;
 
-	public Servo capper;
-
-	public Capper( HardwareMap hw ) {
-		setup( hw, "capper" );
+	/**
+	 * creates a default capper with a capperName of "capper"
+	 *
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 */
+	public Capper( HardwareMap hardwareMap ) {
+		setup( hardwareMap, "capper" );
 	}
 
-	public Capper( HardwareMap hw, String pusherName ) {
+	/**
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 * @param capperName the name of the capper servo in the hardware map
+	 */
+	public Capper( HardwareMap hardwareMap, String capperName ) {
 
-		setup( hw, pusherName );
+		setup( hardwareMap, capperName );
 	}
 
-	public void setup( HardwareMap hw, String pusherName ) {
+	public void setup( HardwareMap hardwareMap, String capperName ) {
 
-		capper = hw.servo.get( pusherName );
+		capper = hardwareMap.servo.get( capperName );
+	}
+
+	// getters and setters
+
+	public double getPosition( ) {
+		return capper.getPosition( );
 	}
 
 	public void setPosition( double position ) {
 		capper.setPosition( position );
-	}
-
-	public double getPosition( ) {
-		return capper.getPosition( );
 	}
 }
 

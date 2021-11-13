@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robots;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,9 +13,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
-import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
-import org.firstinspires.ftc.teamcode.utils.GyroTracker;
-import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
@@ -47,10 +43,6 @@ public class RRHexBot extends Robot {
 	public static final double BUCKET_ANGLE_INTAKE = 85; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
 	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
 	public static final double BUCKET_ANGLE_DUMP = -35;
-
-	public static final double CAPPER_POS_0 = 0;
-	public static final double CAPPER_POS_0_5 = 0.5;
-	public static final double CAPPER_POS_1 = 1;
 
 	public enum ShippingHubHeight {
 		LOW,
@@ -126,7 +118,7 @@ public class RRHexBot extends Robot {
 	}
 
 	public void liftToShippingHubHeight( ShippingHubHeight height ) {
-		lift.setLiftHeightVel( 800, shippingHubHeightToInches( height ) );
+		lift.setHeightVelocity( 800, shippingHubHeightToInches( height ) );
 		bucket.setAngle( BUCKET_ANGLE_MOVING );
 	}
 

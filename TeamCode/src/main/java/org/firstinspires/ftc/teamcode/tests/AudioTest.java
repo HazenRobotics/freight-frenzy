@@ -26,7 +26,7 @@ public class AudioTest extends OpMode {
 		gamepad = new GamepadEvents( super.gamepad1 );
 		library = new SoundLibrary( hardwareMap );
 
-		audios = SoundLibrary.getAudios( );
+		audios = SoundLibrary.getAudioNames( );
 
 		telemetry.addLine( "x - random" );
 		telemetry.addLine( "y - ps startup" );

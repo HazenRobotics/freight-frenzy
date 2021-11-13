@@ -6,33 +6,53 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class SquareIntake {
 
-	DcMotor intakeMotorLeft;
-	DcMotor intakeMotorRight;
+	DcMotor leftIntakeMotor;
+	DcMotor rightIntakeMotor;
 
-	public SquareIntake( HardwareMap hw ) {
-		setup( hw );
+	/**
+	 * creates a default square intake with a leftIntakeName of "intakeLeft" & a rightIntakeName of "intakeRight"
+	 *
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 */
+	public SquareIntake( HardwareMap hardwareMap ) {
+		setup( hardwareMap, "intakeLeft", "intakeRight" );
 	}
 
-	public void setup( HardwareMap hw ) {
+	/**
+	 * @param hardwareMap     the hardwareMap of the current running OpMode
+	 * @param leftIntakeName  the name of the left intake motor in the hardware map
+	 * @param rightIntakeName the name of the right intake motor in the hardware map
+	 */
+	public void SquareIntake( HardwareMap hardwareMap, String leftIntakeName, String rightIntakeName ) {
+		setup( hardwareMap, leftIntakeName, rightIntakeName );
+	}
 
-		intakeMotorLeft = hw.dcMotor.get( "intakeLeft" );
-		intakeMotorRight = hw.dcMotor.get( "intakeRight" );
+	public void setup( HardwareMap hardwareMap, String leftMotorName, String rightMotorName ) {
 
-		intakeMotorRight.setDirection( DcMotorSimple.Direction.REVERSE );
+		leftIntakeMotor = hardwareMap.dcMotor.get( leftMotorName );
+		rightIntakeMotor = hardwareMap.dcMotor.get( rightMotorName );
+
+		rightIntakeMotor.setDirection( DcMotorSimple.Direction.REVERSE );
+	}
+
+	// getters and setters
+
+	public double getLeftPower( ) {
+		return leftIntakeMotor.getCurrentPosition( );
+	}
+
+	public double getRightPower( ) {
+		return rightIntakeMotor.getCurrentPosition( );
+	}
+
+	public double[] getPowers( ) {
+		return new double[]{ getLeftPower( ), getRightPower( ) };
 	}
 
 	public void setPower( double power ) {
 
-		intakeMotorLeft.setPower( power );
-		intakeMotorRight.setPower( power );
-	}
-
-	public void eject( ) {
-		setPower( -1 );
-	}
-
-	public void stop( ) {
-		setPower( 0 );
+		leftIntakeMotor.setPower( power );
+		rightIntakeMotor.setPower( power );
 	}
 
 }
