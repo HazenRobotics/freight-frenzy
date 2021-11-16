@@ -7,6 +7,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
+import java.text.DecimalFormat;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -27,7 +29,7 @@ public class LiftTeleOpTest extends OpMode {
 
 	GamepadEvents player;
 
-//	HexBot robot;
+	DecimalFormat df = new DecimalFormat( "0.###" );
 
 	Lift lift;
 
@@ -70,7 +72,9 @@ public class LiftTeleOpTest extends OpMode {
 		telemetry.addLine( "Distance (y): " + distance );
 		telemetry.addLine( );
 		telemetry.addLine( "Lift Power: " + lift.getPower( ) );
-		telemetry.addLine( "Lift Position: " + Lift.getPosition( true ) );
+		telemetry.addLine( "Lift Moved Position: " + Lift.getPosition( true ) );
+		telemetry.addLine( );
+		telemetry.addLine( "lift position: " + df.format( lift.getPositionInch( ) ) + " (" + lift.getPosition( ) + ")" );
 
 		//updates
 		telemetry.update( );

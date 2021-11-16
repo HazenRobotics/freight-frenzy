@@ -152,7 +152,7 @@ public class RRHexBot extends Robot {
 			case LOW:
 				return 10.5 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
 			case MIDDLE:
-				return 8.5 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
+				return 7.5 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
 			case HIGH:
 				return 6 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
 			default:

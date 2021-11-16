@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
@@ -63,8 +64,12 @@ public class RedOutAuto extends LinearOpMode {
 		robot.barcodeUtil.stopCamera( );
 
 		TrajectorySequence cameraFix = robot.getTrajectorySequenceBuilder()
-				.forward( 6 )
-				.back( 6 )
+			.setAccelConstraint( new ProfileAccelerationConstraint( 50 ) )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
+				.forward( 8 )
+				.strafeLeft( 8 )
+				.strafeRight( 8 )
+				.back( 8 )
 				.build();
 		robot.drive.followTrajectorySequence( cameraFix );
 		robot.drive.setLocalizer( localizer );
@@ -89,20 +94,21 @@ public class RedOutAuto extends LinearOpMode {
 
 				//Duck spin
 				.lineToConstantHeading( new Vector2d( -36, -24 ) )
-				.lineToConstantHeading( new Vector2d( -56, -58.5 ) )
+				.lineToConstantHeading( new Vector2d( -58.5, -56  ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( 0.75 );
+					robot.spinnerRight.setPower( -0.5 );
 				} )
 				.waitSeconds( 3.2 )
 				.addTemporalMarker( ( ) -> robot.spinnerRight.setPower( 0 ) )
 
 				//Pickup duck from ground
-				.addTemporalMarker( ( ) -> {
+				/*.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( -0.6 );
 				} )
-				.lineToConstantHeading( new Vector2d( -60, -51 ) )
-				.strafeRight( 2 )
-				.strafeLeft( 12 )
+				.splineToConstantHeading( new Vector2d( -51, -53 ), Math.toRadians( 270 ) )
+				.lineToConstantHeading( new Vector2d( -51,-61 ) )
+				.strafeLeft( 2 )
+				.strafeRight( 12 )
 
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
@@ -112,20 +118,26 @@ public class RedOutAuto extends LinearOpMode {
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 				} )
-				.splineToConstantHeading( new Vector2d( -36, -24 ), Math.toRadians( 0 ) )
+				.splineToLinearHeading( new Pose2d( -36, -24, Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
 				.lineToConstantHeading( new Vector2d( -12 - robot.distanceFromShippingHub( RRHexBot.ShippingHubHeight.LOW ), -24 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.waitSeconds( 1.2 )
+				.waitSeconds( 1.2 )*/
 
 				//Park in Warehouse
-				.lineToConstantHeading( new Vector2d( -36, -24 ) )
-				.splineToConstantHeading( new Vector2d( -36, -32 ), Math.toRadians( 270 ) )
+				//.lineToConstantHeading( new Vector2d( -36, -24 ) )
+				/*.splineToConstantHeading( new Vector2d( -36, -32 ), Math.toRadians( 270 ) )
 				.splineToConstantHeading( new Vector2d( -10, -50 ), Math.toRadians( 0 ) )
 				.splineToConstantHeading( new Vector2d( 6, -50 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( 10, -40 ), Math.toRadians( 90 ) )
+				.splineToConstantHeading( new Vector2d( 10, -40 ), Math.toRadians( 90 ) )*/
+
+				.splineToConstantHeading( new Vector2d( -30, -24 ), Math.toRadians( 90 ) )
+				.splineToConstantHeading( new Vector2d( -26, -2 ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( -10, -2 ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 6, -2 ), Math.toRadians( 270 ) )
+				.splineToConstantHeading( new Vector2d( 8, -42 ), Math.toRadians( 270 ) )
 
 
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )

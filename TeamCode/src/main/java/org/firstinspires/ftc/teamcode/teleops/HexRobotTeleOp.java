@@ -50,6 +50,10 @@ public class HexRobotTeleOp extends OpMode {
 
 	double prevLiftPos = 0;
 
+	Thread duckSpinAssist;
+	double spinnerPower = 0.6;
+	int duckSpinTimes = 9;
+
 	@Override
 	public void init( ) {
 
@@ -58,14 +62,26 @@ public class HexRobotTeleOp extends OpMode {
 
 		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
-//		gamepad1.rumble( 10000 );
-
 		player1 = new GamepadEvents( gamepad1 );
 		player2 = new GamepadEvents( gamepad2 );
 
 		robot = new RRHexBot( this );
 
 //		SoundLibrary.playRandomStartup( );
+
+		// 9 ducks in 25 seconds (10 if capstone)
+		duckSpinAssist = new Thread( ( ) -> {
+			for( int i = 0; i < duckSpinTimes; i++ ) {
+				robot.spinnerLeft.setPower( spinnerPower );
+				robot.spinnerRight.setPower( spinnerPower );
+				robot.sleepRobot( 1.5 );
+				robot.spinnerLeft.setPower( 0.0 );
+				robot.spinnerRight.setPower( 0.0 );
+				robot.sleepRobot( 1.0 );
+				telemetry.addLine( "duckSpinAssist loop " + i );
+				telemetry.update( );
+			}
+		} );
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
@@ -77,7 +93,6 @@ public class HexRobotTeleOp extends OpMode {
 				.addStep( 1, 1, 70 )
 				.build( );
 		gamepad1.runRumbleEffect( effect );
-//		gamepad1.stopRumble( );
 	}
 
 	@Override
@@ -97,17 +112,9 @@ public class HexRobotTeleOp extends OpMode {
 			robot.intake.setPower( robot.intake.getPower( ) < 0 ? 0 : -intakePower );
 
 		// bucket control
-		// dpad right - intake
-		// dpad down - dump
-		if( gamepad1.dpad_up ) {
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		} else if( gamepad1.dpad_down ) {
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
-		} else if( gamepad1.dpad_right ) {
-			robot.lift.exitLoops( 500 );
-		}
+		setBucketPosition( );
 
-		// if you touch either of the triggers, it will exit the driver assist method
+		// if you touch either of the triggers enough, it will exit the driver assist method
 		if( gamepad1.right_trigger > 0.5 || gamepad1.left_trigger > 0.5 )
 			inDriverAssist = false;
 
@@ -137,24 +144,10 @@ public class HexRobotTeleOp extends OpMode {
 		robot.capper.setPosition( capperPosition );
 
 		// bucket auto slant while moving up '(or below min height)
-		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
-		prevLiftPos = robot.lift.getPositionInch( );
+		autoSlantBucket( );
 
 		// driver assist methods
-		if( gamepad2.dpad_up ) {
-			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-		} else if( gamepad2.dpad_left ) {
-			inDriverAssist = true;
-			robot.lift.setHeightVelocity( 850, 0 );
-//			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		} else if( gamepad2.dpad_down ) {
-			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-		}
+		runLiftAssistMethods( );
 
 		// carousel spinner control
 		if( player1.x.onPress( ) || player2.x.onPress( ) ) // toggles carousel spinner
@@ -163,23 +156,11 @@ public class HexRobotTeleOp extends OpMode {
 			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -intakePower );
 
 		// reset the lift position to its current zero position
-		if( player1.ps.onPress( ) )
+		if( player1.ps.onPress( ) || gamepad1.ps )
 			robot.lift.resetLift( );
 
-//		telemetry.addLine( "FL: " + robot.mecanumDrive.getFrontLeftPosition( ) );
-//		telemetry.addLine( "BL: " + robot.mecanumDrive.getBackLeftPosition( ) );
-//		telemetry.addLine( "FR: " + robot.mecanumDrive.getFrontRightPosition( ) );
-//		telemetry.addLine( "BR: " + robot.mecanumDrive.getBackRightPosition( ) );
-		telemetry.addLine( "settingLiftPower: " + liftPower );
-		telemetry.addLine( "inDriverAssist: " + inDriverAssist );
-		telemetry.addLine( "capperPosition: " + capperPosition );
-		telemetry.addLine( "intakePower: " + df.format( intakePower ) );
-		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
-		telemetry.addLine( "capper: " + robot.capper.getPosition( ) );
-		telemetry.addLine( "lift ground & limit: " + robot.lift.getGroundBucketHeight( ) + ", " + Lift.LIFT_SWITCH_LIMIT );
-		telemetry.addLine( "lift target: " + df.format( robot.lift.getTargetPositionInch( ) ) + " (" + robot.lift.getTargetPosition( ) + ")" );
-		telemetry.addLine( "lift diff: " + df.format( robot.lift.getPositionInch( ) ) + " - " + df.format( prevLiftPos ) );
-
+		addControlTelemetry();
+		addInfoTelemetry();
 
 		//updates
 		telemetry.update( );
@@ -213,6 +194,65 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "Capper Increment: Gp2: a - up, b - down" );
 		telemetry.addLine( "Driver Assist (Lift): Gp2: dpad: up - top layer, down - bottom layer" );
 		telemetry.addLine( );
+	}
+
+	public void addInfoTelemetry( ) {
+
+//		telemetry.addLine( "FL: " + robot.mecanumDrive.getFrontLeftPosition( ) );
+//		telemetry.addLine( "BL: " + robot.mecanumDrive.getBackLeftPosition( ) );
+//		telemetry.addLine( "FR: " + robot.mecanumDrive.getFrontRightPosition( ) );
+//		telemetry.addLine( "BR: " + robot.mecanumDrive.getBackRightPosition( ) );
+		telemetry.addLine( "duckSpinTimes: " + duckSpinTimes );
+		telemetry.addLine( "settingLiftPower: " + ( !inDriverAssist ? "true" : "false" ) );
+		telemetry.addLine( "inDriverAssist: " + inDriverAssist );
+		telemetry.addLine( "capperPosition: " + capperPosition );
+		telemetry.addLine( "intakePower: " + df.format( intakePower ) );
+		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
+		telemetry.addLine( "capper: " + robot.capper.getPosition( ) );
+		telemetry.addLine( "lift ground & limit: " + robot.lift.getGroundBucketHeight( ) + ", " + Lift.LIFT_SWITCH_LIMIT );
+		telemetry.addLine( "lift target: " + df.format( robot.lift.getTargetPositionInch( ) ) + " (" + robot.lift.getTargetPosition( ) + ")" );
+		telemetry.addLine( "lift diff: " + df.format( robot.lift.getPositionInch( ) ) + " - " + df.format( prevLiftPos ) );
+	}
+
+	public void runLiftAssistMethods( ) {
+		if( gamepad2.dpad_up ) {
+			inDriverAssist = true;
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+		} else if( gamepad2.dpad_left ) {
+			inDriverAssist = true;
+			robot.lift.setHeightVelocity( 850, 0 );
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		} else if( gamepad2.dpad_down ) {
+			inDriverAssist = true;
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+		}
+	}
+
+	/**
+	 * slants the bucket depending on the height of the lift
+	 */
+	public void autoSlantBucket( ) {
+		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
+		prevLiftPos = robot.lift.getPositionInch( );
+	}
+
+	/**
+	 * sets the position of the bucket based on player 1 input
+	 * <br/><br/>
+	 * dpad up - intake
+	 * <br/>
+	 * dpad down - dump
+	 */
+	public void setBucketPosition( ) {
+		if( gamepad1.dpad_up )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		else if( gamepad1.dpad_down )
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
+		else if( gamepad1.dpad_right )
+			robot.lift.exitLoops( 500 );
 	}
 
 }

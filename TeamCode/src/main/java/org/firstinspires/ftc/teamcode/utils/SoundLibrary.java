@@ -19,24 +19,30 @@ public class SoundLibrary {
 
 	private void initSounds( ) {
 
-		// other audios
-		audioList.add( new Audio( hardwareMap, "ps_startup", 0.5f ) );
-		audioList.add( new Audio( hardwareMap, "slurp_yummy", 1f ) );
-		audioList.add( new Audio( hardwareMap, "fine_addition", 1f ) );
-		audioList.add( new Audio( hardwareMap, "have_hulk", 1f ) );
-		audioList.add( new Audio( hardwareMap, "hello_there_startup", 1f ) );
-		audioList.add( new Audio( hardwareMap, "my_precious", 1f ) );
-		audioList.add( new Audio( hardwareMap, "falcon_punch_smash", 1f ) );
-		audioList.add( new Audio( hardwareMap, "seismic_charge_smash", 1f ) );
-		audioList.add( new Audio( hardwareMap, "smash", 1f ) );
-		audioList.add( new Audio( hardwareMap, "nooo", 1f ) );
-		audioList.add( new Audio( hardwareMap, "windows_startup", 1f ) );
-		audioList.add( new Audio( hardwareMap, "gamecube_startup", 1f ) );
-		audioList.add( new Audio( hardwareMap, "hallelujah_chorus", 1f ) );
-		//audioList.add( new Audio("", hardwareMap) );
+		String[] soundNames = new String[]{
+				"ps_startup",
+				"slurp_yummy",
+				"fine_addition",
+				"have_hulk",
+				"hello_there_startup",
+				"my_precious",
+				"falcon_punch_smash",
+				"seismic_charge_smash",
+				"smash",
+				"nooo",
+				"windows_startup",
+				"gamecube_startup",
+				"hallelujah_chorus" };
 
-		//audioList.add( new Audio("gold", hardwareMap) );
-		//audioList.add( new Audio("silver", hardwareMap) );
+		float[] volumes = new float[]{ /*0.5f*/1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f };
+
+		// other audios
+		String names = toString( );
+		for( int i = 0; i < soundNames.length; i++ )
+			if( !names.contains( soundNames[i] ) )
+				audioList.add( new Audio( hardwareMap, soundNames[i], 1f ) );
+
+		//audioList.add( new Audio( hardwareMap, "" ) );
 
 		// checks all of the sounds and removes the ones that aren't found
 		for( int i = 0; i < audioList.size( ); i++ )
@@ -45,7 +51,6 @@ public class SoundLibrary {
 	}
 
 	/**
-	 *
 	 * @param audioName the name of the audio to play
 	 * @return a string saying whether the audio is playing or was not found
 	 */
@@ -61,6 +66,7 @@ public class SoundLibrary {
 
 	/**
 	 * plays the playstation startup (the audio file with the name "ps_startup")
+	 *
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	public static String playStartup( ) {
@@ -69,6 +75,7 @@ public class SoundLibrary {
 
 	/**
 	 * plays a random startup (any audio file containing the name "startup")
+	 *
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	public static String playRandomStartup( ) {
@@ -77,6 +84,7 @@ public class SoundLibrary {
 
 	/**
 	 * plays a random smash (any audio file containing the name "smash")
+	 *
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	public static String playRandomSmash( ) {
@@ -85,6 +93,7 @@ public class SoundLibrary {
 
 	/**
 	 * plays a random sound loaded
+	 *
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	public static String playRandomSound( ) {

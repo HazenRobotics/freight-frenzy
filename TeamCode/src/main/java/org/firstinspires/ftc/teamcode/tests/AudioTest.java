@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 @TeleOp(name = "AudioTest", group = "Test")
-@Disabled
+//@Disabled
 public class AudioTest extends OpMode {
 
 	GamepadEvents gamepad;
@@ -48,11 +48,19 @@ public class AudioTest extends OpMode {
 		if( gamepad.a.onPress( ) )
 			telemetry.addLine( SoundLibrary.playAudio( audios[selected] ) );
 
-		if( gamepad.dpad_up.onPress( ) && selected - 1 >= 0 )
-			selected--;
+		if( gamepad.dpad_up.onPress( ) ) {
+			if( selected - 1 < 0 )
+				selected = audios.length - 1;
+			else
+				selected--;
+		}
 
-		if( gamepad.dpad_down.onPress( ) && selected + 1 <= audios.length - 1 )
-			selected++;
+		if( gamepad.dpad_down.onPress( ) ) {
+			if( selected + 1 > audios.length - 1 )
+				selected = 0;
+			else
+				selected++;
+		}
 
 		for( int i = 0; i < audios.length; i++ )
 			telemetry.addLine( (i == selected ? "* " : "- ") + audios[i] );

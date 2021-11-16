@@ -45,8 +45,8 @@ public class Audio {
 			if( audioID != 0 )
 				audioFound = SoundPlayer.getInstance( ).preload( this.hardwareMap.appContext, audioID );
 		} catch( Resources.NotFoundException e ) {
-			Log.e( "AUDIO", "" + e.getLocalizedMessage( ) );
 			Robot.writeToDefaultFile( "NotFoundException :: " + e.getLocalizedMessage( ), true, true );
+			Robot.writeToMatchFile( "NotFoundException :: " + e.getLocalizedMessage( ), true );
 		}
 
 		setMasterVolume( masterVolume );
@@ -54,7 +54,8 @@ public class Audio {
 
 	public void play( ) {
 		String textToWrite = (audioFound ? "Successfully played" : "Failed to find & play") + " audio " + audioName;
-		Robot.writeToDefaultFile( textToWrite, true, true );
+		Robot.writeToDefaultFile( textToWrite,  true, true );
+		Robot.writeToMatchFile( textToWrite,  true );
 
 		SoundPlayer.getInstance( ).startPlaying( hardwareMap.appContext, audioID );
 	}
