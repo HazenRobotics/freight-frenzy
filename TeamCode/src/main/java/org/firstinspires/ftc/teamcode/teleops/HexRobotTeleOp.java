@@ -119,9 +119,7 @@ public class HexRobotTeleOp extends OpMode {
 			inDriverAssist = false;
 
 		// lift velocity control
-		String liftPower = "false";
 		if( !inDriverAssist ) {
-			liftPower = "true";
 			if( gamepad1.right_trigger + gamepad1.left_trigger > 0 ) {
 				robot.lift.setTeleOPower( gamepad1.right_trigger - gamepad1.left_trigger );
 			} else {
@@ -146,14 +144,22 @@ public class HexRobotTeleOp extends OpMode {
 		// bucket auto slant while moving up '(or below min height)
 		autoSlantBucket( );
 
+		// increase or decrease the amount of ducks to spin off the table
+		if( player1.dpad_right.onPress( ) )
+			duckSpinTimes++;
+		else if( player1.dpad_left.onPress( ) )
+			duckSpinTimes--;
+
 		// driver assist methods
 		runLiftAssistMethods( );
 
+		runSpinnerAssistMethods();
+
 		// carousel spinner control
-		if( player1.x.onPress( ) || player2.x.onPress( ) ) // toggles carousel spinner
+		if( player1.b.onPress( ) || player2.b.onPress( ) ) { // toggles carousel spinners
 			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : intakePower );
-		else if( player1.b.onPress( ) || player2.b.onPress( ) )
 			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -intakePower );
+		}
 
 		// reset the lift position to its current zero position
 		if( player1.ps.onPress( ) || gamepad1.ps )
@@ -229,6 +235,19 @@ public class HexRobotTeleOp extends OpMode {
 	}
 
 	/**
+	 * toggle the duck spinner assist thread
+	 */
+	public void runSpinnerAssistMethods( ) {
+
+		if( gamepad1.x ) {
+			if( duckSpinAssist.isAlive( ) )
+				duckSpinAssist.interrupt( );
+			else
+				duckSpinAssist.start( );
+		}
+	}
+
+	/**
 	 * slants the bucket depending on the height of the lift
 	 */
 	public void autoSlantBucket( ) {
@@ -251,7 +270,7 @@ public class HexRobotTeleOp extends OpMode {
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
 		else if( gamepad1.dpad_down )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
-		else if( gamepad1.dpad_right )
+		else if( gamepad1.start || gamepad2.start)
 			robot.lift.exitLoops( 500 );
 	}
 
