@@ -47,7 +47,7 @@ public class Bucket {
 	 * @param angleFromGround of the bucket
 	 */
 	public void setAngle( double angleFromGround ) {
-		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
+//		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
 		setPosition( angleToPosition( angleFromGround ) );
 	}
 
@@ -80,7 +80,7 @@ public class Bucket {
 	 * @return that angle converted to be between 0 & 1
 	 */
 	public double angleToPosition( double angle ) {
-		Robot.writeToDefaultFile( "Calc: " + (1 - ((angle - maxAngle) / bucketRange)), true, true );
+//		Robot.writeToDefaultFile( "Calc: " + (1 - ((angle - maxAngle) / bucketRange)), true, true );
 		return 1 - ((angle - maxAngle) / bucketRange);
 	}
 

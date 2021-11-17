@@ -51,7 +51,7 @@ public class HexRobotTeleOp extends OpMode {
 	double prevLiftPos = 0;
 
 	Thread duckSpinAssist;
-	double spinnerPower = 0.6;
+	double spinnerPower = 0.65;
 	int duckSpinTimes = 9;
 
 	@Override
@@ -71,17 +71,21 @@ public class HexRobotTeleOp extends OpMode {
 
 		// 9 ducks in 25 seconds (10 if capstone)
 		duckSpinAssist = new Thread( ( ) -> {
-			for( int i = 0; i < duckSpinTimes; i++ ) {
+//			for( int i = 0; i < duckSpinTimes; i++ ) {
+			while( !duckSpinAssist.isInterrupted( ) ) {
 				robot.spinnerLeft.setPower( spinnerPower );
-				robot.spinnerRight.setPower( spinnerPower );
-				robot.sleepRobot( 1.5 );
+				robot.spinnerRight.setPower( -spinnerPower );
+				robot.sleepRobot( 2.2 ); // 1.5 not enough
 				robot.spinnerLeft.setPower( 0.0 );
 				robot.spinnerRight.setPower( 0.0 );
-				robot.sleepRobot( 1.0 );
-				telemetry.addLine( "duckSpinAssist loop " + i );
+				robot.sleepRobot( 0.3 );
+				telemetry.addLine( "duckSpinAssist loop " /*+ i*/ );
 				telemetry.update( );
 			}
 		} );
+
+		if( player2.x.onPress( ) )
+			spinnerPower *= -1;
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
@@ -239,10 +243,12 @@ public class HexRobotTeleOp extends OpMode {
 	 */
 	public void runSpinnerAssistMethods( ) {
 
-		if( gamepad1.x ) {
-			if( duckSpinAssist.isAlive( ) )
+		if( player1.x.onPress( ) ) {
+			if( duckSpinAssist.isAlive( ) ) {
 				duckSpinAssist.interrupt( );
-			else
+				robot.spinnerLeft.setPower( 0.0 );
+				robot.spinnerRight.setPower( 0.0 );
+			} else
 				duckSpinAssist.start( );
 		}
 	}

@@ -224,7 +224,7 @@ public class Lift {
 	 */
 	public void stopAndReset( ) {
 
-		Log.d( "LOGGER", "motor position: " + motor.getCurrentPosition( ) );
+		Robot.writeToDefaultFile( "LOGGER: motor position: " + motor.getCurrentPosition( ), true, true );
 		liftPosition += motor.getCurrentPosition( );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		// stop and reset encoder sets the encoder position to zero
@@ -279,17 +279,17 @@ public class Lift {
 	 */
 
 	public double calcLiftDistanceFromHeight( double height ) {
-		Robot.writeToDefaultFile( "calcLiftDistanceFromHeight: " + (height / Math.sin( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+//		Robot.writeToDefaultFile( "calcLiftDistanceFromHeight: " + (height / Math.sin( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
 		return height / Math.sin( getLiftAngle( AngleUnit.RADIANS ) );
 	}
 
 	public double calcBucketDistanceFromPosition( double liftPosition ) {
-		Robot.writeToDefaultFile( "calcBucketDistanceFromPosition: " + (liftPosition * Math.cos( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+//		Robot.writeToDefaultFile( "calcBucketDistanceFromPosition: " + (liftPosition * Math.cos( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
 		return liftPosition * Math.cos( getLiftAngle( AngleUnit.RADIANS ) );
 	}
 
 	public double calcBucketDistanceFromHeight( double height ) {
-		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height * Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+//		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height * Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
 		return height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) );
 	}
 
