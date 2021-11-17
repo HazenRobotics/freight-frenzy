@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class Logger {
@@ -23,13 +24,12 @@ public class Logger {
 
 	public static void createMatchLogFile( String className ) {
 
-		SimpleDateFormat matchFormatter = new SimpleDateFormat( "MM-dd_HH'h'mm'm'_" );
-		//SimpleDateFormat matchFormatter = new SimpleDateFormat( "MM-dd_HH-mm_" );
+		SimpleDateFormat matchFormatter = new SimpleDateFormat( "MM-dd_HH-mm_", Locale.getDefault( ) );
 		matchFormatter.setTimeZone( TimeZone.getDefault( ) );
 		String time = matchFormatter.format( new Date( ) );
 
-		// will look like: 04-05_15h11m_TeleOpTechnicolor.txt
-		// could look like: 04-05_15-11_TeleOpTechnicolor.txt
+		// ("MM-dd_HH'h'mm'm'_") looks like: 04-05_15h11m_TeleOpTechnicolor.txt
+		// ("MM-dd_HH-mm_") looks like: 04-05_15-11_TeleOpTechnicolor.txt
 
 		matchLogFileName = time + className + ".txt";
 		writeAFile( matchLogFileName, matchLogFileName + ": created", false, true );
@@ -68,10 +68,14 @@ public class Logger {
 
 		// "\n" = System.lineSeparator()
 
-		Thread fileWriter = new Thread( ( ) -> {
+		new Thread( ( ) -> {
 
-			Date date = new Date( );
-			String time = includeTimeStamp ? new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: " : "";
+			String time = "";
+			Date date;
+			if( includeTimeStamp || deleteOldLogs )
+				date = new Date( );
+			if( includeTimeStamp )
+				time = new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: ";
 
 			//".../Internal Storage";
 			String path = Environment.getExternalStorageDirectory( ).getPath( ) + LOG_PATH;
@@ -86,9 +90,7 @@ public class Logger {
 
 			if( deleteOldLogs )
 				deleteOldLogsDay( new SimpleDateFormat( "MM-dd" ).format( date ) );
-
-		} );
-		fileWriter.start( );
+		} ).start( );
 
 	}
 

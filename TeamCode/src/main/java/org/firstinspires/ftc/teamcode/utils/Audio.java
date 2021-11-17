@@ -11,41 +11,31 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 public class Audio {
 
 	private boolean audioFound = false;
-	private final boolean isPlaying = false;
 
 	private int audioID = 0;
 
 	private String audioName = "";
 
-	private final HardwareMap hardwareMap;
+	private HardwareMap hardwareMap;
 
-	public Audio( HardwareMap hw ) {
+	public Audio( HardwareMap hardwareMap, String audioName ) {
 
-		hardwareMap = hw;
+		initSound( hardwareMap, audioName, 1f );
 	}
 
-	public Audio( String name, HardwareMap hw ) {
+	public Audio( HardwareMap hardwareMap, String audioName, float masterVolume ) {
 
-		audioName = name;
-
-		hardwareMap = hw;
-
-		initSound( 1 );
+		initSound( hardwareMap, audioName, masterVolume );
 	}
 
-	public Audio( String name, float masterVolume, HardwareMap hw ) {
+	public void initSound( HardwareMap hardwareMap, String audioName,  float masterVolume ) {
 
-		audioName = name;
+		this.hardwareMap = hardwareMap;
 
-		hardwareMap = hw;
-
-		initSound( masterVolume );
-	}
-
-	public void initSound( float masterSound ) {
+		this.audioName = audioName;
 
 		// Determine Resource IDs for sounds built into the RC application.
-		audioID = hardwareMap.appContext.getResources( ).getIdentifier( audioName, "raw", hardwareMap.appContext.getPackageName( ) );
+		audioID = this.hardwareMap.appContext.getResources( ).getIdentifier( this.audioName, "raw", this.hardwareMap.appContext.getPackageName( ) );
 
 		//Robot.writeToDefaultFile( "" + audioID, true, true );
 
@@ -53,20 +43,32 @@ public class Audio {
 		// Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.
 		try {
 			if( audioID != 0 )
-				audioFound = SoundPlayer.getInstance( ).preload( hardwareMap.appContext, audioID );
+				audioFound = SoundPlayer.getInstance( ).preload( this.hardwareMap.appContext, audioID );
 		} catch( Resources.NotFoundException e ) {
-			Log.e( "|-|-|-|", e.getLocalizedMessage( ) );
 			Robot.writeToDefaultFile( "NotFoundException :: " + e.getLocalizedMessage( ), true, true );
+			Robot.writeToMatchFile( "NotFoundException :: " + e.getLocalizedMessage( ), true );
 		}
 
-		setMasterVolume( masterSound );
+		setMasterVolume( masterVolume );
 	}
 
 	public void play( ) {
 		String textToWrite = (audioFound ? "Successfully played" : "Failed to find & play") + " audio " + audioName;
-		Robot.writeToDefaultFile( textToWrite, true, true );
+		Robot.writeToDefaultFile( textToWrite,  true, true );
+		Robot.writeToMatchFile( textToWrite,  true );
 
 		SoundPlayer.getInstance( ).startPlaying( hardwareMap.appContext, audioID );
+	}
+
+	public static void stopAllAudios( ) {
+		SoundPlayer.getInstance( ).stopPlayingAll( );
+	}
+
+	/**
+	 * @return if the audio was found (if it even exists)
+	 */
+	public boolean found( ) {
+		return audioFound;
 	}
 
 	public String getName( ) {
@@ -77,9 +79,7 @@ public class Audio {
 		return audioID;
 	}
 
-	public boolean exists( ) {
-		return audioFound;
-	}
+	// master volume getters and setters
 
 	public float getMasterVolume( ) {
 		return SoundPlayer.getInstance( ).getMasterVolume( );
@@ -87,10 +87,6 @@ public class Audio {
 
 	public void setMasterVolume( float masterVolume ) {
 		SoundPlayer.getInstance( ).setMasterVolume( masterVolume );
-	}
-
-	public static void stopAllAudios( ) {
-		SoundPlayer.getInstance( ).stopPlayingAll( );
 	}
 
 

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
 import java.util.Objects;
 
@@ -26,47 +26,48 @@ import java.util.Objects;
 @Autonomous(group = "drive")
 @Disabled
 public class MaxAngularVeloTuner extends LinearOpMode {
-    public static double RUNTIME = 4.0;
 
-    private ElapsedTime timer;
-    private double maxAngVelocity = 0.0;
+	public static double RUNTIME = 4.0;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+	private ElapsedTime timer;
+	private double maxAngVelocity = 0.0;
 
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+	@Override
+	public void runOpMode( ) throws InterruptedException {
+		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+		drive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
 
-        telemetry.addLine("Your bot will turn at full speed for " + RUNTIME + " seconds.");
-        telemetry.addLine("Please ensure you have enough space cleared.");
-        telemetry.addLine("");
-        telemetry.addLine("Press start when ready.");
-        telemetry.update();
+		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-        waitForStart();
+		telemetry.addLine( "Your bot will turn at full speed for " + RUNTIME + " seconds." );
+		telemetry.addLine( "Please ensure you have enough space cleared." );
+		telemetry.addLine( "" );
+		telemetry.addLine( "Press start when ready." );
+		telemetry.update( );
 
-        telemetry.clearAll();
-        telemetry.update();
+		waitForStart( );
 
-        drive.setDrivePower(new Pose2d(0, 0, 1));
-        timer = new ElapsedTime();
+		telemetry.clearAll( );
+		telemetry.update( );
 
-        while (!isStopRequested() && timer.seconds() < RUNTIME) {
-            drive.updatePoseEstimate();
+		drive.setDrivePower( new Pose2d( 0, 0, 1 ) );
+		timer = new ElapsedTime( );
 
-            Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
+		while( !isStopRequested( ) && timer.seconds( ) < RUNTIME ) {
+			drive.updatePoseEstimate( );
 
-            maxAngVelocity = Math.max(poseVelo.getHeading(), maxAngVelocity);
-        }
+			Pose2d poseVelo = Objects.requireNonNull( drive.getPoseVelocity( ), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer." );
 
-        drive.setDrivePower(new Pose2d());
+			maxAngVelocity = Math.max( poseVelo.getHeading( ), maxAngVelocity );
+		}
 
-        telemetry.addData("Max Angular Velocity (rad)", maxAngVelocity);
-        telemetry.addData("Max Angular Velocity (deg)", Math.toDegrees(maxAngVelocity));
-        telemetry.update();
+		drive.setDrivePower( new Pose2d( ) );
 
-        while (!isStopRequested()) idle();
-    }
+		telemetry.addData( "Max Angular Velocity (rad)", maxAngVelocity );
+		telemetry.addData( "Max Angular Velocity (deg)", Math.toDegrees( maxAngVelocity ) );
+		telemetry.update( );
+
+		while( !isStopRequested( ) ) idle( );
+	}
 }

@@ -27,13 +27,13 @@ public class Vuforia {
 	 * @param vuforiaKey    vuforia license key
 	 * @param webcamName    name of the webcam in the robot configuration
 	 * @param monitorCamera if the camera monitor should run
-	 * @param hw            robot's hardware map
+	 * @param hardwareMap   robot's hardware map
 	 */
-	public void setParameters( String vuforiaKey, String webcamName, boolean monitorCamera, @NotNull HardwareMap hw ) {
+	public void setParameters( String vuforiaKey, String webcamName, boolean monitorCamera, @NotNull HardwareMap hardwareMap ) {
 		parameters = new VuforiaLocalizer.Parameters( );
-		parameters.cameraMonitorViewIdParent = monitorCamera ? hw.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hw.appContext.getPackageName( ) ) : null;
+		parameters.cameraMonitorViewIdParent = monitorCamera ? hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) ) : null;
 		parameters.vuforiaLicenseKey = vuforiaKey;
-		parameters.cameraName = hw.get( WebcamName.class, webcamName );
+		parameters.cameraName = hardwareMap.get( WebcamName.class, webcamName );
 		parameters.useExtendedTracking = false;
 	}
 

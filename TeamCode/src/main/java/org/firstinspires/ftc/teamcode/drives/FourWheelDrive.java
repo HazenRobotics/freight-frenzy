@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 public class FourWheelDrive implements Drive {
 
 	public DcMotorEx frontLeft;
@@ -22,12 +24,12 @@ public class FourWheelDrive implements Drive {
 
 	private State currentState = State.STOPPED;
 
-	public FourWheelDrive( HardwareMap hw ) {
-		this( hw, "frontLeft", "frontRight", "backLeft", "backRight" );
+	public FourWheelDrive( HardwareMap hardwareMap ) {
+		this( hardwareMap, "frontLeft", "frontRight", "backLeft", "backRight" );
 	}
 
-	public FourWheelDrive( HardwareMap hw, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
-		setUpMotors( hw, frontLeftName, frontRightName, backLeftName, backRightName );
+	public FourWheelDrive( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
+		setUpMotors( hardwareMap, frontLeftName, frontRightName, backLeftName, backRightName );
 	}
 
 	/**
@@ -52,19 +54,19 @@ public class FourWheelDrive implements Drive {
 	/**
 	 * Sets up motors from the hardware map
 	 *
-	 * @param hw             robot's hardware map
+	 * @param hardwareMap    robot's hardware map
 	 * @param frontRightName name of front right motor in the hardware map
 	 * @param frontLeftName  name of front left motor in the hardware map
 	 * @param backRightName  name of back right motor in the hardware map
 	 * @param backLeftName   name of back left motor in the hardware map
 	 */
-	private void setUpMotors( HardwareMap hw, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
-		frontLeft = hw.get( DcMotorEx.class, frontLeftName );
-		frontRight = hw.get( DcMotorEx.class, frontRightName );
-		backLeft = hw.get( DcMotorEx.class, backLeftName );
-		backRight = hw.get( DcMotorEx.class, backRightName );
+	private void setUpMotors( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
+		frontLeft = hardwareMap.get( DcMotorEx.class, frontLeftName );
+		frontRight = hardwareMap.get( DcMotorEx.class, frontRightName );
+		backLeft = hardwareMap.get( DcMotorEx.class, backLeftName );
+		backRight = hardwareMap.get( DcMotorEx.class, backRightName );
 
-		setMotorDirections( FORWARD, REVERSE, FORWARD, REVERSE );
+		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );
 		setZeroPowerBehavior( BRAKE, BRAKE, BRAKE, BRAKE );
 		//setRunMode(STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER );
 
@@ -91,11 +93,11 @@ public class FourWheelDrive implements Drive {
 
 		// You might have to play with the + or - depending on how your motors are installed
 		double frontLeftPower = move + turn;
-		double frontRightPower = move - turn;
 		double backLeftPower = move + turn;
+		double frontRightPower = move - turn;
 		double backRightPower = move - turn;
 
-		setMotorPower( frontLeftPower, frontRightPower, backLeftPower, backRightPower );
+		setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 	}
 
 	@Override
@@ -114,15 +116,15 @@ public class FourWheelDrive implements Drive {
 	/**
 	 * Sets specified power to the motors
 	 *
-	 * @param frontRightPower power at which to run the front right motor.
 	 * @param frontLeftPower  power at which to run the front left motor.
-	 * @param backRightPower  power at which to run the back right motor.
 	 * @param backLeftPower   power at which to run the back left motor.
+	 * @param frontRightPower power at which to run the front right motor.
+	 * @param backRightPower  power at which to run the back right motor.
 	 */
-	protected void setMotorPower( double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower ) {
+	protected void setMotorPower( double frontLeftPower, double backLeftPower, double frontRightPower, double backRightPower ) {
 		frontLeft.setPower( frontLeftPower );
-		frontRight.setPower( frontRightPower );
 		backLeft.setPower( backLeftPower );
+		frontRight.setPower( frontRightPower );
 		backRight.setPower( backRightPower );
 	}
 
@@ -130,14 +132,14 @@ public class FourWheelDrive implements Drive {
 	 * Sets the direction of the motors
 	 *
 	 * @param frontLeftDirection  direction of the front left motor
-	 * @param frontRightDirection direction of the front right motor
 	 * @param backLeftDirection   direction of the back left motor
+	 * @param frontRightDirection direction of the front right motor
 	 * @param backRightDirection  direction of the back right motor
 	 */
-	public void setMotorDirections( Direction frontLeftDirection, Direction frontRightDirection, Direction backLeftDirection, Direction backRightDirection ) {
+	public void setMotorDirections( Direction frontLeftDirection, Direction backLeftDirection, Direction frontRightDirection, Direction backRightDirection ) {
 		frontLeft.setDirection( frontLeftDirection );
-		frontRight.setDirection( frontRightDirection );
 		backLeft.setDirection( backLeftDirection );
+		frontRight.setDirection( frontRightDirection );
 		backRight.setDirection( backRightDirection );
 	}
 
@@ -145,14 +147,14 @@ public class FourWheelDrive implements Drive {
 	 * Sets the zero power behavior of the motors
 	 *
 	 * @param frontLeftBehavior  zero power behavior of the front left motor
-	 * @param frontRightBehavior zero power behavior of the front right motor
 	 * @param backLeftBehavior   zero power behavior of the back left motor
+	 * @param frontRightBehavior zero power behavior of the front right motor
 	 * @param backRightBehavior  zero power behavior of the back right motor
 	 */
-	public void setZeroPowerBehavior( ZeroPowerBehavior frontLeftBehavior, ZeroPowerBehavior frontRightBehavior, ZeroPowerBehavior backLeftBehavior, ZeroPowerBehavior backRightBehavior ) {
+	public void setZeroPowerBehavior( ZeroPowerBehavior frontLeftBehavior, ZeroPowerBehavior backLeftBehavior, ZeroPowerBehavior frontRightBehavior, ZeroPowerBehavior backRightBehavior ) {
 		frontLeft.setZeroPowerBehavior( frontLeftBehavior );
-		frontRight.setZeroPowerBehavior( frontRightBehavior );
 		backLeft.setZeroPowerBehavior( backLeftBehavior );
+		frontRight.setZeroPowerBehavior( frontRightBehavior );
 		backRight.setZeroPowerBehavior( backRightBehavior );
 	}
 
@@ -160,43 +162,78 @@ public class FourWheelDrive implements Drive {
 	 * Sets the run modes of the motors
 	 *
 	 * @param frontLeftMode  run mode of the front left motor
-	 * @param frontRightMode run mode of the front right motor
 	 * @param backLeftMode   run mode of the back left motor
-	 * @param backMode       run mode of the back right motor
+	 * @param frontRightMode run mode of the front right motor
+	 * @param backRightMode  run mode of the back right motor
 	 */
-	public void setRunMode( RunMode frontLeftMode, RunMode frontRightMode, RunMode backLeftMode, RunMode backMode ) {
+	public void setRunMode( RunMode frontLeftMode, RunMode frontRightMode, RunMode backLeftMode, RunMode backRightMode ) {
 		frontLeft.setMode( frontLeftMode );
-		frontRight.setMode( frontRightMode );
 		backLeft.setMode( backLeftMode );
-		backRight.setMode( backMode );
+		frontRight.setMode( frontRightMode );
+		backRight.setMode( backRightMode );
 	}
 
 	public double getFrontLeftPower( ) {
 		return frontLeft.getPower( );
 	}
 
-	public double getFrontRightPower( ) {
-		return frontRight.getPower( );
-	}
-
 	public double getBackLeftPower( ) {
 		return backLeft.getPower( );
+	}
+
+	public double getFrontRightPower( ) {
+		return frontRight.getPower( );
 	}
 
 	public double getBackRightPower( ) {
 		return backRight.getPower( );
 	}
 
+
+	public double getFrontLeftVelocity( ) {
+		return frontLeft.getVelocity( );
+	}
+
+	public double getBackLeftVelocity( ) {
+		return backLeft.getVelocity( );
+	}
+
+	public double getFrontRightVelocity( ) {
+		return frontRight.getVelocity( );
+	}
+
+	public double getBackRightVelocity( ) {
+		return backRight.getVelocity( );
+	}
+
+
+	public double getFrontLeftVelocity( AngleUnit angleUnit ) {
+		return frontLeft.getVelocity( angleUnit );
+	}
+
+	public double getBackLeftVelocity( AngleUnit angleUnit ) {
+		return backLeft.getVelocity( angleUnit );
+	}
+
+	public double getFrontRightVelocity( AngleUnit angleUnit ) {
+		return frontRight.getVelocity( angleUnit );
+	}
+
+	public double getBackRightVelocity( AngleUnit angleUnit ) {
+		return backRight.getVelocity( angleUnit );
+	}
+
+
 	public int getFrontLeftPosition( ) {
 		return frontLeft.getCurrentPosition( );
 	}
 
-	public int getFrontRightPosition( ) {
-		return frontRight.getCurrentPosition( );
-	}
-
 	public int getBackLeftPosition( ) {
 		return backLeft.getCurrentPosition( );
+	}
+
+	public int getFrontRightPosition( ) {
+		return frontRight.getCurrentPosition( );
 	}
 
 	public int getBackRightPosition( ) {

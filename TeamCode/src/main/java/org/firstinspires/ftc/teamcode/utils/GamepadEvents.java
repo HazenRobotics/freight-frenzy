@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.util.ArrayList;
