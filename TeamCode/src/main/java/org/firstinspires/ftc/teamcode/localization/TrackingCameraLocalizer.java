@@ -128,6 +128,11 @@ public class TrackingCameraLocalizer implements Localizer {
 		return _confidence;
 	}
 
+	/**
+	 * Sends odometry data to the sensor fusion algorithm
+	 * @param vx velocity in the x direction (in inches / s)
+	 * @param vy velocity in the y direction (in inches / s)
+	 */
 	public void sendOdometryData(double vx, double vy) {
 		slamra.sendOdometry( vy * DistanceUnit.mPerInch, vx * DistanceUnit.mPerInch );
 	}

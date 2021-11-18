@@ -1,25 +1,46 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.arcrobotics.ftclib.geometry.Transform2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.spartronics4915.lib.T265Camera;
 
-@TeleOp
-public class CameraTest extends OpMode {
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.robots.RRHexBot;
+
+@Autonomous
+public class CameraTest extends LinearOpMode {
+	RRMecanumDriveHex42 drive;
 	T265Camera slamra;
 
 
 	@Override
-	public void init( ) {
+	public void runOpMode( ) throws InterruptedException {
+		drive = new RRMecanumDriveHex42( hardwareMap );
 		slamra = new T265Camera( new Transform2d(  ), 0, hardwareMap.appContext );
 		slamra.start();
-	}
 
-	@Override
-	public void loop( ) {
-		telemetry.addData( "Camera position", slamra.getLastReceivedCameraUpdate().pose );
-		telemetry.addData( "Camera velocity", slamra.getLastReceivedCameraUpdate().velocity );
-		telemetry.update();
+		new Thread( () -> {
+			while(true) {
+				telemetry.addData( "PoseConfidence", slamra.getLastReceivedCameraUpdate().confidence );
+				telemetry.update( );
+			}
+		} ).start();
+
+		waitForStart();
+
+		drive.followTrajectorySequence( drive.trajectorySequenceBuilder( new Pose2d(  ) )
+				.setVelConstraint( new MecanumVelocityConstraint( 55, 17 ) )
+				.setAccelConstraint( new ProfileAccelerationConstraint( 90 ))
+				.forward( 12 )
+				.back( 12.5 )
+				.build());
+		while( !isStopRequested() );
 	}
 }

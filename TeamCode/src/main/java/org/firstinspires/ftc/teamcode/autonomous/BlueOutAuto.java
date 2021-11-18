@@ -63,19 +63,23 @@ public class BlueOutAuto extends LinearOpMode {
 		robot.barcodeUtil.stopCamera( );
 
 		TrajectorySequence cameraFix = robot.getTrajectorySequenceBuilder()
-				.setAccelConstraint( new ProfileAccelerationConstraint( 50 ) )
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
-				.forward( 8 )
-				.strafeRight( 8 )
-				.strafeLeft( 8 )
-				.back( 8 )
+				.setVelConstraint( new MecanumVelocityConstraint( 55, 17 ) )
+				.setAccelConstraint( new ProfileAccelerationConstraint( 90 ))
+				.forward( 12 )
+				.back( 12.5 )
 				.build();
 		robot.drive.followTrajectorySequence( cameraFix );
 		robot.drive.setLocalizer( localizer );
 		robot.drive.setPoseEstimate( new Pose2d( /*-29.375*/-42.375, 62.1875, Math.toRadians( -90 ) ) );
+		robot.sleepRobot( 2 );
 
 
-		TrajectorySequence mainTrajectory = robot.getTrajectorySequenceBuilder( )
+		TrajectorySequence mainTrajectory = robot.drive.trajectorySequenceBuilder( new Pose2d(  ) )
+				.addTemporalMarker( () -> {
+			telemetry.addData( "PoseConfidence", robot.drive.getPoseConfidence() );
+			telemetry.update();
+		} )
+				.waitSeconds( 5 )
 
 				//Drop block in Shipping Hub
 				.lineToLinearHeading( new Pose2d( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT ? -32 : barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT ?  -40 : -36 , 48, 0 ) )
@@ -139,10 +143,10 @@ public class BlueOutAuto extends LinearOpMode {
 				.splineToConstantHeading( new Vector2d( 8, 42 ), Math.toRadians( 90 ) )
 
 
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
+				/*.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
 				.lineTo( new Vector2d( 36, 42 ) )
 				.resetVelConstraint( )
-				.splineTo( new Vector2d( 60, 44 ), 0 )
+				.splineTo( new Vector2d( 60, 44 ), 0 )*/
 				.build( );
 
 		robot.drive.followTrajectorySequence( mainTrajectory );
