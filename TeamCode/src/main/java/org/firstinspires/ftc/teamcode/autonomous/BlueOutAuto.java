@@ -95,10 +95,10 @@ public class BlueOutAuto extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( -36, 24 ) )
 				.lineToConstantHeading( new Vector2d( -58.5, 56  ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerLeft.setPower( 0.5 );
+					robot.spinner.setPower( 0.5 );
 				} )
 				.waitSeconds( 3.2 )
-				.addTemporalMarker( ( ) -> robot.spinnerLeft.setPower( 0 ) )
+				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0 ) )
 
 				//Pickup duck from ground
 				/*.addTemporalMarker( ( ) -> {

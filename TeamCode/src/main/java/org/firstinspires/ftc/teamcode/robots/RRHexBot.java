@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
-import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
+import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
@@ -26,17 +26,13 @@ public class RRHexBot extends Robot {
 	public RRMecanumDriveHex42 drive;
 	public MecanumDrive mecanumDrive;
 
-	public CarouselSpinner spinnerLeft;
-	public CarouselSpinner spinnerRight;
+	public CarouselSpinnerMotor spinner;
 
 	public Lift lift;
 	public Bucket bucket;
 	public Capper capper;
 
 	public NoodleIntake intake;
-
-//	public GyroTracker gyroTracker;
-//	public EncoderTracker encoderTracker;
 
 	public static final double LIFT_ANGLE = 55;
 
@@ -55,7 +51,7 @@ public class RRHexBot extends Robot {
 		super( op );
 
 		Robot.createDefaultMatchLogFile( );
-		Robot.writeToDefaultFile( "***Created Default Log File***", false, true );
+		Robot.writeToDefaultFile( "Creating " + getClass( ).getSimpleName( ), false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
@@ -68,8 +64,7 @@ public class RRHexBot extends Robot {
 		drive = new RRMecanumDriveHex42( hardwareMap );
 		mecanumDrive = new MecanumDrive( hardwareMap );
 
-		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
-		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
+		spinner = new CarouselSpinnerMotor( hardwareMap, "spinner" );
 
 		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
@@ -79,9 +74,6 @@ public class RRHexBot extends Robot {
 		intake = new NoodleIntake( hardwareMap );
 
 		capper.setPosition( 0 );
-
-//		gyroTracker = new GyroTracker( hardwareMap, false );
-//		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
 
 	}
 

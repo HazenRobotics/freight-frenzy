@@ -72,11 +72,9 @@ public class HexRobotTeleOp extends OpMode {
 		// 9 ducks in 25 seconds (10 if capstone)
 		duckSpinAssist = new Thread( ( ) -> {
 			for( int i = 0; i < duckSpinTimes; i++ ) {
-				robot.spinnerLeft.setPower( spinnerPower );
-				robot.spinnerRight.setPower( spinnerPower );
+				robot.spinner.setPower( spinnerPower );
 				robot.sleepRobot( 1.5 );
-				robot.spinnerLeft.setPower( 0.0 );
-				robot.spinnerRight.setPower( 0.0 );
+				robot.spinner.setPower( 0.0 );
 				robot.sleepRobot( 1.0 );
 				telemetry.addLine( "duckSpinAssist loop " + i );
 				telemetry.update( );
@@ -155,14 +153,15 @@ public class HexRobotTeleOp extends OpMode {
 
 		runSpinnerAssistMethods();
 
-		// carousel spinner control
-		if( player1.b.onPress( ) || player2.b.onPress( ) ) { // toggles carousel spinners
-			robot.spinnerLeft.setPower( robot.spinnerLeft.getPower( ) > 0 ? 0 : intakePower );
-			robot.spinnerRight.setPower( robot.spinnerRight.getPower( ) < 0 ? 0 : -intakePower );
-		}
+		// toggle carousel spinner
+		if( player1.b.onPress( ) || player2.b.onPress( ) )
+			robot.spinner.setPower( robot.spinner.getPower( ) > -0.1 ? -spinnerPower : 0 );
+		else if( player1.x.onPress( ) || player2.x.onPress( ) )
+			robot.spinner.setPower( robot.spinner.getPower( ) < 0.1 ? spinnerPower : 0 );
+
 
 		// reset the lift position to its current zero position
-		if( player1.ps.onPress( ) || gamepad1.ps )
+		if( gamepad1.ps )
 			robot.lift.resetLift( );
 
 		addControlTelemetry();

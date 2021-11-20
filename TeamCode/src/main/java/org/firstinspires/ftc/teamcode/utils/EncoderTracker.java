@@ -21,11 +21,9 @@ public class EncoderTracker {
 		this( hardwareMap, "intake", "perpendicular" );
 	}
 
-	public EncoderTracker( HardwareMap hardwareMap, int encoderRad ) {
+	public EncoderTracker( HardwareMap hardwareMap, int encoderRadius ) {
 
-		this( hardwareMap, encoderRad, "intake", "perpendicular" );
-
-		encoderRadius = encoderRad;
+		this( hardwareMap, encoderRadius, "intake", "perpendicular" );
 	}
 
 	public EncoderTracker( HardwareMap hardwareMap, String parallelName, String perpendicularName ) {

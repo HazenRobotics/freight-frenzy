@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robots;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
@@ -18,7 +19,7 @@ public class WoodBot extends Robot {
 
 		super( op );
 
-		Robot.writeToDefaultFile( "", false, false );
+		Robot.writeToDefaultFile( "Creating " + getClass( ).getSimpleName( ), false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
@@ -27,10 +28,10 @@ public class WoodBot extends Robot {
 
 //		new SoundLibrary( hardwareMap );
 
-		super.driveTrain = new MecanumDrive( hardwareMap );
-		mecanumDrive = (MecanumDrive) driveTrain;
-		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
-
+		mecanumDrive = new MecanumDrive( hardwareMap );
+		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.REVERSE, Direction.FORWARD, Direction.FORWARD );
+		super.driveTrain = mecanumDrive;
+		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight" );
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class WoodBot extends Robot {
 	 */
 	public void sleepRobot( double time ) {
 		double startTime = opMode.getRuntime( );
-		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) );
+		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
 	}
 
 }

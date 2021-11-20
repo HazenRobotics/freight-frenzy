@@ -27,7 +27,7 @@ import java.text.DecimalFormat;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "HexRobotTeleOp", group = "TeleOp")
+@TeleOp(name = "WoodRobotTeleOp", group = "TeleOp")
 public class WoodRobotTeleOp extends OpMode {
 
 	GamepadEvents player1;
@@ -107,12 +107,12 @@ public class WoodRobotTeleOp extends OpMode {
 
 	public void addInfoTelemetry( ) {
 
-//		telemetry.addLine( "FL: " + robot.mecanumDrive.getFrontLeftPosition( ) );
-//		telemetry.addLine( "BL: " + robot.mecanumDrive.getBackLeftPosition( ) );
-//		telemetry.addLine( "FR: " + robot.mecanumDrive.getFrontRightPosition( ) );
-//		telemetry.addLine( "BR: " + robot.mecanumDrive.getBackRightPosition( ) );
-		telemetry.addLine( "longitudinal position: " + robot.encoderTracker.getLongitudinalPosition( ) );
-		telemetry.addLine( "lateral position: " + robot.encoderTracker.getLateralPosition( ) );
+		telemetry.addLine( "front left position: " + df.format( robot.mecanumDrive.getFrontLeftPosition( ) ) );
+		telemetry.addLine( "back left position: " + df.format( robot.mecanumDrive.getBackLeftPosition( ) ) );
+		telemetry.addLine( "front right position: " + df.format( robot.mecanumDrive.getFrontRightPosition( ) ) );
+		telemetry.addLine( "back right position: " + df.format( robot.mecanumDrive.getBackRightPosition( ) ) );
+		telemetry.addLine( "longitudinal position: " + df.format( robot.encoderTracker.getLongitudinalPosition( ) ) );
+		telemetry.addLine( "lateral position: " + df.format( robot.encoderTracker.getLateralPosition( ) ) );
 	}
 
 }

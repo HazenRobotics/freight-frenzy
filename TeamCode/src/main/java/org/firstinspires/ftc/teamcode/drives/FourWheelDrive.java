@@ -25,11 +25,11 @@ public class FourWheelDrive implements Drive {
 	private State currentState = State.STOPPED;
 
 	public FourWheelDrive( HardwareMap hardwareMap ) {
-		this( hardwareMap, "frontLeft", "frontRight", "backLeft", "backRight" );
+		this( hardwareMap, "frontLeft", "backLeft", "frontRight", "backRight" );
 	}
 
-	public FourWheelDrive( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
-		setUpMotors( hardwareMap, frontLeftName, frontRightName, backLeftName, backRightName );
+	public FourWheelDrive( HardwareMap hardwareMap, String frontLeftName, String backLeftName, String frontRightName, String backRightName ) {
+		setUpMotors( hardwareMap, frontLeftName, backLeftName, frontRightName, backRightName );
 	}
 
 	/**
@@ -56,14 +56,14 @@ public class FourWheelDrive implements Drive {
 	 *
 	 * @param hardwareMap    robot's hardware map
 	 * @param frontRightName name of front right motor in the hardware map
-	 * @param frontLeftName  name of front left motor in the hardware map
 	 * @param backRightName  name of back right motor in the hardware map
+	 * @param frontLeftName  name of front left motor in the hardware map
 	 * @param backLeftName   name of back left motor in the hardware map
 	 */
-	private void setUpMotors( HardwareMap hardwareMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName ) {
+	private void setUpMotors( HardwareMap hardwareMap, String frontLeftName, String backLeftName, String frontRightName, String backRightName ) {
 		frontLeft = hardwareMap.get( DcMotorEx.class, frontLeftName );
-		frontRight = hardwareMap.get( DcMotorEx.class, frontRightName );
 		backLeft = hardwareMap.get( DcMotorEx.class, backLeftName );
+		frontRight = hardwareMap.get( DcMotorEx.class, frontRightName );
 		backRight = hardwareMap.get( DcMotorEx.class, backRightName );
 
 		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );

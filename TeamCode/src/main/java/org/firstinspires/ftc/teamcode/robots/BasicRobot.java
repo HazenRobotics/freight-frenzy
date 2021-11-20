@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
-import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
+import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerServo;
 import org.firstinspires.ftc.teamcode.subsystems.SquareIntake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
@@ -16,7 +16,7 @@ public class BasicRobot extends Robot {
 	public HardwareMap hardwareMap;
 
 	public MecanumDrive mecanumDrive;
-	public CarouselSpinner spinner;
+	public CarouselSpinnerServo spinner;
 	public Lift lift;
 	public Bucket bucket;
 	public SquareIntake intake;
@@ -33,7 +33,7 @@ public class BasicRobot extends Robot {
 
 		super.driveTrain = new MecanumDrive( hardwareMap );
 		mecanumDrive = (MecanumDrive) driveTrain;
-		spinner = new CarouselSpinner( hardwareMap );
+		spinner = new CarouselSpinnerServo( hardwareMap );
 		lift = new Lift( hardwareMap );
 		bucket = new Bucket( hardwareMap );
 		intake = new SquareIntake( hardwareMap );

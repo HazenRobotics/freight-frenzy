@@ -84,11 +84,11 @@ public class BlueInAutoDuck extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( -12, 54 ) )
 				.lineToLinearHeading( new Pose2d( -56, 58.5, 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( 0.75 );
+					robot.spinner.setPower( 0.75 );
 				} )
 				.waitSeconds( 3.2 )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( 0 );
+					robot.spinner.setPower( 0 );
 				} )
 
 				//Pickup duck from ground
