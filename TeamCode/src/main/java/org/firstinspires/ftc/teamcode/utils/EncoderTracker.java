@@ -15,36 +15,37 @@ public class EncoderTracker {
 
 	boolean threeEncoders;
 
+	/**
+	 * pulses per revolution
+	 */
+	double ppr;
+	double gearRatio;
 	double encoderRadius;
 
 	public EncoderTracker( HardwareMap hardwareMap ) {
-		this( hardwareMap, "intake", "perpendicular" );
+		setup( hardwareMap, 1, 1, 1 );
+		initEncoders( "intake", "perpendicular" );
 	}
 
-	public EncoderTracker( HardwareMap hardwareMap, int encoderRadius ) {
+	public EncoderTracker( HardwareMap hardwareMap, String parallelName, String perpendicularName, double encoderRadius, double ppr, double gearRatio ) {
 
-		this( hardwareMap, encoderRadius, "intake", "perpendicular" );
-	}
-
-	public EncoderTracker( HardwareMap hardwareMap, String parallelName, String perpendicularName ) {
-
-		this.hardwareMap = hardwareMap;
-
+		setup( hardwareMap, ppr, gearRatio, encoderRadius );
 		initEncoders( parallelName, perpendicularName );
 	}
 
-	public EncoderTracker( HardwareMap hardwareMap, String parallel1Name, String parallel2Name, String perpendicularName ) {
+	public EncoderTracker( HardwareMap hardwareMap, String parallel1Name, String parallel2Name, String perpendicularName, double encoderRadius, double ppr, double gearRatio ) {
 
-		this.hardwareMap = hardwareMap;
-
+		setup( hardwareMap, ppr, gearRatio, encoderRadius );
 		initEncoders( parallel1Name, parallel2Name, perpendicularName );
 	}
 
-	public EncoderTracker( HardwareMap hardwareMap, int encoderRad, String parallelName, String perpendicularName ) {
+	private void setup( HardwareMap hardwareMap, double ppr, double gearRatio, double encoderRadius ) {
 
-		this( hardwareMap, parallelName, perpendicularName );
+		this.hardwareMap = hardwareMap;
 
-		encoderRadius = encoderRad;
+		this.ppr = ppr;
+		this.gearRatio = gearRatio;
+		this.encoderRadius = encoderRadius;
 	}
 
 	private void initEncoders( String parallelName, String perpendicularName ) {
@@ -118,47 +119,67 @@ public class EncoderTracker {
 		return perpendicularEncoder.getVelocity( angleUnit );
 	}
 
+	// conversions
+
+	public int convertDistTicks( double distance ) {
+		return convertDistTicks( distance, encoderRadius, ppr, gearRatio );
+	}
+
+	public double convertTicksDist( int ticks ) {
+		return convertTicksDist( ticks, encoderRadius, ppr, gearRatio );
+	}
+
 	/**
 	 * convert a distance (in inches) to ticks
 	 *
 	 * @param distance            the distance you want to convert to ticks
-	 * @param wheelDiameter       the diameter of the encoder wheel
+	 * @param wheelRadius         the diameter of the encoder wheel
 	 * @param pulsesPerRevolution the encoder's pulses per revolution
 	 * @param gearRatio           the ratio of the gears
 	 * @return the number of ticks in that distance
 	 */
-	public static int convertDistTicks( double distance, double wheelDiameter, double pulsesPerRevolution, double gearRatio ) {
-		double revolutions = distance / Math.PI * wheelDiameter;
-		int totalTicks = (int) Math.round( (revolutions * pulsesPerRevolution) / gearRatio );
-
-		return totalTicks;
+	public static int convertDistTicks( double distance, double wheelRadius, double pulsesPerRevolution, double gearRatio ) {
+		double revolutions = distance / Math.PI * 2 * wheelRadius;
+		return (int) Math.round( (revolutions * pulsesPerRevolution) / gearRatio );
 	}
 
 	/**
 	 * convert a number of ticks to distance (in inches)
 	 *
 	 * @param ticks               the ticks you want to convert to distance
-	 * @param wheelDiameter       the diameter of the encoder wheel
+	 * @param wheelRadius         the radius of the encoder wheel
 	 * @param pulsesPerRevolution the encoder's pulses per revolution
 	 * @param gearRatio           the ratio of the gears
 	 * @return the distance (in inches) in that number of ticks
 	 */
-	public static double convertTicksDist( double ticks, double wheelDiameter, double pulsesPerRevolution, double gearRatio ) {
-		double circumference = Math.PI * wheelDiameter;
-		double totalDistance = (ticks * circumference * gearRatio) / pulsesPerRevolution;
-
-		return totalDistance;
+	public static double convertTicksDist( int ticks, double wheelRadius, double pulsesPerRevolution, double gearRatio ) {
+		double circumference = 2 * Math.PI * wheelRadius;
+		return (ticks * circumference * gearRatio) / pulsesPerRevolution;
 	}
 
-	/**
-	 * will sleep the robot for [millis] milliseconds
-	 *
-	 * @param millis
-	 */
-	public void sleep( long millis ) {
-		long startTime = System.currentTimeMillis( );
-		while( System.currentTimeMillis( ) < startTime + millis ) ;
+	// setters and getters
+
+	public void setPPR( double ppr ) {
+		this.ppr = ppr;
 	}
 
+	public double getPPR( ) {
+		return ppr;
+	}
 
+	public void setGearRatio( double gearRatio ) {
+		this.gearRatio = gearRatio;
+	}
+
+	public double getGearRatio( ) {
+		return gearRatio;
+	}
+
+	public void setEncoderRadius( double encoderRadius ) {
+		this.encoderRadius = encoderRadius;
+	}
+
+	public double getEncoderRadius( ) {
+		return encoderRadius;
+	}
 }

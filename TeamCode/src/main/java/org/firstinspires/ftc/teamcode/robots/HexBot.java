@@ -61,7 +61,7 @@ public class HexBot extends Robot {
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
 		intake = new NoodleIntake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
-		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
+		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular", 1, 1, 1 );
 
 	}
 

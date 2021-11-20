@@ -31,7 +31,7 @@ public class WoodBot extends Robot {
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.REVERSE, Direction.FORWARD, Direction.FORWARD );
 		super.driveTrain = mecanumDrive;
-		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight" );
+		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
 	}
 
 	/**
@@ -40,6 +40,14 @@ public class WoodBot extends Robot {
 	public void sleepRobot( double time ) {
 		double startTime = opMode.getRuntime( );
 		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
+	}
+
+	public double getLongitudinalPosition( ) {
+		return encoderTracker.convertTicksDist( encoderTracker.getLongitudinalPosition( ) );
+	}
+
+	public double getLateralPosition( ) {
+		return encoderTracker.convertTicksDist( encoderTracker.getLateralPosition( ) );
 	}
 
 }

@@ -47,11 +47,11 @@ public class EncoderPositionTest extends OpMode {
 
 			double inchesPosition = 0;
 			if( i < 4 ) // 0, 1, 2, 3, are motors
-				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 50 / 25.4, 537.6, 1 );
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 2 * 50 / 25.4, 537.6, 1 );
 			else if( i > 4 ) // 5 & 6 are dead wheels
-				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 50 / 25.4, 480, 30 / 48.0 ) / 4.0;
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 2 * 50 / 25.4, 480, 30 / 48.0 ) / 4.0;
 			else // 4 is the lift
-				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 32 / 25.4 / 2, 537.6, 1 );
+				inchesPosition = EncoderTracker.convertTicksDist( ticksPosition, 32 / 25.4, 537.6, 1 );
 			String extraSpace = inchesPosition < 0 ? "" : " ";
 
 			telemetry.addLine( names[i] + " current position:" );

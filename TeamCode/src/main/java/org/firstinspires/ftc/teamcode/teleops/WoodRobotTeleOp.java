@@ -111,8 +111,10 @@ public class WoodRobotTeleOp extends OpMode {
 		telemetry.addLine( "back left position: " + df.format( robot.mecanumDrive.getBackLeftPosition( ) ) );
 		telemetry.addLine( "front right position: " + df.format( robot.mecanumDrive.getFrontRightPosition( ) ) );
 		telemetry.addLine( "back right position: " + df.format( robot.mecanumDrive.getBackRightPosition( ) ) );
-		telemetry.addLine( "longitudinal position: " + df.format( robot.encoderTracker.getLongitudinalPosition( ) ) );
-		telemetry.addLine( "lateral position: " + df.format( robot.encoderTracker.getLateralPosition( ) ) );
+		telemetry.addLine( );
+		telemetry.addLine( "longitudinal position (ticks, in): " +  robot.encoderTracker.getLongitudinalPosition( ) + ", " + df.format( robot.getLongitudinalPosition( ) ) );
+		telemetry.addLine( "lateral position (ticks, in): " + robot.encoderTracker.getLateralPosition( ) + ", " + df.format( robot.getLateralPosition( ) ) );
+
 	}
 
 }
