@@ -19,8 +19,6 @@ public  class MiniBot extends OpMode {
 	DcMotor backLeft;
 	DcMotor backRight;
 
-	DistanceSensor distanceSensor;
-
 	@Override
 	public void init() {
 
@@ -29,38 +27,31 @@ public  class MiniBot extends OpMode {
 		backLeft = hardwareMap.dcMotor.get("backLeft");
 		backRight = hardwareMap.dcMotor.get("backRight");
 
-		frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-		backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+		frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+		backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-		distanceSensor = hardwareMap.get(DistanceSensor.class, "sensorRange");
 
 		addAndUpdate(CLASS_NAME + " : finished init");
 
 
 	}
-
-	/**
-	 *
-	 * @return the distance the robot has travelled in inches
-	 */
-
+	
 
 
 	@Override
 	public void loop() {
 
-		double drive = -gamepad1.left_stick_y;
+		double drive =  -gamepad1.left_stick_y;
 		double strafe = gamepad1.left_stick_x;
 		double rotate = gamepad1.right_stick_x;
 
-		double frontLeftPower = drive + strafe - rotate;
+		double frontLeftPower = drive + strafe + rotate;
 		double frontRightPower = drive - strafe - rotate;
 		double backLeftPower = drive - strafe + rotate;
-		double backRightPower = drive + strafe + rotate;
+		double backRightPower = drive + strafe - rotate;
 
 		setPowers( frontLeftPower, frontRightPower, backLeftPower, backRightPower );
 
-		telemetry.addLine( "Current distance :: " + distanceSensor.getDistance(DistanceUnit.INCH) + " inches");
 
 		telemetry.update();
 	}
