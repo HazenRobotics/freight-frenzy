@@ -408,4 +408,12 @@ public class Lift {
 			return Math.toDegrees( liftAngle );
 		return liftAngle;
 	}
+
+	public double getCurrent( ) {
+		return getCurrent( CurrentUnit.AMPS );
+	}
+
+	public double getCurrent( CurrentUnit currentUnit ) {
+		return motor.getCurrent( currentUnit );
+	}
 }

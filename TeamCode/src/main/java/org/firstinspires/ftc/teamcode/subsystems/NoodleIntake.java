@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 public class NoodleIntake {
 
-	DcMotor intakeMotor;
+	DcMotorEx intakeMotor;
 
 	/**
 	 * creates a default noodle intake with a intakeName of "intake"
@@ -21,13 +24,13 @@ public class NoodleIntake {
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 * @param intakeName  the name of the intake motor in the hardware map
 	 */
-	public void NoodleIntake( HardwareMap hardwareMap, String intakeName ) {
+	public NoodleIntake( HardwareMap hardwareMap, String intakeName ) {
 		setup( hardwareMap, intakeName );
 	}
 
 	public void setup( HardwareMap hardwareMap, String intakeName ) {
 
-		intakeMotor = hardwareMap.dcMotor.get( intakeName );
+		intakeMotor = hardwareMap.get( DcMotorEx.class, intakeName );
 
 		intakeMotor.setDirection( DcMotorSimple.Direction.REVERSE );
 	}
@@ -41,5 +44,13 @@ public class NoodleIntake {
 	public void setPower( double power ) {
 
 		intakeMotor.setPower( power );
+	}
+
+	public double getCurrent( ) {
+		return getCurrent( CurrentUnit.AMPS );
+	}
+
+	public double getCurrent( CurrentUnit currentUnit ) {
+		return intakeMotor.getCurrent( currentUnit );
 	}
 }

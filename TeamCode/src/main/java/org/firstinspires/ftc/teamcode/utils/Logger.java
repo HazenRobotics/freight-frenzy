@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class Logger {
@@ -75,13 +76,13 @@ public class Logger {
 			if( includeTimeStamp || deleteOldLogs )
 				date = new Date( );
 			if( includeTimeStamp )
-				time = new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: ";
+				time = new SimpleDateFormat( "MM-dd HH:mm:ss", Locale.getDefault( ) ).format( date ) + " :: ";
 
 			//".../Internal Storage";
 			String path = Environment.getExternalStorageDirectory( ).getPath( ) + LOG_PATH;
 
 			try {
-				FileWriter writer = new FileWriter( new File( path + fileName ), isAppending );
+				FileWriter writer = new FileWriter( path + fileName, isAppending );
 				writer.write( time + writeText + System.lineSeparator( ) );
 				writer.close( );
 			} catch( IOException e ) {
@@ -89,7 +90,7 @@ public class Logger {
 			}
 
 			if( deleteOldLogs )
-				deleteOldLogsDay( new SimpleDateFormat( "MM-dd" ).format( date ) );
+				deleteOldLogsDay( new SimpleDateFormat( "MM-dd", Locale.getDefault( ) ).format( date ) );
 		} ).start( );
 
 	}
@@ -109,7 +110,7 @@ public class Logger {
 	 */
 	public static void deleteOldLogsDay( String date ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) )
+		for( File f : Objects.requireNonNull( Environment.getExternalStorageDirectory( ).listFiles( ) ) )
 			if( !f.getName( ).startsWith( date ) )
 				deleteLog( f.getName( ) );
 	}
@@ -121,13 +122,13 @@ public class Logger {
 	 */
 	public static void deleteOldLogsDay( String[] dates ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) ) {
+		for( File file : Objects.requireNonNull( Environment.getExternalStorageDirectory( ).listFiles( ) ) ) {
 			boolean startsWithDate = false;
-			for( int i = 0; i < dates.length; i++ )
-				if( f.getName( ).startsWith( dates[i] ) )
+			for( String date : dates )
+				if( file.getName( ).startsWith( date ) )
 					startsWithDate = true;
 			if( !startsWithDate )
-				deleteLog( f.getName( ) );
+				deleteLog( file.getName( ) );
 		}
 	}
 
@@ -138,13 +139,13 @@ public class Logger {
 	 */
 	public static void deleteOldLogsDay( ArrayList<String> dates ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) ) {
+		for( File file : Objects.requireNonNull( Environment.getExternalStorageDirectory( ).listFiles( ) ) ) {
 			boolean startsWithDate = false;
 			for( int i = 0; i < dates.size( ); i++ )
-				if( f.getName( ).startsWith( dates.get( i ) ) )
+				if( file.getName( ).startsWith( dates.get( i ) ) )
 					startsWithDate = true;
 			if( !startsWithDate )
-				deleteLog( f.getName( ) );
+				deleteLog( file.getName( ) );
 		}
 	}
 
