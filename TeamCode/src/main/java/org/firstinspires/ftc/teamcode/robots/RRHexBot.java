@@ -40,6 +40,9 @@ public class RRHexBot extends Robot {
 	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
 	public static final double BUCKET_ANGLE_DUMP = -35;
 
+	public static final double CAPPER_PICKUP = 1.0;
+	public static final double CAPPER_HOLD = 0.8;
+
 	public enum ShippingHubHeight {
 		LOW,
 		MIDDLE,
@@ -66,7 +69,7 @@ public class RRHexBot extends Robot {
 
 		spinner = new CarouselSpinnerMotor( hardwareMap, "spinner" );
 
-		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
 		capper = new Capper( hardwareMap, "capper" );

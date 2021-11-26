@@ -56,7 +56,7 @@ public class HexBot extends Robot {
 		mecanumDrive = (MecanumDrive) driveTrain;
 		spinnerLeft = new CarouselSpinnerServo( hardwareMap, "spinnerLeft" );
 		spinnerRight = new CarouselSpinnerServo( hardwareMap, "spinnerRight" );
-		lift = new Lift( hardwareMap, "lift", 2.5, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", true, 2.5, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
 		intake = new NoodleIntake( hardwareMap );

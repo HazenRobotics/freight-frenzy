@@ -11,17 +11,21 @@ Expansion Hub Motor 2: "spinner" - the left carousel spinner's motor and (dead w
 Servos:
 Control Hub Servo 0: "bucket" - the bucket servo
 Control Hub Servo 1: "capper" - the capper servo for the shipping element
-Control Hub Servo 2: "capperLift" - the servo that controls the lift for the capper
-Control Hub Servo 3: "capperLiftRotator" - the servo that rotates the capper lift
+// Control Hub Servo 2: "capperLift" - the servo that controls the lift for the capper
+// Control Hub Servo 3: "capperLiftRotator" - the servo that rotates the capper lift
 
 
 
 WoodBot (13")
 Motors & Encoders:
-Control Hub Motor 0: "frontLeft" - front left motor and (dead wheel's) parallel encoder
-Control Hub Motor 1: "backLeft" - back left motor
-Control Hub Motor 2: "frontRight" - front right motor and (dead wheel's) perpendicular encoder
-Control Hub Motor 3: "backRight" - back right motor
+Control Hub Motor 0: "frontLeft" - front left motor and encoder
+Control Hub Motor 1: "backLeft" - back left motor and encoder
+Control Hub Motor 2: "frontRight" - front right motor and encoder
+Control Hub Motor 3: "backRight" - back right motor and encoder
 Expansion Hub Motor 0: "lift" - the lift's motor and encoder
-Expansion Hub Motor 1: "intake" - the intake's motor
-Expansion Hub Motor 2: "spinner" - the carousel spinner's motor
+Expansion Hub Motor 1: "intake" - the intake's motor and (dead wheel's) parallel encoder
+Expansion Hub Motor 2: "spinner" - the carousel spinner's motor and (dead wheel's) perpendicular encoder
+
+Servos:
+Control Hub Servo 0: "bucket" - the bucket servo
+Control Hub Servo 1: "capper" - the capper servo for the shipping element

@@ -32,7 +32,7 @@ import java.util.List;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
+public class TwoWheelTrackingLocalizerHex extends TwoTrackingWheelLocalizer {
 
 	public static double TICKS_PER_REV = 250;
 	public static double WHEEL_RADIUS = 38 / 2.0 / 25.4; // in
@@ -54,7 +54,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
 	private RRMecanumDriveHex42 drive;
 
-	public TwoWheelTrackingLocalizer( HardwareMap hardwareMap, RRMecanumDriveHex42 drive ) {
+	public TwoWheelTrackingLocalizerHex( HardwareMap hardwareMap, RRMecanumDriveHex42 drive ) {
 		super( Arrays.asList(
 				new Pose2d( PARALLEL_X, PARALLEL_Y, 0 ),
 				new Pose2d( PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians( 90 ) )

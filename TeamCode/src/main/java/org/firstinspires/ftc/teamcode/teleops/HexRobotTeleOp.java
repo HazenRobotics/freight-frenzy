@@ -101,7 +101,12 @@ public class HexRobotTeleOp extends OpMode {
 			robot.intake.setPower( robot.intake.getPower( ) < 0 ? 0 : -intakePower );
 
 		// bucket control
-		setBucketPosition( );
+		if( gamepad1.dpad_up ) // parallel, intake
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		else if( gamepad1.dpad_down ) // like -45°, dump
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
+		else if( gamepad1.back || gamepad2.back ) // exits all loops inside lift methods
+			robot.lift.exitLoops( 250 );
 
 		// if you touch either of the triggers enough, it will exit the driver assist method
 		if( gamepad1.right_trigger > 0.5 || gamepad1.left_trigger > 0.5 )
@@ -120,8 +125,8 @@ public class HexRobotTeleOp extends OpMode {
 		// capper position
 		if( player1.y.onPress( ) )
 			capperPosition = capperPosition > 0.5 ? 0.0 : 1.0;
-		else if( gamepad1.a )
-			capperPosition = capperPosition > 0.2 ? 0.1 : 0.3; // prep the capper for the shipping element
+		else if( player1.a.onPress( ) )
+			capperPosition = capperPosition >= RRHexBot.CAPPER_HOLD + 0.05 ?  RRHexBot.CAPPER_HOLD : RRHexBot.CAPPER_PICKUP; // prep the capper for the shipping element
 
 		if( gamepad2.y )
 			capperPosition -= 0.01;
@@ -134,17 +139,40 @@ public class HexRobotTeleOp extends OpMode {
 		autoSlantBucket( );
 
 		// driver assist methods
-		runLiftAssistMethods( );
+		// lift presets
+		if( gamepad2.dpad_up ) {
+			inDriverAssist = true;
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+		} else if( gamepad2.dpad_left ) {
+			inDriverAssist = true;
+			robot.lift.setHeightVelocity( 850, 0 );
+			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+		} else if( gamepad2.dpad_down ) {
+			inDriverAssist = true;
+			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+		}
 
-		runSpinnerAssistMethods( );
+		// spinner timed intervals
+		if( player1.x.onPress( ) ) {
+			Log.e( "runSpinnerAssistMethods", "pressed" );
+			if( inSpinnerThread ) {
+				Log.e( "runSpinnerAssistMethods", "stop" );
+				inSpinnerThread = false;
+				spinnerThread.get( 0 ).interrupt();
+				spinnerThread.clear();
+				robot.spinner.setPower( 0 );
+			} else {
+				Log.e( "runSpinnerAssistMethods", "start" );
+				runSpinnerThread( );
+			}
+		}
 
-		// toggle carousel spinner
-
-		if( player1.b.onPress( ) || player2.b.onPress( ) )
+		// carousel spinner
+		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
 			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
-//		else if( player1.x.onPress( ) || player2.x.onPress( ) )
-//			robot.spinner.setPower( robot.spinner.getPower( ) < 0.1 ? spinnerPower : 0 );
 
+		if( player1.dpad_right.onPress( ) || player2.dpad_right.onPress( ) ) // switches direction
+			spinnerPower *= -1;
 
 		// reset the lift position to its current zero position
 		if( gamepad1.ps )
@@ -152,9 +180,6 @@ public class HexRobotTeleOp extends OpMode {
 
 		addControlTelemetry( );
 		addInfoTelemetry( );
-
-		if( player1.dpad_right.onPress( ) || player2.dpad_right.onPress( ) )
-			spinnerPower *= -1;
 
 		//updates
 		telemetry.update( );
@@ -207,43 +232,9 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "lift diff: " + df.format( robot.lift.getPositionInch( ) ) + " - " + df.format( prevLiftPos ) );
 	}
 
-	public void runLiftAssistMethods( ) {
-		if( gamepad2.dpad_up ) {
-			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-		} else if( gamepad2.dpad_left ) {
-			inDriverAssist = true;
-			robot.lift.setHeightVelocity( 850, 0 );
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		} else if( gamepad2.dpad_down ) {
-			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-		}
-	}
-
-	/**
-	 * toggle the duck spinner assist thread
-	 */
-	public void runSpinnerAssistMethods( ) {
-
-		if( player1.x.onPress( ) ) {
-			Log.e( "runSpinnerAssistMethods", "pressed" );
-			if( inSpinnerThread ) {
-				Log.e( "runSpinnerAssistMethods", "stop" );
-				inSpinnerThread = false;
-				spinnerThread.get( 0 ).interrupt();
-				spinnerThread.removeAll( spinnerThread );
-				robot.spinner.setPower( 0 );
-			} else {
-				Log.e( "runSpinnerAssistMethods", "start" );
-				runSpinnerThread( );
-			}
-		}
-	}
-
 	public void runSpinnerThread( ) {
 
-		// 9 ducks in 25 seconds (10 if capstone)
+		// note: 9 ducks in 25 seconds (10 if capstone)
 		spinnerThread.add( new Thread( ( ) -> {
 			int i = 0;
 			inSpinnerThread = true;
@@ -268,24 +259,6 @@ public class HexRobotTeleOp extends OpMode {
 		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
-	}
-
-	/**
-	 * sets the position of the bucket based on player 1 input
-	 * <br/><br/>
-	 * dpad up - intake
-	 * <br/>
-	 * dpad down - dump
-	 * <br/>
-	 * back button - exit lift loops
-	 */
-	public void setBucketPosition( ) {
-		if( gamepad1.dpad_up )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		else if( gamepad1.dpad_down )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
-		else if( gamepad1.back || gamepad2.back )
-			robot.lift.exitLoops( 250 );
 	}
 
 }

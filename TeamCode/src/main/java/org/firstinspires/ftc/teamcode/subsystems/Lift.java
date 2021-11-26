@@ -41,7 +41,7 @@ public class Lift {
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 */
 	public Lift( HardwareMap hardwareMap ) {
-		setup( hardwareMap, "lift", 2.375,
+		setup( hardwareMap, "lift", true, 2.375,
 				(38.2 / 25.4) / 2, 55, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
@@ -53,23 +53,33 @@ public class Lift {
 	 * @param liftAngle          the angle of the lift from the ground in
 	 * @param angleUnit          the angle unit to make calculations and input variables
 	 */
-	public Lift( HardwareMap hardwareMap, String motorName, double groundBucketHeight,
+	public Lift( HardwareMap hardwareMap, String motorName, boolean reverseMotor, double groundBucketHeight,
 				 double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
-		setup( hardwareMap, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
+		setup( hardwareMap, motorName, reverseMotor, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setup( HardwareMap hardwareMap, String leftMotorName, double groundBucketHeight,
-					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
+	public void setup( HardwareMap hardwareMap, String leftMotorName, boolean reverseMotor,
+					   double groundBucketHeight, double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
 		motor = hardwareMap.get( DcMotorEx.class, leftMotorName );
 
-		motor.setDirection( DcMotorSimple.Direction.REVERSE );
+		if( reverseMotor )
+			motor.setDirection( DcMotorSimple.Direction.REVERSE );
 		resetLift( );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+	}
+
+	/**
+	 * reverses the motor direction
+	 * (if it is FORWARD sets it to REVERSE or if it is REVERSE, sets it to FORWARD)
+	 */
+	public void reverseMotor( ) {
+		motor.setDirection( motor.getDirection( ) == DcMotorSimple.Direction.FORWARD ?
+				DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD );
 	}
 
 	/**
@@ -309,6 +319,11 @@ public class Lift {
 		motor.setPower( power );
 	}
 
+	/**
+	 * set Tele-O-Power
+	 * sets the lift to a power and sets the lift mode to run without encoders (still tracks position)
+	 * @param power the power to set the motors to
+	 */
 	public void setTeleOPower( double power ) {
 		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
 		setPower( power );

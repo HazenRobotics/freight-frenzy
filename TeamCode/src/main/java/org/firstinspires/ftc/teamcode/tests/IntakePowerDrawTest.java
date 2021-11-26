@@ -41,7 +41,7 @@ public class IntakePowerDrawTest extends OpMode {
 		player = new GamepadEvents( gamepad1 );
 
 		intake = new NoodleIntake( hardwareMap, "intake" );
-		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", true, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
 		Logger.writeAFile( fileName, "Time,Power,Motor Current,Hub Current", false, false );
 

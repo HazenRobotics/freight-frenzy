@@ -4,7 +4,7 @@
         <LynxModule name="Expansion Hub 2" port="2">
             <NeveRest20Gearmotor name="lift" port="0" />
             <NeveRest60Gearmotor name="intake" port="1" />
-            <NeveRest20Gearmotor name="perpendicular" port="2" />
+            <NeveRest20Gearmotor name="spinner" port="2" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
         <LynxModule name="Control Hub" port="173">
@@ -12,9 +12,8 @@
             <NeveRest20Gearmotor name="backLeft" port="1" />
             <NeveRest20Gearmotor name="frontRight" port="2" />
             <NeveRest20Gearmotor name="backRight" port="3" />
-            <ContinuousRotationServo name="spinner" port="0" />
-            <Servo name="bucket" port="1" />
-            <Servo name="capper" port="2" />
+            <Servo name="bucket" port="0" />
+            <Servo name="capper" port="1" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>
