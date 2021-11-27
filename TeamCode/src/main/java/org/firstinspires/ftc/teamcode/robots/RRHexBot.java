@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,6 +34,18 @@ public class RRHexBot extends Robot {
 	public Capper capper;
 
 	public NoodleIntake intake;
+
+
+
+	// 13" robot (l, w): 13.25, 13.5
+	// 18" robot (l, w): 17.375, 17.5
+	static double ROBOT_LENGTH = 17.375;
+	static double ROBOT_WIDTH = 17.5; // with belts
+
+	static final double TILE_SIZE = 23;
+	static final double TILE_CONNECTOR = 0.75;
+
+	static final double HUB_RADIUS = 9;
 
 	public static final double LIFT_ANGLE = 55;
 
@@ -88,6 +101,21 @@ public class RRHexBot extends Robot {
 		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
 	}
 
+
+
+	/**
+	 * @param angle           the number of degrees to turn to reach the side of the shipping hub
+	 * @param angleOffset     the starting angle of the robot
+	 * @param distanceFromHub the distance away from the shipping hub base to be
+	 * @param blueSide        whether or not the robot is on the blue side
+	 * @return the position (Pose2D) of where to go
+	 */
+	public Pose2d getHubPosition( double angle, double angleOffset, double distanceFromHub, boolean blueSide ) {
+		double x = TILE_CONNECTOR / 2 + TILE_SIZE / 2 + Math.sin( Math.toRadians( angle ) ) * (HUB_RADIUS + distanceFromHub + ROBOT_LENGTH / 2);
+		double y = TILE_CONNECTOR + TILE_SIZE + Math.cos( Math.toRadians( angle ) ) * (HUB_RADIUS + distanceFromHub + ROBOT_LENGTH / 2);
+		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
+	}
+
 	public TrajectorySequenceBuilder getTrajectorySequenceBuilder( ) {
 		return drive.trajectorySequenceBuilder( drive.getPoseEstimate( ) );
 	}
@@ -108,7 +136,7 @@ public class RRHexBot extends Robot {
 			case HIGH:
 				return 18;
 			default:
-				return 9;
+				return 8;
 		}
 	}
 
