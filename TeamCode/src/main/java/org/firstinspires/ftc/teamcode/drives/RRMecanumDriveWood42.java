@@ -136,11 +136,11 @@ public class RRMecanumDriveWood42 extends MecanumDrive {
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-		//setLocalizer( new TwoWheelTrackingLocalizer( hardwareMap, this ) );
+		setLocalizer( new TwoWheelTrackingLocalizerWood( hardwareMap, this ) );
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
-		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName) );
+		//setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
