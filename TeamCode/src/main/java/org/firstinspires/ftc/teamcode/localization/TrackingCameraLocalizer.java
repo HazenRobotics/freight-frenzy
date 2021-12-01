@@ -23,7 +23,8 @@ public class TrackingCameraLocalizer implements Localizer {
 	private Pose2d _poseVelocity;
 	private T265Camera.PoseConfidence _confidence;
 	private static T265Camera slamra;
-	private Pose2d _dumbMathOffset = new Pose2d(  ); //Was in the shop way to late and now hate math, this is the answer to the secrets of the universe.
+	private Pose2d _offset = new Pose2d(  );
+	//private Pose2d _dumbMathOffset = new Pose2d(  ); //Was in the shop way to late and now hate math, this is the answer to the secrets of the universe.
 
 	/**
 	 * Constructs and starts a new VSLAM Camera instance
@@ -59,18 +60,14 @@ public class TrackingCameraLocalizer implements Localizer {
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
-		return _poseEstimate.minus( _dumbMathOffset );
+		return _poseEstimate.plus( _offset );
 
 	}
 
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
-		_poseEstimate = pose2d;
-		com.arcrobotics.ftclib.geometry.Pose2d newPose = rrPose2dToFtclib(new Pose2d( -pose2d.getX(), -pose2d.getY(), pose2d.getHeading() ));
-		Translation2d wanted = newPose.getTranslation().minus(slamra.getLastReceivedCameraUpdate().pose.getTranslation());
-		Translation2d given = newPose.getTranslation().minus(slamra.getLastReceivedCameraUpdate().pose.getTranslation()).rotateBy( slamra.getLastReceivedCameraUpdate().pose.getRotation().unaryMinus() );
-		_dumbMathOffset = ftclibPose2dToRR( new com.arcrobotics.ftclib.geometry.Pose2d( given.minus( wanted ), new Rotation2d(  ) ) );
-		slamra.setPose(newPose);
+		Pose2d cameraPose = ftclibPose2dToRR( slamra.getLastReceivedCameraUpdate().pose );
+		_offset = pose2d.minus( cameraPose );
 	}
 
 	@Nullable

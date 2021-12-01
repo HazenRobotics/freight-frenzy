@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
 
 /**
  * This is a simple teleop routine for debugging your motor configuration.
@@ -40,7 +41,7 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
  */
 @Config
 @TeleOp(group = "drive")
-@Disabled
+//@Disabled
 public class MotorDirectionDebugger extends LinearOpMode {
 
 	public static double MOTOR_POWER = 0.7;
@@ -49,7 +50,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
 	public void runOpMode( ) throws InterruptedException {
 		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
+		RRMecanumDriveWood42 drive = new RRMecanumDriveWood42( hardwareMap );
 
 		telemetry.addLine( "Press play to begin the debugging opmode" );
 		telemetry.update( );

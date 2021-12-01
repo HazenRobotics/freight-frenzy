@@ -9,7 +9,7 @@ public class BlueInAuto implements MeepMeepPath {
 
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
-		return drive.trajectorySequenceBuilder( new Pose2d(  ) )
+		return drive.trajectorySequenceBuilder( new Pose2d( -25.875, 62.1875 ) )
 				.lineToSplineHeading( new Pose2d(  10,10,0 ) )
 				.build();
 	}

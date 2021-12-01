@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 
 /*
@@ -24,14 +25,14 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class FollowerPIDTuner extends LinearOpMode {
 
 	public static double DISTANCE = 48; // in
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
+		RRMecanumDriveWood42 drive = new RRMecanumDriveWood42( hardwareMap );
 
 		Pose2d startPose = new Pose2d( -DISTANCE / 2, -DISTANCE / 2, 0 );
 

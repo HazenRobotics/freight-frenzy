@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
 
 /*
  * Op mode for preliminary tuning of the follower PID coefficients (located in the drive base
@@ -27,14 +28,14 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class BackAndForth extends LinearOpMode {
 
 	public static double DISTANCE = 50;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
+		RRMecanumDriveWood42 drive = new RRMecanumDriveWood42( hardwareMap );
 
 		Trajectory trajectoryForward = drive.trajectoryBuilder( new Pose2d( ) )
 				.forward( DISTANCE )
