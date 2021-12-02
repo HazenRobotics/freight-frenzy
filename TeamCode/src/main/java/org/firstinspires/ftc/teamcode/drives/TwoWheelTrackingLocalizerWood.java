@@ -44,7 +44,7 @@ public class TwoWheelTrackingLocalizerWood extends TwoTrackingWheelLocalizer {
 	public static double PERPENDICULAR_X = 4.75;
 	public static double PERPENDICULAR_Y = 2.75;
 
-	public static double X_MULTIPLIER = 1.04923; // Multiplier in the X direction
+	public static double X_MULTIPLIER = 0.99222; // Multiplier in the X direction
 	public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
 	// Parallel/Perpendicular to the forward axis

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class MeepMeepPaths {
 
 	static double robotLength = 13.25;
-	static double robotWidth = 13.5; // with belts
+	static double robotWidth = 12.5;
 
 	static final double tileSize = 23;
 	static final double tileConnector = 0.75;
