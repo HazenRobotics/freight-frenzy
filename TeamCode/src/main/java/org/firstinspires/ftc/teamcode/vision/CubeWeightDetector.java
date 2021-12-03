@@ -43,15 +43,14 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 	public Mat processFrame( Mat input, String type ) {
 
-		return processHSVColorFrame(input );
-		//return processEdgeFrame( input );
+		return processEdgeFrame( processHSVColorFrame( input ) );
 	}
 
 	public Mat processEdgeFrame( Mat src ) {
-		Mat colorMask = new Mat(src.rows(), src.cols(), src.type());
-		Mat gray = new Mat(src.rows(), src.cols(), src.type());
-		Mat edges = new Mat(src.rows(), src.cols(), src.type());
-		Mat dst = new Mat(src.rows(), src.cols(), src.type(), new Scalar(0));
+//		Mat colorMask = new Mat(src.rows(), src.cols(), src.type());
+//		Mat gray = new Mat(src.rows(), src.cols(), src.type());
+//		Mat edges = new Mat(src.rows(), src.cols(), src.type());
+//		Mat dst = new Mat(src.rows(), src.cols(), src.type(), new Scalar(0));
 
 //		Imgproc.cvtColor( src, colorMask, Imgproc.COLOR_RGB2HSV ); //f
 //		Scalar lowHSV = new Scalar( 17, 0, 0 ); //f 17
@@ -59,22 +58,24 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		Core.inRange( colorMask, lowHSV, highHSV, colorMask);
 
 		//Gray image
-		Imgproc.cvtColor( src, gray, Imgproc.COLOR_RGB2GRAY);
+//		Imgproc.cvtColor( src, gray, Imgproc.COLOR_RGB2GRAY);
 		//Blur image from 1,1px to 5,5px
-		Imgproc.blur(gray, edges, new Size(5,5));
+//		Imgproc.blur(gray, edges, new Size(5,5));
 		//Detect edge
-		Imgproc.Canny(edges, edges, 25, 100);
+		Imgproc.Canny(src, src, 25, 100);
+		Imgproc.morphologyEx( src,src,Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
+
 		//copy detected edges to destination matrix
-		src.copyTo(dst,edges);
-		/*Mat srcCon = new Mat(src.rows(), src.cols(), src.type(), new Scalar(0));
-		List<MatOfPoint> contours = new ArrayList<>();
-		Mat hierarchey = new Mat();
-		Imgproc.findContours(srcCon, contours, hierarchey, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		Iterator<MatOfPoint> it = contours.iterator();
+		List<MatOfPoint> points = new ArrayList<>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours( src, points, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE );
+		Imgproc.cvtColor(src, src, Imgproc.COLOR_GRAY2BGR);
+		Iterator<MatOfPoint> it = points.iterator();
 		while(it.hasNext()) {
 			telemetry.addLine(""+it.next());
-		}*/
-		return edges;
+		}
+		telemetry.update();
+		return src;
 	}
 
 	public Mat processHSVColorFrame( Mat input ) {
@@ -142,15 +143,15 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 
 
-		Mat current = input;
+		Mat current = mat;
 
 //		Imgproc.cvtColor( current, current, Imgproc.COLOR_GRAY2RGB ); //i
 
-		Imgproc.rectangle( current, BUCKET, id);
-		Imgproc.rectangle( current, FREIGHT_ROI, freightType == FreightType.UNWEIGHTED_CUBE ? yellow : pink); //f
-		Imgproc.rectangle( current, WEIGHT_ROI, freightType == FreightType.WEIGHTED_CUBE ? green : red); //f
-		Rect BUCKETEDGE = new Rect ( 165, 0, 20 , 240 );
-		Imgproc.rectangle( current, BUCKETEDGE, orange);
+//		Imgproc.rectangle( current, BUCKET, id);
+//		Imgproc.rectangle( current, FREIGHT_ROI, freightType == FreightType.UNWEIGHTED_CUBE ? yellow : pink); //f
+//		Imgproc.rectangle( current, WEIGHT_ROI, freightType == FreightType.WEIGHTED_CUBE ? green : red); //f
+//		Rect BUCKETEDGE = new Rect ( 165, 0, 20 , 240 );
+//		Imgproc.rectangle( current, BUCKETEDGE, orange);
 
 		return current;
 	}
