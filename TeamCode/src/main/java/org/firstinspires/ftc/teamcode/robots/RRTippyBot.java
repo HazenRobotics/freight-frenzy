@@ -6,8 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
@@ -16,14 +15,14 @@ import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
-public class RRWoodBot extends Robot {
+public class RRTippyBot extends Robot {
 
 	public OpMode opMode;
 	public HardwareMap hardwareMap;
 
 	public BarcodeUtil barcodeUtil;
 
-	public RRMecanumDriveWood42 drive;
+	public RRMecanumDriveTippy42 drive;
 	public MecanumDrive mecanumDrive;
 	public EncoderTracker encoderTracker;
 
@@ -35,16 +34,19 @@ public class RRWoodBot extends Robot {
 
 	public NoodleIntake intake;
 
-	public static final double LIFT_ANGLE = 55;
+	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_INTAKE = 85; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
+	public static final double BUCKET_ANGLE_RANGE = 200;
+	// lift default is 35, max of 165, range = 200
+
+	public static final double BUCKET_ANGLE_INTAKE = 35; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
 	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
-	public static final double BUCKET_ANGLE_DUMP = -35;
+	public static final double BUCKET_ANGLE_DUMP = -55;
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
 
-	public RRWoodBot( OpMode op ) {
+	public RRTippyBot( OpMode op ) {
 
 		super( op );
 
@@ -60,15 +62,16 @@ public class RRWoodBot extends Robot {
 
 //		new SoundLibrary( hardwareMap );
 
-		drive = new RRMecanumDriveWood42( hardwareMap );
+		drive = new RRMecanumDriveTippy42( hardwareMap );
 
 		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
-		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
+		bucket = new Bucket( hardwareMap, "bucket", BUCKET_ANGLE_INTAKE - BUCKET_ANGLE_RANGE, BUCKET_ANGLE_RANGE ); //
 		capper = new Capper( hardwareMap, "capper" );
 
 		mecanumDrive = new MecanumDrive( hardwareMap );
-		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.REVERSE, Direction.FORWARD, Direction.FORWARD );
+		// bevel gear madness
+		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD /**/, Direction.FORWARD, Direction.FORWARD );
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
 

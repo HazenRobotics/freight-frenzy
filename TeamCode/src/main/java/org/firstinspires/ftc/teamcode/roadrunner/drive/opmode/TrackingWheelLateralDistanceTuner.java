@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.StandardTrackingWheelLocalizer;
 
 /**
@@ -72,7 +71,7 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		RRMecanumDriveWood42 drive = new RRMecanumDriveWood42( hardwareMap );
+		RRMecanumDriveTippy42 drive = new RRMecanumDriveTippy42( hardwareMap );
 
 		if( !(drive.getLocalizer( ) instanceof StandardTrackingWheelLocalizer) ) {
 			RobotLog.setGlobalErrorMsg( "StandardTrackingWheelLocalizer is not being set in the "

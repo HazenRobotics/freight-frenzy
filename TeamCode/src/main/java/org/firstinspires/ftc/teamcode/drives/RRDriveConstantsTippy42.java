@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * and op modes themselves.
  */
 @Config
-public class RRDriveConstantsWood42 {
+public class RRDriveConstantsTippy42 {
 
 	/*
 	 * These are motor constants that should be listed online for your motors.

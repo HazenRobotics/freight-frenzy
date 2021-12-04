@@ -54,7 +54,7 @@ import java.util.List;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class RRMecanumDriveWood42 extends MecanumDrive {
+public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 6, 0, 0 );
 	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
@@ -84,7 +84,7 @@ public class RRMecanumDriveWood42 extends MecanumDrive {
 	public static final double CAMERA_X = 0;
 	public static final double CAMERA_Y = 6.625;
 
-	public RRMecanumDriveWood42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
+	public RRMecanumDriveTippy42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
 
 		follower = new HolonomicPIDVAFollower( TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -136,7 +136,7 @@ public class RRMecanumDriveWood42 extends MecanumDrive {
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-		setLocalizer( new TwoWheelTrackingLocalizerWood( hardwareMap, this ) );
+		setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
@@ -145,7 +145,7 @@ public class RRMecanumDriveWood42 extends MecanumDrive {
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
 
-	public RRMecanumDriveWood42( HardwareMap hardwareMap) {
+	public RRMecanumDriveTippy42( HardwareMap hardwareMap) {
 		this(hardwareMap, false, null);
 	}
 

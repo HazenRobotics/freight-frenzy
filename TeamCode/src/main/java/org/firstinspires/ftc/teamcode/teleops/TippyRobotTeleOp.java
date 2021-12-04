@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.teleops;
 
 import android.util.Log;
@@ -7,9 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
-import org.firstinspires.ftc.teamcode.robots.RRWoodBot;
+import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
@@ -31,13 +29,13 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "WoodRobotTeleOp", group = "TeleOp")
-public class WoodRobotTeleOp extends OpMode {
+@TeleOp(name = "TippyRobotTeleOp", group = "TeleOp")
+public class TippyRobotTeleOp extends OpMode {
 
 	GamepadEvents player1;
 	GamepadEvents player2;
 
-	RRWoodBot robot;
+	RRTippyBot robot;
 
 	DecimalFormat df = new DecimalFormat( "0.###" );
 
@@ -68,7 +66,7 @@ public class WoodRobotTeleOp extends OpMode {
 		player1 = new GamepadEvents( gamepad1 );
 		player2 = new GamepadEvents( gamepad2 );
 
-		robot = new RRWoodBot( this );
+		robot = new RRTippyBot( this );
 
 //		SoundLibrary.playRandomStartup( );
 
@@ -94,25 +92,27 @@ public class WoodRobotTeleOp extends OpMode {
 				gamepad1.left_stick_x * (gamepad1.left_stick_button ? maxStrafe : minStrafe),
 				gamepad1.right_stick_x * (gamepad1.right_stick_button ? maxRotate : minRotate) );
 
-		// intake
-		if( player1.left_bumper.onPress( ) )
-			robot.intake.setPower( robot.intake.getPower( ) > 0 ? 0 : intakePower );
-		else if( player1.right_bumper.onPress( ) )
+		// intake [right - in | left - out]
+		if( player1.left_bumper.onPress( ) || player2.left_bumper.onPress( ) )
 			robot.intake.setPower( robot.intake.getPower( ) < 0 ? 0 : -intakePower );
+		else if( player1.right_bumper.onPress( ) || player2.right_bumper.onPress( ) )
+			robot.intake.setPower( robot.intake.getPower( ) > 0 ? 0 : intakePower );
 
-		// bucket control
+		// bucket control [dup - intake | ddown - dump | back - exit loops]
 		if( gamepad1.dpad_up ) // parallel, intake
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 		else if( gamepad1.dpad_down ) // like -45°, dump
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_DUMP );
-		else if( gamepad1.back || gamepad2.back ) // exits all loops inside lift methods
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_DUMP );
+
+		// exits all loops inside lift methods
+		if( gamepad1.back || gamepad2.back )
 			robot.lift.exitLoops( 250 );
 
 		// if you touch either of the triggers enough, it will exit the driver assist method
 		if( gamepad1.right_trigger > 0.5 || gamepad1.left_trigger > 0.5 )
 			inDriverAssist = false;
 
-		// lift velocity control
+		// lift power control
 		if( !inDriverAssist ) {
 			if( gamepad1.right_trigger + gamepad1.left_trigger > 0 ) {
 				robot.lift.setTeleOPower( gamepad1.right_trigger - gamepad1.left_trigger );
@@ -126,7 +126,7 @@ public class WoodRobotTeleOp extends OpMode {
 		if( player1.y.onPress( ) )
 			capperPosition = capperPosition > 0.5 ? 0.0 : 1.0;
 		else if( player1.a.onPress( ) )
-			capperPosition = capperPosition >= RRHexBot.CAPPER_HOLD + 0.05 ?  RRHexBot.CAPPER_HOLD : RRHexBot.CAPPER_PICKUP; // prep the capper for the shipping element
+			capperPosition = capperPosition >= RRTippyBot.CAPPER_HOLD + 0.05 ?  RRTippyBot.CAPPER_HOLD : RRTippyBot.CAPPER_PICKUP; // prep the capper for the shipping element
 
 		if( gamepad2.y )
 			capperPosition -= 0.01;
@@ -136,7 +136,7 @@ public class WoodRobotTeleOp extends OpMode {
 		robot.capper.setPosition( capperPosition );
 
 		// bucket auto slant while moving up '(or below min height)
-		autoSlantBucket( );
+//		autoSlantBucket( ); // no need to since the bucket is already slanted
 
 		// driver assist methods
 		// lift presets
@@ -152,22 +152,22 @@ public class WoodRobotTeleOp extends OpMode {
 //			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
 //		}
 
-		// spinner timed intervals
-		if( player1.x.onPress( ) ) {
-			Log.e( "runSpinnerAssistMethods", "pressed" );
-			if( inSpinnerThread ) {
-				Log.e( "runSpinnerAssistMethods", "stop" );
-				inSpinnerThread = false;
-				spinnerThread.get( 0 ).interrupt();
-				spinnerThread.clear();
-				robot.spinner.setPower( 0 );
-			} else {
-				Log.e( "runSpinnerAssistMethods", "start" );
-				runSpinnerThread( );
-			}
-		}
-
 		// carousel spinner
+		// spinner timed intervals
+//		if( player1.x.onPress( ) ) {
+//			Log.e( "runSpinnerAssistMethods", "pressed" );
+//			if( inSpinnerThread ) {
+//				Log.e( "runSpinnerAssistMethods", "stop" );
+//				inSpinnerThread = false;
+//				spinnerThread.get( 0 ).interrupt();
+//				spinnerThread.clear();
+//				robot.spinner.setPower( 0 );
+//			} else {
+//				Log.e( "runSpinnerAssistMethods", "start" );
+//				runSpinnerThread( );
+//			}
+//		}
+
 		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
 			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
 
@@ -199,10 +199,43 @@ public class WoodRobotTeleOp extends OpMode {
 		//			↓					a
 
 		telemetry.addLine( "          Controls:" );
-		telemetry.addLine( "Drive: Gp1: left stick y (axis)" );
-		telemetry.addLine( "Strafe: Gp1: left stick x (axis)" );
-		telemetry.addLine( "Rotate: Gp1: right stick x (axis)" );
+		telemetry.addLine( "Drive: [Gp1] left stick y (axis)" );
+		telemetry.addLine( "Strafe: [Gp1] left stick x (axis)" );
+		telemetry.addLine( "Rotate: [Gp1] right stick x (axis)" );
+		telemetry.addLine( "Intake: [Gp1/2] right/left bumper (in/out)" );
+		telemetry.addLine( "Bucket Position: [Gp1] dpad up/down (intake/dump)" );
+		telemetry.addLine( "Lift Up: [Gp1] right/left triggers (up/down)" );
+		telemetry.addLine( "Capper Max/Min Toggle: [Gp1] y" );
+		telemetry.addLine( "Capper Hold/Pickup Toggle: [Gp1] a" );
+		telemetry.addLine( "Capper Position: [Gp2] y/a (increase/decrease)" );
+		telemetry.addLine( "Spinner Power Toggle: [Gp1/2] b" );
+		telemetry.addLine( "Spinner Direction Toggle: [Gp1/2] dpad right" );
+		telemetry.addLine( "Reset Lift Position: [Gp1] ps" );
+		telemetry.addLine( "Exit Loops: [Gp1/2] back" );
 		telemetry.addLine( );
+
+		/*
+
+		          Controls:
+		Drive: [Gp1] left stick y (axis)
+		Strafe: [Gp1] left stick x (axis)
+		Rotate: [Gp1] right stick x (axis)
+		Intake: [Gp1] right bumper
+		Outtake: [Gp1] left bumper
+		Bucket Position: [Gp1] dpad up/down (intake/dump)
+		Lift Up: [Gp1] right/left triggers (up/down)
+		Capper Max/Min Toggle: [Gp1] y
+		Capper Hold/Pickup Toggle: [Gp1] a
+		Capper Position: [Gp2] y/a (increase/decrease)
+		Spinner Power Toggle: [Gp1/2] b
+		Spinner Direction Toggle: [Gp1/2] dpad right
+		Reset Lift Position: [Gp1] ps
+		Exit Loops: [Gp1/2] back
+
+
+		 */
+
+
 	}
 
 	public void addInfoTelemetry( ) {
@@ -240,9 +273,9 @@ public class WoodRobotTeleOp extends OpMode {
 	 */
 	public void autoSlantBucket( ) {
 		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
-			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
 	}
 

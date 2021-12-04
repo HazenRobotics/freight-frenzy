@@ -9,6 +9,9 @@ public class Bucket {
 
 	public Servo bucket;
 
+	/**
+	 * the lowest angle the bucket can go to
+	 */
 	public double maxAngle;
 
 	public double bucketRange;
@@ -67,16 +70,16 @@ public class Bucket {
 	 * Bucket's programmatic position is between 0 & 1
 	 *
 	 * @param position angle between 0 & 1
-	 * @return that position converted to be between maxAngle° & maxAngle - angleLimit (default: 180)°
+	 * @return that position converted to be between maxAngle° & maxAngle - bucketRange (default: 180)°
 	 */
 	public double positionToAngle( double position ) {
 		return bucketRange * (position + 1) + maxAngle;
 	}
 
 	/**
-	 * Bucket's physical position is between 0° & angleLimit (default: 180)°
+	 * Bucket's physical position is between 0° & bucketRange (default: 180)°
 	 *
-	 * @param angle angle between 0° & angleLimit (default: 180)°
+	 * @param angle angle between 0° & bucketRange (default: 180)°
 	 * @return that angle converted to be between 0 & 1
 	 */
 	public double angleToPosition( double angle ) {
@@ -97,7 +100,7 @@ public class Bucket {
 	}
 
 	/**
-	 * @return the position (between 0 & maxAngle) where Servo is
+	 * @return the position (between 0 & bucketRange) where Servo is
 	 */
 	public double getAngle( ) {
 		return positionToAngle( getPosition( ) );

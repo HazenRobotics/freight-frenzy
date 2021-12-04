@@ -16,7 +16,7 @@ Control Hub Servo 1: "capper" - the capper servo for the shipping element
 
 
 
-WoodBot (13")
+TippyBot (13")
 Motors & Encoders:
 Control Hub Motor 0: "frontLeft" - front left motor and encoder
 Control Hub Motor 1: "backLeft" - back left motor and encoder

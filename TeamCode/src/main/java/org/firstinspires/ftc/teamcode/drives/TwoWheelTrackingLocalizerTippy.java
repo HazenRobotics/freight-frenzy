@@ -32,7 +32,7 @@ import java.util.List;
  *    \--------------/
  *
  */
-public class TwoWheelTrackingLocalizerWood extends TwoTrackingWheelLocalizer {
+public class TwoWheelTrackingLocalizerTippy extends TwoTrackingWheelLocalizer {
 
 	public static double TICKS_PER_REV = 4000;
 	public static double WHEEL_RADIUS = 38 / 2.0 / 25.4; // in
@@ -52,9 +52,9 @@ public class TwoWheelTrackingLocalizerWood extends TwoTrackingWheelLocalizer {
 	// Perpendicular is perpendicular to the forward axis
 	private Encoder parallelEncoder, perpendicularEncoder;
 
-	private RRMecanumDriveWood42 drive;
+	private RRMecanumDriveTippy42 drive;
 
-	public TwoWheelTrackingLocalizerWood( HardwareMap hardwareMap, RRMecanumDriveWood42 drive ) {
+	public TwoWheelTrackingLocalizerTippy( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive ) {
 		super( Arrays.asList(
 				new Pose2d( PARALLEL_X, PARALLEL_Y, 0 ),
 				new Pose2d( PERPENDICULAR_X, PERPENDICULAR_Y, Math.toRadians( 90 ) )

@@ -3,17 +3,17 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.robots.RRWoodBot;
+import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 
 //@Disabled
 @Autonomous(name = "DriveTest", group = "Test")
 public class DriveTest extends LinearOpMode {
 
-	RRWoodBot robot;
+	RRTippyBot robot;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		robot = new RRWoodBot( this );
+		robot = new RRTippyBot( this );
 
 		telemetry.addLine( "Finished init" );
 		telemetry.update( );

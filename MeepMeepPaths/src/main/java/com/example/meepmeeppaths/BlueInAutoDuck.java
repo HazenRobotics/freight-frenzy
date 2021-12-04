@@ -52,7 +52,7 @@ public class BlueInAutoDuck implements MeepMeepPath {
 				.waitSeconds( 1.2 )
 
 				// move to barrier to park
-				.setTangent( Math.toRadians( 0 ) )
+				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.lineToConstantHeading( new Vector2d( 62, 44 ) )
 				.build();

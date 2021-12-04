@@ -9,13 +9,11 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveWood42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 
 import java.util.List;
 
@@ -76,7 +74,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
 		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-		RRMecanumDriveWood42 drive = new RRMecanumDriveWood42( hardwareMap );
+		RRMecanumDriveTippy42 drive = new RRMecanumDriveTippy42( hardwareMap );
 
 		Mode mode = Mode.TUNING_MODE;
 
