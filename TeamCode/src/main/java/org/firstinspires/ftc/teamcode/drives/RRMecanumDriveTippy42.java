@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.drives;
 
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ANG_ACCEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ANG_VEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.encoderTicksToInches;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kA;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kStatic;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kV;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_ANG_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_ANG_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.TRACK_WIDTH;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.encoderTicksToInches;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.kA;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.kStatic;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.kV;
 
 import androidx.annotation.NonNull;
 
@@ -56,10 +56,10 @@ import java.util.List;
 @Config
 public class RRMecanumDriveTippy42 extends MecanumDrive {
 
-	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 6, 0, 0 );
-	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
+	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 0, 0, 0 );
+	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 0, 0, 0 );
 
-	public static double LATERAL_MULTIPLIER = 1.148;
+	public static double LATERAL_MULTIPLIER = 1;
 
 	public static double VX_WEIGHT = 1;
 	public static double VY_WEIGHT = 1;
@@ -132,7 +132,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: reverse any motors using DcMotor.setDirection()
 		leftFront.setDirection( DcMotorSimple.Direction.REVERSE );
-		leftRear.setDirection( DcMotorSimple.Direction.REVERSE );
+		leftRear.setDirection( DcMotorSimple.Direction.FORWARD );
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));

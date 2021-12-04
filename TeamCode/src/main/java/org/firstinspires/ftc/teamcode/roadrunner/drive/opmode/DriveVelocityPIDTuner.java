@@ -17,11 +17,11 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 
 import java.util.List;
 
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_ACCEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MAX_VEL;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.MOTOR_VELO_PID;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.RUN_USING_ENCODER;
-import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsHex42.kV;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_ACCEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MAX_VEL;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.MOTOR_VELO_PID;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.RUN_USING_ENCODER;
+import static org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42.kV;
 
 /*
  * This routine is designed to tune the PID coefficients used by the REV Expansion Hubs for closed-
