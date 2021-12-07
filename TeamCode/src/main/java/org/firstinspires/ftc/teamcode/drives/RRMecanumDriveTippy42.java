@@ -86,7 +86,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 	private final VoltageSensor batteryVoltageSensor;
 
 	public static final double CAMERA_X = 0;
-	public static final double CAMERA_Y = 6.625;
+	public static final double CAMERA_Y = 4;
 
 	public RRMecanumDriveTippy42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
@@ -141,7 +141,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
-		FusionLocalizer fusionLocalizer = new FusionLocalizer( hardwareMap, this );
+		FusionLocalizer fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
 		fusionLocalizer.setDeadwheelsDisabledCheck( () -> false );
 		setLocalizer( fusionLocalizer);
 		if(!(mapName == null)) {

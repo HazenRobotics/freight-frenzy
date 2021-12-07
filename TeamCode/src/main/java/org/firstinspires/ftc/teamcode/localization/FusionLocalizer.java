@@ -9,6 +9,9 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
+import org.apache.commons.math3.filter.DefaultMeasurementModel;
+import org.apache.commons.math3.filter.DefaultProcessModel;
+import org.apache.commons.math3.filter.KalmanFilter;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
@@ -26,10 +29,10 @@ public class FusionLocalizer implements Localizer {
 
 	Thread checkDeadwheelsThread;
 
-	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive) {
+	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive, Pose2d cameraFromRobot) {
 		driveLocalizer = new MecanumDrive.MecanumLocalizer( drive );
 		wheelLocalizer = new TwoWheelTrackingLocalizerTippy( hardwareMap, drive );
-		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, new Pose2d( 0, 4 ) );
+		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, cameraFromRobot );
 	}
 	@NonNull
 	@Override
@@ -54,8 +57,9 @@ public class FusionLocalizer implements Localizer {
 	public void update( ) {
 		driveLocalizer.update();
 		wheelLocalizer.update();
+		cameraLocalizer.update();
 		if(cameraReady && !deadwheelsDisabled) {
-			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity().getX(), wheelLocalizer.getPoseVelocity().getY() );
+			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity() );
 		}
 		else {
 			if( cameraLocalizer.getPoseConfidence() == T265Camera.PoseConfidence.High ) {
@@ -63,7 +67,6 @@ public class FusionLocalizer implements Localizer {
 				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate() : driveLocalizer.getPoseEstimate() );
 			}
 		}
-		cameraLocalizer.update();
 	}
 
 	/**

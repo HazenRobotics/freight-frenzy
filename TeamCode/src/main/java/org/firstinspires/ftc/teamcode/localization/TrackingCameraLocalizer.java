@@ -126,11 +126,11 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	/**
 	 * Sends odometry data to the sensor fusion algorithm
-	 * @param vx velocity in the x direction (in inches / s)
-	 * @param vy velocity in the y direction (in inches / s)
+	 * @param velocity velocity in the x and y directions
 	 */
-	public void sendOdometryData(double vx, double vy) {
-		slamra.sendOdometry( vy * DistanceUnit.mPerInch, vx * DistanceUnit.mPerInch );
+	public void sendOdometryData(Pose2d velocity) {
+		com.arcrobotics.ftclib.geometry.Pose2d ftcLibPose = rrPose2dToFtclib( velocity );
+		slamra.sendOdometry( ftcLibPose.getX(), ftcLibPose.getY() );
 	}
 
 
