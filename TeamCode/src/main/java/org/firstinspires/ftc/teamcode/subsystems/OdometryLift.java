@@ -8,7 +8,10 @@ public class OdometryLift {
 	public CRServo odometryServo;
 
 	public OdometryLift( HardwareMap hardwareMap ) {
-		setup( hardwareMap, "odometryServo" );
+		this( hardwareMap, "odometryServo" );
+	}
+	public OdometryLift ( HardwareMap hardwareMap, String odometryServoName ) {
+		setup( hardwareMap, odometryServoName );
 	}
 
 	public void setup( HardwareMap hardwareMap, String odometryServoName ) {
@@ -17,12 +20,10 @@ public class OdometryLift {
 
 	public void liftOdometry( ) {
 		odometryServo.setPower( 0.5 );
-
 	}
 
 	public void lowerOdometry( ) {
 		odometryServo.setPower( -0.5 );
-
 	}
 
 }

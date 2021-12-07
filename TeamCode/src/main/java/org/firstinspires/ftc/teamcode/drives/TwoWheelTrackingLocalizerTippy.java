@@ -38,14 +38,14 @@ public class TwoWheelTrackingLocalizerTippy extends TwoTrackingWheelLocalizer {
 	public static double WHEEL_RADIUS = 38 / 2.0 / 25.4; // in
 	public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-	public static double PARALLEL_X = 3.30; // X is the up and down direction
-	public static double PARALLEL_Y = 2; // Y is the strafe direction
+	public static double PARALLEL_X = 3.5; // X is the up and down direction
+	public static double PARALLEL_Y = 2.5; // Y is the strafe direction
 
 	public static double PERPENDICULAR_X = 5;
-	public static double PERPENDICULAR_Y = 2;
+	public static double PERPENDICULAR_Y = 2.5;
 
-	public static double X_MULTIPLIER = 1.0055; // 1.0033 1.0183 0.995 Multiplier in the X direction
-	public static double Y_MULTIPLIER = 0.99187; // 0.9846 0.9994 0.9916 Multiplier in the Y direction
+	public static double X_MULTIPLIER = 0.985983; // Multiplier in the X direction
+	public static double Y_MULTIPLIER = 0.981659; // 0.979497 0.981896 0.983583  Multiplier in the Y direction
 
 	// Parallel/Perpendicular to the forward axis
 	// Parallel wheel is parallel to the forward axis

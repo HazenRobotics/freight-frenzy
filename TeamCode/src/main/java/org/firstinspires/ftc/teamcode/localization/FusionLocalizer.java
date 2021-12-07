@@ -6,16 +6,19 @@ import androidx.annotation.Nullable;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
-import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizer;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
+import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
 
 import java.util.function.Supplier;
 
 public class FusionLocalizer implements Localizer {
 
 	TrackingCameraLocalizer cameraLocalizer;
-	TwoWheelTrackingLocalizer wheelLocalizer;
+	TwoWheelTrackingLocalizerTippy wheelLocalizer;
 	MecanumDrive.MecanumLocalizer driveLocalizer;
 
 	boolean cameraReady = false;
@@ -23,6 +26,11 @@ public class FusionLocalizer implements Localizer {
 
 	Thread checkDeadwheelsThread;
 
+	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive) {
+		driveLocalizer = new MecanumDrive.MecanumLocalizer( drive );
+		wheelLocalizer = new TwoWheelTrackingLocalizerTippy( hardwareMap, drive );
+		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, new Pose2d( 0, 4 ) );
+	}
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
@@ -86,5 +94,9 @@ public class FusionLocalizer implements Localizer {
 
 	public void stopDeadwheelsDisabledCheck() {
 		checkDeadwheelsThread.interrupt();
+	}
+
+	public void stopCamera() {
+		cameraLocalizer.stopCamera();
 	}
 }

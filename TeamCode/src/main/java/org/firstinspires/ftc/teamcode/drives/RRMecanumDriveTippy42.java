@@ -40,10 +40,14 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.spartronics4915.lib.T265Camera;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.teamcode.localization.FusionLocalizer;
 import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.roadrunner.util.AxesSigns;
+import org.firstinspires.ftc.teamcode.roadrunner.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -56,10 +60,10 @@ import java.util.List;
 @Config
 public class RRMecanumDriveTippy42 extends MecanumDrive {
 
-	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 0, 0, 0 );
-	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 0, 0, 0 );
+	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 4, 0, 0 );
+	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
 
-	public static double LATERAL_MULTIPLIER = 1;
+	public static double LATERAL_MULTIPLIER = 1.237;
 
 	public static double VX_WEIGHT = 1;
 	public static double VY_WEIGHT = 1;
@@ -106,7 +110,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
 		// upward (normal to the floor) using a command like the following:
-		// BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+		BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
 
 		leftFront = hardwareMap.get( DcMotorEx.class, "frontLeft" );
 		leftRear = hardwareMap.get( DcMotorEx.class, "backLeft" );
@@ -136,7 +140,10 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-		setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
+		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
+		FusionLocalizer fusionLocalizer = new FusionLocalizer( hardwareMap, this );
+		fusionLocalizer.setDeadwheelsDisabledCheck( () -> false );
+		setLocalizer( fusionLocalizer);
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
