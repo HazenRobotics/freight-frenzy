@@ -30,15 +30,17 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 
 	static double FREIGHT_THRESHOLD = 0.3;
-	static double WEIGHT_THRESHOLD = 0.1;
+//	static double WEIGHT_THRESHOLD = 0.1;
 
 	public CubeWeightDetector( Telemetry t ) {
 		telemetry = t;
 	}
 
-	public Mat processFrame( Mat input, String type ) {
+	public Mat processFrame( Mat input) {
 
-		return processHSVColorFrame( input );
+		Mat image = processHSVColorFrame( input );
+		telemetry.update();
+		return image;
 	}
 
 	public Mat processEdgeFrame( Mat src ) {
@@ -64,9 +66,13 @@ public class CubeWeightDetector extends OpenCvPipeline {
 			Point[] points = matsOfPoints.get( i ).toArray( );
 			Imgproc.approxPolyDP( new MatOfPoint2f( points ), approx, 0.01 * Imgproc.arcLength( new MatOfPoint2f( points ), true ), true );
 			double area = Imgproc.contourArea( matsOfPoints.get( i ) );
-			if( (approx.toArray( ).length > 8) && (approx.toArray( ).length < 30) && (approx.toArray( ).length < 23) && (area > 30) )
+			if((approx.toArray( ).length > 10) && (area < 1000)) {
+				telemetry.addLine( "" + area );
 				contourList.add( new MatOfPoint( points ) );
+			}
 		}
+
+		telemetry.addLine("" + contourList.size());
 
 		if (contourList.size() >= 1) {
 			freightType = FreightType.WEIGHTED_CUBE;
@@ -89,11 +95,12 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 		Scalar freightLowHSV = new Scalar( 4, 0, 0 ); //f 17
 		Scalar freightHighHSV = new Scalar( 29, 255, 255 ); //f 23
-		Scalar weightLowHSV = new Scalar( 30, 10, 70 ); //w
-		Scalar weightHighHSV = new Scalar( 100, 30, 255 ); //w
+//		Scalar weightLowHSV = new Scalar( 30, 10, 70 ); //w
+//		Scalar weightHighHSV = new Scalar( 100, 30, 255 ); //w
 
 		SetupMatrix( mat, freightLowHSV, freightHighHSV );
 		Rect BUCKET = new Rect( 54, 0, 212, 240 );
+		Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		for( int i = 0; i < 100; i++ ) {
 			Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		}
@@ -109,11 +116,11 @@ public class CubeWeightDetector extends OpenCvPipeline {
 		double freightValue = Core.sumElems( freightArea ).val[0] / FREIGHT_ROI.area( ) / 255; //f
 //		double weightValue = Core.sumElems( weightArea ).val[0] / WEIGHT_ROI.area( ) / 255; //f
 
-		telemetry.addLine( "FV" + freightValue );
+//		telemetry.addLine( "FV" + freightValue );
 //		telemetry.addLine( "WV" + weightValue );
-
-		telemetry.addLine( "FROI X" + FREIGHT_ROI.x );
-		telemetry.addLine( "FROI Y" + FREIGHT_ROI.y );
+//
+//		telemetry.addLine( "FROI X" + FREIGHT_ROI.x );
+//		telemetry.addLine( "FROI Y" + FREIGHT_ROI.y );
 //		telemetry.addLine( "WROI X" + WEIGHT_ROI.x );
 //		telemetry.addLine( "WROI Y" + WEIGHT_ROI.y );
 
@@ -123,14 +130,14 @@ public class CubeWeightDetector extends OpenCvPipeline {
 		boolean freightBool = freightValue > FREIGHT_THRESHOLD; //f
 //		boolean weightBool = weightValue > WEIGHT_THRESHOLD;
 
-		Scalar red = new Scalar( 255, 0, 0 ); //f
-		Scalar green = new Scalar( 0, 255, 0 ); //f
-		Scalar blue = new Scalar( 0, 0, 255 );
-		Scalar yellow = new Scalar( 255, 255, 0 );
-		Scalar orange = new Scalar( 255, 165, 0 );
-		Scalar pink = new Scalar( 255, 0, 255 );
-		Scalar black = new Scalar( 0, 0, 0 );
-		Scalar id = blue;
+//		Scalar red = new Scalar( 255, 0, 0 ); //f
+//		Scalar green = new Scalar( 0, 255, 0 ); //f
+//		Scalar blue = new Scalar( 0, 0, 255 );
+//		Scalar yellow = new Scalar( 255, 255, 0 );
+//		Scalar orange = new Scalar( 255, 165, 0 );
+//		Scalar pink = new Scalar( 255, 0, 255 );
+//		Scalar black = new Scalar( 0, 0, 0 );
+//		Scalar id = blue;
 
 		if (freightBool) {
 			return processEdgeFrame( mat );
@@ -165,15 +172,6 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		Imgproc.rectangle( current, BUCKETEDGE, orange);
 
 
-	}
-
-	@Override
-	public Mat processFrame( Mat input ) {
-
-		Mat cubeImage = processFrame( input, "cube" );
-		double cubeVal = Core.sumElems( cubeImage ).val[0] / (cubeImage.rows( ) * cubeImage.cols( )) / 255;
-		telemetry.update( );
-		return cubeImage;
 	}
 
 	public FreightType getFreightType( ) {
