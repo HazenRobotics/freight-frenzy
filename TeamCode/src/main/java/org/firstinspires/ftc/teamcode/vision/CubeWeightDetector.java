@@ -66,7 +66,7 @@ public class CubeWeightDetector extends OpenCvPipeline {
 			Point[] points = matsOfPoints.get( i ).toArray( );
 			Imgproc.approxPolyDP( new MatOfPoint2f( points ), approx, 0.01 * Imgproc.arcLength( new MatOfPoint2f( points ), true ), true );
 			double area = Imgproc.contourArea( matsOfPoints.get( i ) );
-			if((approx.toArray( ).length > 10) && (area < 1000)) {
+			if(/*(approx.toArray( ).length > 10) && */(area < 500)) {
 				telemetry.addLine( "" + area );
 				contourList.add( new MatOfPoint( points ) );
 			}
