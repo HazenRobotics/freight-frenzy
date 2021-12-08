@@ -16,6 +16,8 @@ public class Audio {
 
 	private String audioName = "";
 
+	private float volume = 1;
+
 	private HardwareMap hardwareMap;
 
 	public Audio( HardwareMap hardwareMap, String audioName ) {
@@ -23,16 +25,18 @@ public class Audio {
 		initSound( hardwareMap, audioName, 1f );
 	}
 
-	public Audio( HardwareMap hardwareMap, String audioName, float masterVolume ) {
+	public Audio( HardwareMap hardwareMap, String audioName, float volume ) {
 
-		initSound( hardwareMap, audioName, masterVolume );
+		initSound( hardwareMap, audioName, volume );
 	}
 
-	public void initSound( HardwareMap hardwareMap, String audioName,  float masterVolume ) {
+	public void initSound( HardwareMap hardwareMap, String audioName, float volume ) {
 
 		this.hardwareMap = hardwareMap;
 
 		this.audioName = audioName;
+
+		this.volume = volume;
 
 		// Determine Resource IDs for sounds built into the RC application.
 		audioID = this.hardwareMap.appContext.getResources( ).getIdentifier( this.audioName, "raw", this.hardwareMap.appContext.getPackageName( ) );
@@ -49,13 +53,14 @@ public class Audio {
 			Robot.writeToMatchFile( "NotFoundException :: " + e.getLocalizedMessage( ), true );
 		}
 
-		setMasterVolume( masterVolume );
 	}
 
 	public void play( ) {
 		String textToWrite = (audioFound ? "Successfully played" : "Failed to find & play") + " audio " + audioName;
-		Robot.writeToDefaultFile( textToWrite,  true, true );
-		Robot.writeToMatchFile( textToWrite,  true );
+		Robot.writeToDefaultFile( textToWrite, true, true );
+		Robot.writeToMatchFile( textToWrite, true );
+
+		setMasterVolume( volume > 0 ? volume : 1 );
 
 		SoundPlayer.getInstance( ).startPlaying( hardwareMap.appContext, audioID );
 	}
@@ -79,13 +84,17 @@ public class Audio {
 		return audioID;
 	}
 
+	public float getVolume( ) {
+		return volume;
+	}
+
 	// master volume getters and setters
 
 	public float getMasterVolume( ) {
 		return SoundPlayer.getInstance( ).getMasterVolume( );
 	}
 
-	public void setMasterVolume( float masterVolume ) {
+	public static void setMasterVolume( float masterVolume ) {
 		SoundPlayer.getInstance( ).setMasterVolume( masterVolume );
 	}
 

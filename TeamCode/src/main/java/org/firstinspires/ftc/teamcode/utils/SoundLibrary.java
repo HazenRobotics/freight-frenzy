@@ -8,7 +8,7 @@ public class SoundLibrary {
 
 	private static HardwareMap hardwareMap;
 
-	private static final ArrayList<Audio> audioList = new ArrayList<>( );
+	private static final ArrayList<AudioPlayer> audioList = new ArrayList<>( );
 
 	public SoundLibrary( HardwareMap hardwareMap ) {
 
@@ -40,7 +40,7 @@ public class SoundLibrary {
 		String names = toString( );
 		for( int i = 0; i < soundNames.length; i++ )
 			if( !names.contains( soundNames[i] ) )
-				audioList.add( new Audio( hardwareMap, soundNames[i], 1f ) );
+				audioList.add( new AudioPlayer( hardwareMap, soundNames[i], volumes[i] ) );
 
 		//audioList.add( new Audio( hardwareMap, "" ) );
 
@@ -62,6 +62,13 @@ public class SoundLibrary {
 			}
 		}
 		return "Audio \"" + audioName + "\" :: not found";
+	}
+
+	public static AudioPlayer getAudioPlayer( String audioName ) {
+		for( int i = 0; i < audioList.size( ); i++ )
+			if( audioList.get( i ).getName( ).equals( audioName ) )
+				return audioList.get( i );
+		return null;
 	}
 
 	/**
@@ -134,7 +141,7 @@ public class SoundLibrary {
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	private static String playRandomAudioOfType( String audioType ) {
-		ArrayList<Audio> list = new ArrayList<>( );
+		ArrayList<AudioPlayer> list = new ArrayList<>( );
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( audioList.get( i ).getName( ).contains( audioType ) )
 				list.add( audioList.get( i ) );
