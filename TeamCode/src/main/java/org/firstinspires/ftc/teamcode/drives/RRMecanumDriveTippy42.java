@@ -31,6 +31,8 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -53,6 +55,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -84,6 +87,8 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 	private final BNO055IMU imu;
 	private final VoltageSensor batteryVoltageSensor;
+
+	private FusionLocalizer fusionLocalizer;
 
 	public static final double CAMERA_X = 0;
 	public static final double CAMERA_Y = 4;
@@ -141,13 +146,22 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
-		FusionLocalizer fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
-		fusionLocalizer.setDeadwheelsDisabledCheck( () -> false );
+		fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
+		List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
+			fusionLocalizer.setDeadwheelsDisabledCheck( ( ) -> {
+						for( LynxModule hub : hubs ) {
+							if(hub.isNotResponding( )) {
+								return true;
+							}
+						}
+						return false;
+					}
+			);
 		setLocalizer( fusionLocalizer);
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
-		//setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName) );
+		//setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 )) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
@@ -348,7 +362,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 	}
 
 	public T265Camera.PoseConfidence getPoseConfidence() {
-		return ((TrackingCameraLocalizer) getLocalizer()).getPoseConfidence();
+		return fusionLocalizer.getCameraPoseConfidence();
 	}
 
 	public void exportLocalizationMap(String mapName) {
@@ -357,4 +371,13 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 	public void exportLocalizationMap() {
 		exportLocalizationMap( "map" );
 	}
+
+	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc) {
+		fusionLocalizer.setDeadwheelsDisabledCheck( checkFunc );
+	}
+
+	public void setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection frameOfReference ) {
+		fusionLocalizer.setCameraFrameOfReference( frameOfReference );
+	}
+
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
+import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -24,6 +25,8 @@ public class LocalizationTest extends LinearOpMode {
         RRMecanumDriveTippy42 drive = new RRMecanumDriveTippy42(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
 
         waitForStart();
 

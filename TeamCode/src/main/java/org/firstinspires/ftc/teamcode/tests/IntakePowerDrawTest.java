@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,11 +12,10 @@ import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.Logger;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 @TeleOp(name = "IntakePowerDrawTest", group = "Test")
+@Disabled
 public class IntakePowerDrawTest extends OpMode {
 
 	NoodleIntake intake;
@@ -45,7 +45,7 @@ public class IntakePowerDrawTest extends OpMode {
 
 		Logger.writeAFile( fileName, "Time,Power,Motor Current,Hub Current", false, false );
 
-		controlHub = (LynxModule) hardwareMap.get(LynxModule.class, "Control Hub");
+		controlHub = (LynxModule) hardwareMap.get( LynxModule.class, "Control Hub" );
 
 		telemetry.addLine( "Init finished!" );
 		telemetry.update( );
@@ -67,8 +67,12 @@ public class IntakePowerDrawTest extends OpMode {
 		}
 
 		if( logging )
-			Logger.writeAFile( fileName, formatData(System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS )), true, false );
+			Logger.writeAFile( fileName, formatData( System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS ) ), true, false );
 
+		telemetry.addLine( "intake: right bumper" );
+		telemetry.addLine( "outtake: right bumper" );
+		telemetry.addLine( "start logging: a" );
+		telemetry.addLine( );
 		telemetry.addLine( "logging: " + logging );
 		telemetry.addLine( "time: " + time );
 		telemetry.addLine( );

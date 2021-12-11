@@ -142,7 +142,7 @@ public class RRMecanumDriveHex42 extends MecanumDrive {
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
-		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName) );
+		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), loadMap, mapName, TrackingCameraLocalizer.CardinalDirection.EAST) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}

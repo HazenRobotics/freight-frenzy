@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class RedInAutoDuck extends LinearOpMode {
 
 	RRHexBot robot;

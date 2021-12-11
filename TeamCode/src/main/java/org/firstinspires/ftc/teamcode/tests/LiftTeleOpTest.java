@@ -11,16 +11,16 @@ import java.text.DecimalFormat;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
+ * An OpMode is a 'program' that runs in either the autonomous or the TeleOp period of an FTC match.
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
  * <p>
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * This particular OpMode just executes a basic Tank Drive TeleOp for a two wheeled robot
  * It includes all the skeletal structure that all iterative OpModes contain.
  * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
 @TeleOp(name = "LiftTeleOpTest", group = "TeleOp")
@@ -40,7 +40,7 @@ public class LiftTeleOpTest extends OpMode {
 	@Override
 	public void init( ) {
 
-		lift = new Lift( hardwareMap, "lift", true, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
 		gamepad1.rumble( 2000 );
 

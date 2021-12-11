@@ -40,7 +40,7 @@ public class Lift {
 	 *
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 */
-	public Lift( HardwareMap hardwareMap ) {
+	public Lift( HardwareMap hardwareMap ) { // the defaults for the 18" robot
 		setup( hardwareMap, "lift", true, 2.375,
 				(38.2 / 25.4) / 2, 55, AngleUnit.DEGREES ); // diameter of 45mm
 	}
@@ -58,10 +58,10 @@ public class Lift {
 		setup( hardwareMap, motorName, reverseMotor, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setup( HardwareMap hardwareMap, String leftMotorName, boolean reverseMotor,
+	public void setup( HardwareMap hardwareMap, String motorName, boolean reverseMotor,
 					   double groundBucketHeight, double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
-		motor = hardwareMap.get( DcMotorEx.class, leftMotorName );
+		motor = hardwareMap.get( DcMotorEx.class, motorName );
 
 		if( reverseMotor )
 			motor.setDirection( DcMotorSimple.Direction.REVERSE );
@@ -159,7 +159,12 @@ public class Lift {
 	}
 
 	public void waitForMoveFinish( ) {
-		while( isBusy( ) && motor.getCurrent( CurrentUnit.AMPS ) < 7.9 ) ;
+		while( isBusy( ) && motor.getCurrent( CurrentUnit.AMPS ) < 7.9 ) {
+			try {
+				Thread.sleep( 50 );
+			} catch( InterruptedException e ) {
+			}
+		}
 	}
 
 	// simple lift setters
@@ -299,7 +304,7 @@ public class Lift {
 	}
 
 	public double calcBucketDistanceFromHeight( double height ) {
-		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height * Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
 		return height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) );
 	}
 
@@ -322,6 +327,7 @@ public class Lift {
 	/**
 	 * set Tele-O-Power
 	 * sets the lift to a power and sets the lift mode to run without encoders (still tracks position)
+	 *
 	 * @param power the power to set the motors to
 	 */
 	public void setTeleOPower( double power ) {

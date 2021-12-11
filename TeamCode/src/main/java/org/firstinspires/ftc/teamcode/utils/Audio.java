@@ -30,7 +30,7 @@ public class Audio {
 		initSound( hardwareMap, audioName, volume );
 	}
 
-	public void initSound( HardwareMap hardwareMap, String audioName, float volume ) {
+	private void initSound( HardwareMap hardwareMap, String audioName, float volume ) {
 
 		this.hardwareMap = hardwareMap;
 

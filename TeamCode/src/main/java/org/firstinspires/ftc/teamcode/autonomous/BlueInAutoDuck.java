@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class BlueInAutoDuck extends LinearOpMode {
 
 	RRHexBot robot;
@@ -38,13 +38,7 @@ public class BlueInAutoDuck extends LinearOpMode {
 		telemetry.update( );
 
 		while( !isStopRequested( ) && !isStarted( ) ) {
-			robot.drive.update( );
 			telemetry.addData( "Element position", robot.barcodeUtil.getBarcodePosition() );
-			telemetry.addLine(  );
-			telemetry.addData( "Current pose estimate", robot.drive.getPoseEstimate() );
-			telemetry.addLine(  );
-			telemetry.addLine( "Pose estimate should be somewhere close to (0, 0, 0). If not, run the \"ResetCamera\" Autonomous." );
-			telemetry.update();
 		}
 
 		waitForStart( );

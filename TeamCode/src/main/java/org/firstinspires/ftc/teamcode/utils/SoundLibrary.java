@@ -8,7 +8,7 @@ public class SoundLibrary {
 
 	private static HardwareMap hardwareMap;
 
-	private static final ArrayList<AudioPlayer> audioList = new ArrayList<>( );
+	public /*private*/ static final ArrayList<AudioPlayer> audioList = new ArrayList<>( );
 
 	public SoundLibrary( HardwareMap hardwareMap ) {
 
@@ -20,21 +20,24 @@ public class SoundLibrary {
 	private void initSounds( ) {
 
 		String[] soundNames = new String[]{
-				"ps_startup",
-				"slurp_yummy",
+				"falcon_punch_smash",
 				"fine_addition",
+				"gamecube_startup",
+//				"gold",
+				"hallelujah_chorus",
 				"have_hulk",
 				"hello_there_startup",
 				"my_precious",
-				"falcon_punch_smash",
-				"seismic_charge_smash",
-				"smash",
 				"nooo",
-				"windows_startup",
-				"gamecube_startup",
-				"hallelujah_chorus" };
+				"ps_startup",
+				"punch",
+//				"seismic_charge_smash",
+//				"silver",
+				"slurp_yummy",
+				"smash",
+				"windows_startup" };
 
-		float[] volumes = new float[]{ /*0.5f*/1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f };
+		float[] volumes = new float[]{ /*0.5f*/1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f };
 
 		// other audios
 		String names = toString( );

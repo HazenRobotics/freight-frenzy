@@ -29,8 +29,8 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "TippyRobotTeleOp", group = "TeleOp")
-public class TippyRobotTeleOp extends OpMode {
+@TeleOp(name = "TippyBotTeleOp", group = "TeleOp")
+public class TippyBotTeleOp extends OpMode {
 
 	GamepadEvents player1;
 	GamepadEvents player2;
@@ -43,7 +43,7 @@ public class TippyRobotTeleOp extends OpMode {
 	double minStrafe = 0.7, maxStrafe = 1.0;
 	double minRotate = 0.5, maxRotate = 1.0;
 
-	double intakePower = 0.7;
+	double intakePower = 0.6;
 
 	double capperPosition = 0.7;
 
@@ -85,7 +85,6 @@ public class TippyRobotTeleOp extends OpMode {
 	@Override
 	public void loop( ) {
 
-		addControlTelemetry( );
 
 		//gamepad inputs
 		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
@@ -123,9 +122,10 @@ public class TippyRobotTeleOp extends OpMode {
 		}
 
 		// capper position
-		if( player1.y.onPress( ) )
-			capperPosition = capperPosition > 0.5 ? 0.0 : 1.0;
-		else if( player1.a.onPress( ) )
+//		if( player1.y.onPress( ) ) // toggle between min/max
+//			capperPosition = capperPosition > 0.5 ? 0.0 : 1.0;
+//		else
+		if( player1.a.onPress( ) ) // toggle between hold/pickup
 			capperPosition = capperPosition >= RRTippyBot.CAPPER_HOLD + 0.05 ?  RRTippyBot.CAPPER_HOLD : RRTippyBot.CAPPER_PICKUP; // prep the capper for the shipping element
 
 		if( gamepad2.y )
@@ -135,8 +135,16 @@ public class TippyRobotTeleOp extends OpMode {
 
 		robot.capper.setPosition( capperPosition );
 
+		// Grabber open/closed
+		/*if( player1.y.onPress( ) ) {// toggles power
+			if( robot.grabber.isOpen( ) )
+				robot.grabber.close( );
+			else
+				robot.grabber.open( );
+		}*/
+
 		// bucket auto slant while moving up '(or below min height)
-//		autoSlantBucket( ); // no need to since the bucket is already slanted
+		autoSlantBucket( ); // no need to since the bucket is already slanted
 
 		// driver assist methods
 		// lift presets
@@ -154,19 +162,19 @@ public class TippyRobotTeleOp extends OpMode {
 
 		// carousel spinner
 		// spinner timed intervals
-//		if( player1.x.onPress( ) ) {
-//			Log.e( "runSpinnerAssistMethods", "pressed" );
-//			if( inSpinnerThread ) {
-//				Log.e( "runSpinnerAssistMethods", "stop" );
-//				inSpinnerThread = false;
-//				spinnerThread.get( 0 ).interrupt();
-//				spinnerThread.clear();
-//				robot.spinner.setPower( 0 );
-//			} else {
-//				Log.e( "runSpinnerAssistMethods", "start" );
-//				runSpinnerThread( );
-//			}
-//		}
+		if( player1.x.onPress( ) ) {
+			Log.e( "runSpinnerAssistMethods", "pressed" );
+			if( inSpinnerThread ) {
+				Log.e( "runSpinnerAssistMethods", "stop" );
+				inSpinnerThread = false;
+				spinnerThread.get( 0 ).interrupt();
+				spinnerThread.clear();
+				robot.spinner.setPower( 0 );
+			} else {
+				Log.e( "runSpinnerAssistMethods", "start" );
+				runSpinnerThread( );
+			}
+		}
 
 		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
 			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
@@ -205,6 +213,7 @@ public class TippyRobotTeleOp extends OpMode {
 		telemetry.addLine( "Intake: [Gp1/2] right/left bumper (in/out)" );
 		telemetry.addLine( "Bucket Position: [Gp1] dpad up/down (intake/dump)" );
 		telemetry.addLine( "Lift Up: [Gp1] right/left triggers (up/down)" );
+		telemetry.addLine( "Grabber Open/Closed Toggle: [Gp1] x" );
 		telemetry.addLine( "Capper Max/Min Toggle: [Gp1] y" );
 		telemetry.addLine( "Capper Hold/Pickup Toggle: [Gp1] a" );
 		telemetry.addLine( "Capper Position: [Gp2] y/a (increase/decrease)" );

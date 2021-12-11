@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleops;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -31,6 +32,7 @@ import java.util.List;
  */
 
 @TeleOp(name = "HexRobotTeleOp", group = "TeleOp")
+@Disabled
 public class HexRobotTeleOp extends OpMode {
 
 	GamepadEvents player1;

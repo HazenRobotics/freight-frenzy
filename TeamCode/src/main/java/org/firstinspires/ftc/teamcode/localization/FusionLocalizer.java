@@ -9,10 +9,6 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
-import org.apache.commons.math3.filter.DefaultMeasurementModel;
-import org.apache.commons.math3.filter.DefaultProcessModel;
-import org.apache.commons.math3.filter.KalmanFilter;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
 
@@ -26,18 +22,20 @@ public class FusionLocalizer implements Localizer {
 
 	boolean cameraReady = false;
 	boolean deadwheelsDisabled = false;
+	long cameraReadyTime = 0;
 
 	Thread checkDeadwheelsThread;
 
-	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive, Pose2d cameraFromRobot) {
+	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive, Pose2d cameraFromRobot ) {
 		driveLocalizer = new MecanumDrive.MecanumLocalizer( drive );
 		wheelLocalizer = new TwoWheelTrackingLocalizerTippy( hardwareMap, drive );
 		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, cameraFromRobot );
 	}
+
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
-		return cameraReady ? cameraLocalizer.getPoseEstimate() : !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate() : driveLocalizer.getPoseEstimate();
+		return cameraReady ? cameraLocalizer.getPoseEstimate( ) : !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( );
 	}
 
 	@Override
@@ -50,56 +48,71 @@ public class FusionLocalizer implements Localizer {
 	@Nullable
 	@Override
 	public Pose2d getPoseVelocity( ) {
-		return cameraReady ? cameraLocalizer.getPoseVelocity() : !deadwheelsDisabled ? wheelLocalizer.getPoseVelocity() : driveLocalizer.getPoseVelocity();
+		return cameraReady ? cameraLocalizer.getPoseVelocity( ) : !deadwheelsDisabled ? wheelLocalizer.getPoseVelocity( ) : driveLocalizer.getPoseVelocity( );
 	}
 
 	@Override
 	public void update( ) {
-		driveLocalizer.update();
-		wheelLocalizer.update();
-		cameraLocalizer.update();
-		if(cameraReady && !deadwheelsDisabled) {
-			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity() );
-		}
-		else {
-			if( cameraLocalizer.getPoseConfidence() == T265Camera.PoseConfidence.High ) {
+		driveLocalizer.update( );
+		wheelLocalizer.update( );
+		cameraLocalizer.update( );
+		if( cameraReady && !deadwheelsDisabled ) {
+			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity( ) );
+		} else {
+			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 ) {
+				cameraReadyTime = System.currentTimeMillis();
+			}
+			else if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && System.currentTimeMillis() > cameraReadyTime + 1000) {
+				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
 				cameraReady = true;
-				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate() : driveLocalizer.getPoseEstimate() );
+			} else if (cameraReady) {
+				cameraLocalizer.sendOdometryData( driveLocalizer.getPoseVelocity() );
 			}
 		}
 	}
 
 	/**
 	 * Sets the function that should run to check whether the dead wheels should be disabled or not, and starts a thread executing that function
+	 *
 	 * @param checkFunc Function that returns true if the dead wheels should be disabled, and false if they should not be disabled
 	 */
 	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc ) {
-		if(checkDeadwheelsThread != null && checkDeadwheelsThread.isAlive()) {
-			checkDeadwheelsThread.interrupt();
+		if( checkDeadwheelsThread != null && checkDeadwheelsThread.isAlive( ) ) {
+			checkDeadwheelsThread.interrupt( );
 		}
-		checkDeadwheelsThread = new Thread( () -> {
-			while(true) {
-				while( !deadwheelsDisabled ) {
-					deadwheelsDisabled = checkFunc.get();
+		checkDeadwheelsThread = new Thread( ( ) -> {
+			while( true ) {
+				if( checkFunc.get( ) && !deadwheelsDisabled ) {
+					deadwheelsDisabled = true;
+					driveLocalizer.setPoseEstimate( wheelLocalizer.getPoseEstimate( ) );
+				} else if( !checkFunc.get( ) && deadwheelsDisabled) {
+					wheelLocalizer.setPoseEstimate( cameraReady ? cameraLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
+					deadwheelsDisabled = false;
 				}
-
-				driveLocalizer.setPoseEstimate( wheelLocalizer.getPoseEstimate() );
-
-				while( deadwheelsDisabled ) {
-					deadwheelsDisabled = checkFunc.get();
+				try {
+					Thread.sleep( 50 );
+				} catch( InterruptedException e ) {
+					e.printStackTrace( );
 				}
-
-				wheelLocalizer.setPoseEstimate( cameraReady ? cameraLocalizer.getPoseEstimate() : driveLocalizer.getPoseEstimate() );
 			}
-		});
-		checkDeadwheelsThread.start();
+		} );
+		checkDeadwheelsThread.start( );
 	}
 
-	public void stopDeadwheelsDisabledCheck() {
-		checkDeadwheelsThread.interrupt();
+	public void stopDeadwheelsDisabledCheck( ) {
+		checkDeadwheelsThread.interrupt( );
 	}
 
-	public void stopCamera() {
-		cameraLocalizer.stopCamera();
+	public void stopCamera( ) {
+		cameraLocalizer.stopCamera( );
 	}
+
+	public void setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection frameOfReference ) {
+		cameraLocalizer.setFrameOfReference( frameOfReference );
+	}
+
+	public T265Camera.PoseConfidence getCameraPoseConfidence() {
+		return cameraLocalizer.getPoseConfidence();
+	}
+
 }
