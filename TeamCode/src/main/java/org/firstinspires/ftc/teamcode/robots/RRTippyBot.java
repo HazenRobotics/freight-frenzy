@@ -160,7 +160,7 @@ public class RRTippyBot extends Robot {
 
 	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
-		sleepRobot( 0.5 );
+		sleepRobot( 0.65 );
 		bucket.setAngle( BUCKET_ANGLE_INTAKE );
 	}
 

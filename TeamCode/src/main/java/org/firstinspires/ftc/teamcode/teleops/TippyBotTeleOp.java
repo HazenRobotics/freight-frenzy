@@ -135,6 +135,9 @@ public class TippyBotTeleOp extends OpMode {
 
 		robot.capper.setPosition( capperPosition );
 
+		if( player2.x.onPress( ) )
+			robot.odometryLift.liftOdometry( );
+
 		// Grabber open/closed
 		/*if( player1.y.onPress( ) ) {// toggles power
 			if( robot.grabber.isOpen( ) )

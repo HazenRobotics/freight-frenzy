@@ -73,11 +73,11 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 				.waitSeconds( 1.2 )
 
 				// Duck spin
-				.lineToLinearHeading( new Pose2d( -60, 58, Math.toRadians( -90 ) ) )
+				.lineToLinearHeading( new Pose2d( -62, 58, Math.toRadians( -90 ) ) )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0.6 );
 				} )
-				.waitSeconds( 3.2 )
+				.waitSeconds( 3.0 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -113,7 +113,7 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToLinearHeading( new Pose2d( 62, 44, 0 ) )
+				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
 
 				.waitSeconds( 6 )
 
@@ -123,8 +123,9 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 	}
 
 	public Pose2d getHubPosition( double angle, double angleOffset, double indent, boolean blueSide ) {
-		double x = tileConnector / 2 + tileSize / 2 + Math.sin( Math.toRadians( angle ) ) * (hubRadius + indent + robotLength / 2);
-		double y = tileConnector + tileSize + Math.cos( Math.toRadians( angle ) ) * (hubRadius + indent + robotLength / 2);
+		double negate = Math.toRadians( angle * (blueSide ? 1 : -1) );
+		double x = tileConnector / 2 + tileSize / 2 + Math.sin( negate ) * (hubRadius + indent + robotLength / 2);
+		double y = tileConnector + tileSize + Math.cos( negate ) * (hubRadius + indent + robotLength / 2);
 		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
 		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}

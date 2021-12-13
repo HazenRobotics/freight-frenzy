@@ -146,7 +146,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	 * Sets the frame of reference for the camera
 	 * @param pose pose to correct
 	 */
-	public Pose2d correctFrameOfReference( Pose2d pose) {
+	public Pose2d correctFrameOfReference( Pose2d pose ) {
 		if(_frameOfReference == CardinalDirection.NORTH) {
 			//swap (x,y) to (-y,x)
 			return new Pose2d( -pose.getY(), pose.getX(), pose.getHeading() );
