@@ -42,7 +42,7 @@ public class LiftTeleOpTest extends OpMode {
 
 		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
-		gamepad1.rumble( 2000 );
+		gamepad1.rumble( 1500 );
 
 		player = new GamepadEvents( gamepad1 );
 

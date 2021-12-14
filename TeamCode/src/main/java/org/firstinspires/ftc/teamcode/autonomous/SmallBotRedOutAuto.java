@@ -43,7 +43,7 @@ public class SmallBotRedOutAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( -40.75, -64.25, Math.toRadians( 90 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -40.75, -64.125, Math.toRadians( 90 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -65,7 +65,7 @@ public class SmallBotRedOutAuto extends LinearOpMode {
 
 				} )
 
-				.splineToLinearHeading( getHubPosition( -22.5, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 90 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -22.5, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 90 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
@@ -96,7 +96,7 @@ public class SmallBotRedOutAuto extends LinearOpMode {
 				} )
 
 				// drop duck in top
-				.splineToLinearHeading( getHubPosition( 0, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 - 22.5 ) )
 				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -104,7 +104,7 @@ public class SmallBotRedOutAuto extends LinearOpMode {
 				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-					robot.odometryLift.liftOdometry( );
+					robot.odometryLift.raise( );
 				} )
 				.waitSeconds( 1.2 )
 
@@ -120,13 +120,5 @@ public class SmallBotRedOutAuto extends LinearOpMode {
 				.build( );
 
 		robot.drive.followTrajectorySequence( trajectorySequence );
-	}
-
-	public Pose2d getHubPosition( double angle, double angleOffset, double indent, boolean blueSide ) {
-		double negate = Math.toRadians( angle * (blueSide ? 1 : -1) );
-		double x = tileConnector / 2 + tileSize / 2 + Math.sin( negate ) * (hubRadius + indent + robotLength / 2);
-		double y = tileConnector + tileSize + Math.cos( negate ) * (hubRadius + indent + robotLength / 2);
-		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
-		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}
 }

@@ -21,11 +21,11 @@ public class OdometryLift {
 		odometryServo.setDirection( DcMotorSimple.Direction.REVERSE );
 	}
 
-	public void liftOdometry( ) {
+	public void raise( ) {
 		setPowerTime( 1, 3000 );
 	}
 
-	public void lowerOdometry( ) {
+	public void lower( ) {
 		setPowerTime( -1, 3000 );
 	}
 

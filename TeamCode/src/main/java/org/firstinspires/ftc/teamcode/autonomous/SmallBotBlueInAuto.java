@@ -18,10 +18,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 
 	RRTippyBot robot;
 
-	static final double tileSize = 23;
-	static final double tileConnector = 0.75;
-	static final double hubRadius = 9;
-	static double robotLength = 13.25;
+	double wallPos = 64.625;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
@@ -41,7 +38,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( 17, 64.25, Math.toRadians( 270 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( 17, 64.125, Math.toRadians( 270 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -58,11 +55,13 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 		robot.barcodeUtil.stopCamera( );
 
 		TrajectorySequence trajectorySequence = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
+
+				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( height );
 				} )
 				.setTangent( Math.toRadians( 180 ) )
-				.splineToLinearHeading( getHubPosition( -22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1200 );
@@ -70,85 +69,87 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 
 				.waitSeconds( 0.8 )
 
+				// move to grab block 1
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, 64, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0.6 );
 				} )
-				.lineToConstantHeading( new Vector2d( 48, 64 ) )
-				.lineToConstantHeading( new Vector2d( 18, 64 ) )
+				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 				} )
+
+				// move to dump block 1 in the top layer
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.splineToSplineHeading( getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
+				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.waitSeconds( 0.8 )
 
+				// move to grab block 2
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 49, 64, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0.6 );
 				} )
-				.lineToConstantHeading( new Vector2d( 53, 64 ) )
-				.lineToConstantHeading( new Vector2d( 18, 64 ) )
+				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 				} )
+
+				// move to dump block 2 in the top layer
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.splineToSplineHeading( getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
+				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.waitSeconds( 0.8 )
 
+				// move to grab block 3
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, 64, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0.6 );
 				} )
-				.lineToConstantHeading( new Vector2d( 50, 64 ) )
-				.lineToConstantHeading( new Vector2d( 18, 64 ) )
+				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 				} )
+
+				// move to dump block 3 in the top layer
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.splineToSplineHeading( getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
+				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-					robot.odometryLift.liftOdometry( );
+					robot.odometryLift.raise( );
 				} )
 				.waitSeconds( 0.8 )
-				.turn( Math.toRadians( -110 ) )
+
+				// turn towards the
+				.turn( Math.toRadians( 110 ) )
 				/*// move to barrier to park
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.lineToConstantHeading( new Vector2d( 62, 44 ) )*/
 				.build( );
 
-
 		robot.drive.followTrajectorySequence( trajectorySequence );
-	}
-
-	public Pose2d getHubPosition( double angle, double angleOffset, double indent, boolean blueSide ) {
-		double negate = Math.toRadians( angle * (blueSide ? 1 : -1) );
-		double x = tileConnector / 2 + tileSize / 2 + Math.sin( negate ) * (hubRadius + indent + robotLength / 2);
-		double y = tileConnector + tileSize + Math.cos( negate ) * (hubRadius + indent + robotLength / 2);
-		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
-		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}
 }

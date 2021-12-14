@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drives.Drive;
+import org.firstinspires.ftc.teamcode.localization.Field;
 import org.firstinspires.ftc.teamcode.utils.Logger;
 
 /**
@@ -96,6 +98,22 @@ public abstract class Robot {
 		} catch( ClassCastException e ) {
 			return true;
 		}
+	}
+
+	/**
+	 * @param robotLength the length of the robot
+	 * @param angle       the number of degrees to turn to reach the side of the shipping hub
+	 * @param angleOffset the starting angle of the robot
+	 * @param indent      the distance away from the shipping hub base to be
+	 * @param blueSide    whether or not the robot is on the blue side
+	 * @return the position (Pose2D) of where the robot should move to fit the provided parameters
+	 */
+	public static Pose2d getHubPosition( double robotLength, double angle, double angleOffset, double indent, boolean blueSide ) {
+		double negate = Math.toRadians( angle * (blueSide ? 1 : -1) );
+		double x = Field.TILE_CONNECTOR / 2 + Field.TILE_SIZE / 2 + Math.sin( negate ) * (Field.HUB_RADIUS + indent + robotLength / 2);
+		double y = Field.TILE_CONNECTOR + Field.TILE_SIZE + Math.cos( negate ) * (Field.HUB_RADIUS + indent + robotLength / 2);
+		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
+		// ( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}
 
 }

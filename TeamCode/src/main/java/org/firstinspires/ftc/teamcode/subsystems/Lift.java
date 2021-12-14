@@ -66,11 +66,13 @@ public class Lift {
 		if( reverseMotor )
 			motor.setDirection( DcMotorSimple.Direction.REVERSE );
 		resetLift( );
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+
 	}
 
 	/**
@@ -243,6 +245,11 @@ public class Lift {
 		liftPosition += motor.getCurrentPosition( );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		// stop and reset encoder sets the encoder position to zero
+//		Lift.run( );
+	}
+
+	public static void run( ) {
+
 	}
 
 	public void runAfterBusy( Runnable runnable ) {

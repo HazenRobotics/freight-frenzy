@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
@@ -15,9 +14,9 @@ public class OdometryLiftTest extends LinearOpMode {
 		odometryLift = new OdometryLift( hardwareMap );
 
 		waitForStart();
-		odometryLift.liftOdometry();
+		odometryLift.raise();
 		sleep( 5000 );
-		odometryLift.lowerOdometry();
+		odometryLift.lower();
 		sleep( 3000 );
 	}
 }

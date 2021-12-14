@@ -19,11 +19,6 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 
 	RRTippyBot robot;
 
-	static final double tileSize = 23;
-	static final double tileConnector = 0.75;
-	static final double hubRadius = 9;
-	static double robotLength = 13.25;
-
 	@Override
 	public void runOpMode( ) throws InterruptedException {
 
@@ -43,7 +38,7 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( -30.5, 64.25, Math.toRadians( 270 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -30.5, 64.125, Math.toRadians( 270 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -65,7 +60,7 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 
 				} )
 
-				.splineToLinearHeading( getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
@@ -96,7 +91,7 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 				} )
 
 				// drop duck in top
-				.splineToLinearHeading( getHubPosition( 0, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 - 22.5 ) )
 				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -104,12 +99,11 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-					robot.odometryLift.liftOdometry( );
+					robot.odometryLift.raise( );
 				} )
 				.waitSeconds( 1.2 )
 
 				// move to barrier to park
-
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
@@ -120,13 +114,5 @@ public class SmallBotBlueOutAuto extends LinearOpMode {
 				.build( );
 
 		robot.drive.followTrajectorySequence( trajectorySequence );
-	}
-
-	public Pose2d getHubPosition( double angle, double angleOffset, double indent, boolean blueSide ) {
-		double negate = Math.toRadians( angle * (blueSide ? 1 : -1) );
-		double x = tileConnector / 2 + tileSize / 2 + Math.sin( negate ) * (hubRadius + indent + robotLength / 2);
-		double y = tileConnector + tileSize + Math.cos( negate ) * (hubRadius + indent + robotLength / 2);
-		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
-		// new Pose2d( -23.631, 35.506, toRadians( 270 + 45 ) )
 	}
 }

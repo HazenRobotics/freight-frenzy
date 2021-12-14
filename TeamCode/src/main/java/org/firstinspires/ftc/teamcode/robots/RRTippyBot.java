@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
+import org.firstinspires.ftc.teamcode.localization.Field;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
@@ -51,6 +53,10 @@ public class RRTippyBot extends Robot {
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
+
+
+	public static double ROBOT_LENGTH = 13.5;
+	public static double ROBOT_WIDTH = 12.5;
 
 	public RRTippyBot( OpMode op ) {
 
@@ -98,7 +104,7 @@ public class RRTippyBot extends Robot {
 		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) {
 			try {
 				Thread.sleep( 50 );
-			} catch( InterruptedException e ) {
+			} catch( InterruptedException ignored ) {
 			}
 		}
 	}
@@ -117,7 +123,7 @@ public class RRTippyBot extends Robot {
 		telemetry.update( );
 		switch( height ) {
 			default: // (LOW)
-				return 7.5;
+				return 8.5;
 			case MIDDLE:
 				return 13;
 			case HIGH:
@@ -147,14 +153,12 @@ public class RRTippyBot extends Robot {
 
 	public double shippingHubDistance( RRHexBot.ShippingHubHeight height ) {
 		switch( height ) {
-			case LOW:
-				return 3;
+			default: // (LOW)
+				return 1.5;
 			case MIDDLE:
 				return 5;
 			case HIGH:
 				return 7;
-			default:
-				return 3;
 		}
 	}
 
@@ -176,5 +180,16 @@ public class RRTippyBot extends Robot {
 				return 11 + lift.calcBucketDistanceFromHeight( shippingHubHeightToInches( height ));
 		}
 	}*/
+
+	/**
+	 * @param angle       the number of degrees to turn to reach the side of the shipping hub
+	 * @param angleOffset the starting angle of the robot
+	 * @param indent      the distance away from the shipping hub base to be
+	 * @param blueSide    whether or not the robot is on the blue side
+	 * @return the position (Pose2D) of where the robot should move to fit the provided parameters
+	 */
+	public static Pose2d getHubPosition( double angle, double angleOffset, double indent, boolean blueSide   ) {
+		return Robot.getHubPosition( ROBOT_LENGTH, angle, angleOffset, indent, blueSide );
+	}
 
 }
