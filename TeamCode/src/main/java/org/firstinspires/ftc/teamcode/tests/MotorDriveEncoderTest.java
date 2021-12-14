@@ -44,7 +44,7 @@ public class MotorDriveEncoderTest extends OpMode {
 		double frontRightPower = gamepad1.b ? 1 : 0;
 		double backRightPower = gamepad1.a ? 1 : 0;
 
-		//gamepad inputs
+//		gamepad inputs
 		robot.mecanumDrive.setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 
 		AngleUnit angleUnit = AngleUnit.DEGREES;
@@ -59,7 +59,7 @@ public class MotorDriveEncoderTest extends OpMode {
 		telemetry.addLine( "front right pos: " + robot.mecanumDrive.getFrontRightPosition( ) );
 		telemetry.addLine( "back right pos: " + robot.mecanumDrive.getBackRightPosition( ) );
 
-		//updates
+//		updates
 		telemetry.update( );
 	}
 

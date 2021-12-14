@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 
-@TeleOp
+@TeleOp(name = "LocalizationEncoderTest", group = "Test")
 public class LocalizationEncoderTest extends OpMode {
 
 	MecanumDrive drive;

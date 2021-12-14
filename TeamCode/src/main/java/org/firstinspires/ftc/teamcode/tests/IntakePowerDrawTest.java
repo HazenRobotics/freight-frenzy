@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 import org.firstinspires.ftc.teamcode.utils.Logger;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @Disabled
 public class IntakePowerDrawTest extends OpMode {
 
-	NoodleIntake intake;
+	Intake intake;
 	Lift lift;
 
 	String fileName = "*powerDraw.csv";
@@ -40,7 +40,7 @@ public class IntakePowerDrawTest extends OpMode {
 
 		player = new GamepadEvents( gamepad1 );
 
-		intake = new NoodleIntake( hardwareMap, "intake" );
+		intake = new Intake( hardwareMap, "intake" );
 		lift = new Lift( hardwareMap, "lift", true, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
 		Logger.writeAFile( fileName, "Time,Power,Motor Current,Hub Current", false, false );

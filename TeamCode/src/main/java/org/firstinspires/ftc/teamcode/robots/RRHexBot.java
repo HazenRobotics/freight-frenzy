@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
@@ -33,7 +33,7 @@ public class RRHexBot extends Robot {
 	public Bucket bucket;
 	public Capper capper;
 
-	public NoodleIntake intake;
+	public Intake intake;
 
 
 
@@ -87,7 +87,7 @@ public class RRHexBot extends Robot {
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
 		capper = new Capper( hardwareMap, "capper" );
 
-		intake = new NoodleIntake( hardwareMap );
+		intake = new Intake( hardwareMap );
 
 		capper.setPosition( 0 );
 

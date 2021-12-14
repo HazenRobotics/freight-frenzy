@@ -13,7 +13,9 @@
             <NeveRest20Gearmotor name="frontRight" port="2" />
             <NeveRest20Gearmotor name="backRight" port="3" />
             <Servo name="bucket" port="0" />
-            <Servo name="capper" port="1" />
+            <Servo name="odometryLift" port="1" />
+            <Servo name="capper" port="2" />
+            <Servo name="grabber" port="3" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
     </LynxUsbDevice>

@@ -8,13 +8,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
-import org.firstinspires.ftc.teamcode.localization.Field;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
@@ -40,7 +39,7 @@ public class RRTippyBot extends Robot {
 
 	public OdometryLift odometryLift;
 
-	public NoodleIntake intake;
+	public Intake intake;
 
 	public static final double LIFT_ANGLE = 50;
 
@@ -83,13 +82,13 @@ public class RRTippyBot extends Robot {
 
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		// bevel gear madness
-		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD /**/, Direction.FORWARD, Direction.FORWARD );
+		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD, Direction.FORWARD, Direction.FORWARD );
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
 
-		odometryLift = new OdometryLift( hardwareMap );
+		odometryLift = new OdometryLift( hardwareMap, "odometryLift", true );
 
-		intake = new NoodleIntake( hardwareMap );
+		intake = new Intake( hardwareMap );
 
 		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", telemetry );
 

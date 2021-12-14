@@ -23,11 +23,11 @@ public class RRDriveTest extends OpMode {
 
 	@Override
 	public void init_loop() {
-		if(drive.getPoseConfidence() == null || drive.getPoseConfidence().compareTo( T265Camera.PoseConfidence.Low ) < 0 ) {
+		if(drive.getPoseConfidence() == null || drive.getPoseConfidence().compareTo( T265Camera.PoseConfidence.Low ) < 0 )
 			telemetry.addLine( "Getting pose from camera. Please wait....." );
-		} else {
+		else
 			telemetry.addLine("Ready!" );
-		}
+
 		telemetry.update();
 		drive.update();
 	}

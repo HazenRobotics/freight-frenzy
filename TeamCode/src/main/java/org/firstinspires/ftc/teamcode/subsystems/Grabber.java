@@ -72,5 +72,9 @@ public class Grabber {
 		return open;
 	}
 
+	public boolean isClosed( ) {
+		return !open;
+	}
+
 }
 

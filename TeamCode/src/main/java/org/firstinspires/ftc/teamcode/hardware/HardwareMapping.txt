@@ -28,4 +28,6 @@ Expansion Hub Motor 2: "spinner" - the carousel spinner's motor and (dead wheel'
 
 Servos:
 Control Hub Servo 0: "bucket" - the bucket servo
-Control Hub Servo 1: "capper" - the capper servo for the shipping element
+Control Hub Servo 1: "odometryLift" - the servo that lifts the odometry up and down
+Control Hub Servo 2: "capper" - the capper servo for the shipping element
+Control Hub Servo 2: "grabber" - the grabber servo for grabbing shipping elements and possibly blocks/balls

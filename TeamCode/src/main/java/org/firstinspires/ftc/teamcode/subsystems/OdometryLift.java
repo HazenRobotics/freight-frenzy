@@ -8,17 +8,23 @@ public class OdometryLift {
 
 	public CRServo odometryServo;
 
+	/**
+	 * creates a default odometry lift that has a servo with the name "odometryLift" and reverses the servo
+	 *
+	 * @param hardwareMap robot's hardware map
+	 */
 	public OdometryLift( HardwareMap hardwareMap ) {
-		setup( hardwareMap, "odometryLift" );
+		setup( hardwareMap, "odometryLift", true );
 	}
 
-	public OdometryLift ( HardwareMap hardwareMap, String odometryServoName ) {
-		setup( hardwareMap, odometryServoName );
+	public OdometryLift( HardwareMap hardwareMap, String odometryServoName, boolean reverseServo ) {
+		setup( hardwareMap, odometryServoName, reverseServo );
 	}
 
-	public void setup( HardwareMap hardwareMap, String odometryServoName ) {
+	public void setup( HardwareMap hardwareMap, String odometryServoName, boolean reverseServo ) {
 		odometryServo = hardwareMap.crservo.get( odometryServoName );
-		odometryServo.setDirection( DcMotorSimple.Direction.REVERSE );
+		if( reverseServo )
+			odometryServo.setDirection( DcMotorSimple.Direction.REVERSE );
 	}
 
 	public void raise( ) {
@@ -30,24 +36,23 @@ public class OdometryLift {
 	}
 
 	/**
-	 *
 	 * @param power - power to set the servo to for an amount of time
-	 * @param time time to set power in milliseconds
+	 * @param time  time to set power in milliseconds
 	 */
 	public void setPowerTime( double power, int time ) {
-		new Thread( () -> {
+		new Thread( ( ) -> {
 			odometryServo.setPower( power );
-			long startTime = System.currentTimeMillis();
-			while( System.currentTimeMillis() < startTime + time );
+			long startTime = System.currentTimeMillis( );
+			while( System.currentTimeMillis( ) < startTime + time ) ;
 			stop( );
-		} ).start();
+		} ).start( );
 	}
 
-	public void stop() {
+	public void stop( ) {
 		setPower( 0 );
 	}
 
-	public void setPower(double power) {
+	public void setPower( double power ) {
 		odometryServo.setPower( power );
 	}
 

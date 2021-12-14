@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerServo;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.GyroTracker;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
@@ -26,7 +26,7 @@ public class HexBot extends Robot {
 	public CarouselSpinnerServo spinnerRight;
 	public Lift lift;
 	public Bucket bucket;
-	public NoodleIntake intake;
+	public Intake intake;
 	public GyroTracker gyroTracker;
 	public EncoderTracker encoderTracker;
 
@@ -59,7 +59,7 @@ public class HexBot extends Robot {
 		lift = new Lift( hardwareMap, "lift", true, 2.5, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 90, 180 );
-		intake = new NoodleIntake( hardwareMap );
+		intake = new Intake( hardwareMap );
 		gyroTracker = new GyroTracker( hardwareMap, false );
 		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular", 1, 1, 1 );
 

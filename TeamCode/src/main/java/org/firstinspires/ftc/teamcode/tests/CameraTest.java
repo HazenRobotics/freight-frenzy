@@ -1,24 +1,20 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.arcrobotics.ftclib.geometry.Transform2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
-import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 
 @Autonomous
 public class CameraTest extends LinearOpMode {
+
 	RRMecanumDriveHex42 drive;
 	T265Camera slamra;
-
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {

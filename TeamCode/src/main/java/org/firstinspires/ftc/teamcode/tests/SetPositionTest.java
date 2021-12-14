@@ -13,8 +13,8 @@ public class SetPositionTest extends OpMode {
 
 	@Override
 	public void init( ) {
-		drive = new RRMecanumDriveTippy42( hardwareMap );
 
+		drive = new RRMecanumDriveTippy42( hardwareMap );
 	}
 
 	@Override
@@ -26,10 +26,10 @@ public class SetPositionTest extends OpMode {
 						-gamepad1.right_stick_x
 				)
 		);
-		if( gamepad1.a ) {
-			drive.setPoseEstimate( new Pose2d( -20, -20, Math.toRadians( 270 ) ) );
-		}
-		drive.update( );
 
+		if( gamepad1.a )
+			drive.setPoseEstimate( new Pose2d( -20, -20, Math.toRadians( 270 ) ) );
+
+		drive.update( );
 	}
 }

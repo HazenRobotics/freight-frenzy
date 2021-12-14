@@ -245,16 +245,6 @@ public class Lift {
 		liftPosition += motor.getCurrentPosition( );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		// stop and reset encoder sets the encoder position to zero
-//		Lift.run( );
-	}
-
-	public static void run( ) {
-
-	}
-
-	public void runAfterBusy( Runnable runnable ) {
-		waitForMoveFinish( );
-		runnable.run( );
 	}
 
 	// converters and calculators

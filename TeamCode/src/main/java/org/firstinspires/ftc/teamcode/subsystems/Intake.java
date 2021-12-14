@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-public class NoodleIntake {
+public class Intake {
 
 	DcMotorEx intakeMotor;
 
@@ -16,7 +16,7 @@ public class NoodleIntake {
 	 *
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 */
-	public NoodleIntake( HardwareMap hardwareMap ) {
+	public Intake( HardwareMap hardwareMap ) {
 		setup( hardwareMap, "intake" );
 	}
 
@@ -24,7 +24,7 @@ public class NoodleIntake {
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 * @param intakeName  the name of the intake motor in the hardware map
 	 */
-	public NoodleIntake( HardwareMap hardwareMap, String intakeName ) {
+	public Intake( HardwareMap hardwareMap, String intakeName ) {
 		setup( hardwareMap, intakeName );
 	}
 

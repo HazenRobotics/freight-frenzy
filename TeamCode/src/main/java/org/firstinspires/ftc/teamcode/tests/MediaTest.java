@@ -26,8 +26,7 @@ public class MediaTest extends OpMode {
 	boolean wasPaused = false;
 	boolean wasLooping = false;
 
-	boolean showTestEvents
-			= false;
+	boolean showTestEvents = false;
 
 	@Override
 	public void init( ) {
@@ -80,12 +79,13 @@ public class MediaTest extends OpMode {
 				telemetry.addLine( test.getName( ) + " playing: " + false );
 			} else
 				telemetry.addLine( test.getName( ) + " playing: " + test.play( ) );
-//				test.play( );
 
 			telemetry.update( );
 		}
 
-		boolean playing, paused, looping;
+		boolean playing = false,
+				paused = false,
+				looping = false;
 
 		if( showTestEvents ) {
 			playing = test.isPlaying( );
@@ -93,9 +93,11 @@ public class MediaTest extends OpMode {
 			looping = test.isLooping( );
 		} else {
 			AudioPlayer current = SoundLibrary.getAudioPlayer( audios[selected] );
-			playing = current.isPlaying( );
-			paused = current.isPaused( );
-			looping = current.isLooping( );
+			if( current != null ) {
+				playing = current.isPlaying( );
+				paused = current.isPaused( );
+				looping = current.isLooping( );
+			}
 		}
 
 		if( playing != wasPlaying || paused != wasPaused || looping != wasLooping ) {
@@ -126,9 +128,8 @@ public class MediaTest extends OpMode {
 
 		if( prevSelected != selected ) {
 			prevSelected = selected;
-			for( int i = 0; i < audios.length; i++ ) {
+			for( int i = 0; i < audios.length; i++ )
 				telemetry.addLine( (i == selected ? "* " : "- ") + audios[i] );
-			}
 			telemetry.update( );
 		}
 

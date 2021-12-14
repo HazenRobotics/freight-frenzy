@@ -42,8 +42,9 @@ public class Bucket {
 	public void setup( HardwareMap hardwareMap, String bucketName, double maxAngle, double bucketRange ) {
 
 		bucket = hardwareMap.servo.get( bucketName );
-		this.maxAngle = maxAngle;
-		this.bucketRange = bucketRange;
+
+		setMaxAngle( maxAngle );
+		setBucketRange( bucketRange );
 	}
 
 	/**
@@ -53,14 +54,6 @@ public class Bucket {
 //		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
 		setPosition( angleToPosition( angleFromGround ) );
 	}
-
-	/*
-	 * 	public static double exampleGetPositionFromAngle( double angle ) {
-	 *		// range: 0 = 145, 1 = -35
-	 *		// shifted = range of 180
-	 *		return 1 - ((angle + 35) / 180);
-	 *	}
-	 */
 
 	public void setPosition( double position ) {
 		bucket.setPosition( position );
@@ -73,7 +66,7 @@ public class Bucket {
 	 * @return that position converted to be between maxAngle° & maxAngle - bucketRange (default: 180)°
 	 */
 	public double positionToAngle( double position ) {
-		return bucketRange * (position + 1) + maxAngle;
+		return bucketRange * (1 - position) + maxAngle;
 	}
 
 	/**
@@ -87,10 +80,11 @@ public class Bucket {
 		return 1 - ((angle - maxAngle) / bucketRange);
 	}
 
-	// p = 1 - ((angle-max)/r)
-	// p + 1 = (angle-max)/r
-	// r(p + 1) = angle - max
-	// angle = r(p + 1) + max
+	// p = 1 - (angle - max)/r
+	// p + (angle - max)/r = 1
+	// (angle - max)/r = 1 - p
+	// angle - max = r(1 - p)
+	// angle = r(1 - p) + max
 
 	/**
 	 * @return the position (between 0 & 1) where Servo is
