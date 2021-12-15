@@ -49,8 +49,8 @@ public class Lift {
 	 * @param hardwareMap        the hardwareMap of the current running OpMode
 	 * @param motorName          the name of the lift motor in the hardware map
 	 * @param groundBucketHeight the height of the bottom of the lift to the ground
-	 * @param spoolRadius        the radius of the spool attached om 'angleUnit's
-	 * @param liftAngle          the angle of the lift from the ground in
+   	 * @param spoolRadius        the radius of the spool attached om 'angleUnit's
+	0 * @param liftAngle          the angle of the lift from the ground in
 	 * @param angleUnit          the angle unit to make calculations and input variables
 	 */
 	public Lift( HardwareMap hardwareMap, String motorName, boolean reverseMotor, double groundBucketHeight,
@@ -65,13 +65,15 @@ public class Lift {
 
 		if( reverseMotor )
 			motor.setDirection( DcMotorSimple.Direction.REVERSE );
-		resetLift( );
-		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+
+		resetLift( );
+		motor.setTargetPosition( 10 );
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
 	}
 
