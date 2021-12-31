@@ -21,7 +21,7 @@ public class BlueInAutoFreight implements MeepMeepPath{
 				.waitSeconds( 1.2 )
 
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, 63.5, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 18, 63.5 ), Math.toRadians( 0 ) )
 				.lineToConstantHeading( new Vector2d( 48, 63.5 ) )
 				.lineToConstantHeading( new Vector2d( 18, 63.5 ) )
 				.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 1 /*shippingHubHeightToInches( height )*/, true ), Math.toRadians( 270 ) )

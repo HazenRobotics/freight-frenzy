@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.robots;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -43,7 +44,7 @@ public class RRTippyBot extends Robot {
 
 	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_RANGE = 190;
+	public static final double BUCKET_ANGLE_RANGE = 167.5; // 90 - -77.5 = 167.5
 	// lift default is 35, max of 165, range = 200
 
 	public static final double BUCKET_ANGLE_INTAKE = 90; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
@@ -52,7 +53,6 @@ public class RRTippyBot extends Robot {
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
-
 
 	public static double ROBOT_LENGTH = 13.5;
 	public static double ROBOT_WIDTH = 12.5;
@@ -78,11 +78,11 @@ public class RRTippyBot extends Robot {
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", BUCKET_ANGLE_INTAKE - BUCKET_ANGLE_RANGE, BUCKET_ANGLE_RANGE );
 		capper = new Capper( hardwareMap, "capper" );
-//		grabber = new Grabber( hardwareMap, "grabber" );
+		grabber = new Grabber( hardwareMap, "grabber" );
 
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		// bevel gear madness
-		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD, Direction.FORWARD, Direction.FORWARD );
+		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD, Direction.REVERSE, Direction.REVERSE );
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
 
@@ -93,6 +93,7 @@ public class RRTippyBot extends Robot {
 		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", telemetry );
 
 		capper.setPosition( 0 );
+
 	}
 
 	/**
@@ -131,31 +132,27 @@ public class RRTippyBot extends Robot {
 	}
 
 	public void liftToShippingHubHeight( RRHexBot.ShippingHubHeight height ) {
+		bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 		lift.setHeightVelocity( 1200, shippingHubHeightToInches( height ) );
 	}
 
 	public RRHexBot.ShippingHubHeight barcodePosToShippingHubHeight( BarcodePositionDetector.BarcodePosition position ) {
-		RRHexBot.ShippingHubHeight height;
 		switch( position ) {
 			default: // (LEFT)
-				height = RRHexBot.ShippingHubHeight.LOW;
-				break;
+				return RRHexBot.ShippingHubHeight.LOW;
 			case MIDDLE:
-				height = RRHexBot.ShippingHubHeight.MIDDLE;
-				break;
+				return RRHexBot.ShippingHubHeight.MIDDLE;
 			case RIGHT:
-				height = RRHexBot.ShippingHubHeight.HIGH;
-				break;
+				return RRHexBot.ShippingHubHeight.HIGH;
 		}
-		return height;
 	}
 
 	public double shippingHubDistance( RRHexBot.ShippingHubHeight height ) {
 		switch( height ) {
 			default: // (LOW)
-				return 1.5;
+				return 2; // 1.5
 			case MIDDLE:
-				return 5;
+				return 3; // 5
 			case HIGH:
 				return 7;
 		}
@@ -164,7 +161,8 @@ public class RRTippyBot extends Robot {
 	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
 		sleepRobot( 0.65 );
-		bucket.setAngle( BUCKET_ANGLE_INTAKE );
+		bucket.setAngle( BUCKET_ANGLE_MOVING );
+//		bucket.setAngle( BUCKET_ANGLE_INTAKE );
 	}
 
 	/*public double distanceFromShippingHub( RRHexBot.ShippingHubHeight height) {

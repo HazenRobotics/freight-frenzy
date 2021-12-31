@@ -139,12 +139,12 @@ public class TippyBotTeleOp extends OpMode {
 			robot.odometryLift.raise( );
 
 		// Grabber open/closed
-		/*if( player1.y.onPress( ) ) {// toggles power
+		if( player1.y.onPress( ) ) { // toggles power
 			if( robot.grabber.isOpen( ) )
 				robot.grabber.close( );
 			else
 				robot.grabber.open( );
-		}*/
+		}
 
 		// bucket auto slant while moving up '(or below min height)
 		autoSlantBucket( ); // no need to since the bucket is already slanted
@@ -252,6 +252,9 @@ public class TippyBotTeleOp extends OpMode {
 
 	public void addInfoTelemetry( ) {
 
+
+		telemetry.addLine( "Intaken blocks: " + robot.intake.getIntakenBlocks( ) );
+		telemetry.addLine( );
 		telemetry.addLine( "front left position: " + df.format( robot.mecanumDrive.getFrontLeftPosition( ) ) );
 		telemetry.addLine( "back left position: " + df.format( robot.mecanumDrive.getBackLeftPosition( ) ) );
 		telemetry.addLine( "front right position: " + df.format( robot.mecanumDrive.getFrontRightPosition( ) ) );

@@ -166,7 +166,7 @@ public class Lift {
 		while( isBusy( ) && motor.getCurrent( CurrentUnit.AMPS ) < 7.9 ) {
 			try {
 				Thread.sleep( 50 );
-			} catch( InterruptedException e ) {
+			} catch( InterruptedException ignored ) {
 			}
 		}
 	}
@@ -182,10 +182,20 @@ public class Lift {
 	}
 
 	public void setDefaultHeightVel( double velocity ) {
+		setDefaultHeightVel( velocity, ( ) -> { } );
+//		setHeightVelocity( velocity, groundBucketHeight );
+//		new Thread( ( ) -> {
+//			waitForMoveFinish( );
+//			disableMotorIfUnused( );
+//		} ).start( );
+	}
+
+	public void setDefaultHeightVel( double velocity, Runnable runnable ) {
 		setHeightVelocity( velocity, groundBucketHeight );
 		new Thread( ( ) -> {
 			waitForMoveFinish( );
 			disableMotorIfUnused( );
+			runnable.run( );
 		} ).start( );
 	}
 
@@ -233,9 +243,15 @@ public class Lift {
 		allowLoops = false;
 		long start = System.currentTimeMillis( );
 		new Thread( ( ) -> {
-			while( System.currentTimeMillis( ) < start + waitTimeMillis ) ;
+			while( System.currentTimeMillis( ) < start + waitTimeMillis ) {
+				try {
+					Thread.sleep( 50 );
+				} catch( InterruptedException ignored ) {
+				}
+			}
 			allowLoops = true;
 		} ).start( );
+
 	}
 
 	/**
@@ -247,6 +263,11 @@ public class Lift {
 		liftPosition += motor.getCurrentPosition( );
 		motor.setMode( DcMotor.RunMode.STOP_AND_RESET_ENCODER );
 		// stop and reset encoder sets the encoder position to zero
+	}
+
+	public void runAfterMove( Runnable runnable ) {
+		waitForMoveFinish( );
+		new Thread( runnable ).start( );
 	}
 
 	// converters and calculators

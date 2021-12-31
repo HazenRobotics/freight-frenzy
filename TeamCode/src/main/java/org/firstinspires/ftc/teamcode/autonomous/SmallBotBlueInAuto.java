@@ -64,7 +64,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.splineToLinearHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200 );
+					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
 				} )
 
 				.waitSeconds( 0.8 )
@@ -73,7 +73,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0.6 );
+					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
 				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
@@ -88,7 +88,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200 );
+					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
 				} )
 				.waitSeconds( 0.8 )
 
@@ -96,7 +96,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0.6 );
+					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
 				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
@@ -111,7 +111,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200 );
+					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
 				} )
 				.waitSeconds( 0.8 )
 
@@ -119,7 +119,7 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0.6 );
+					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
 				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
@@ -134,11 +134,11 @@ public class SmallBotBlueInAuto extends LinearOpMode {
 				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
 					robot.odometryLift.raise( );
+					robot.lift.setHeightVelocity( 1200, 23 );
 				} )
 				.waitSeconds( 0.8 )
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision.unused;
+package org.firstinspires.ftc.teamcode.vision;
 
 import android.util.Log;
 
@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.vision.unused.Vuforia;
 
 import java.util.List;
 

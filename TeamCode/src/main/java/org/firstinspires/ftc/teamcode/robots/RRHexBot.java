@@ -101,8 +101,6 @@ public class RRHexBot extends Robot {
 		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
 	}
 
-
-
 	/**
 	 * @param angle           the number of degrees to turn to reach the side of the shipping hub
 	 * @param angleOffset     the starting angle of the robot

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision.unused;
+package org.firstinspires.ftc.teamcode.vision;
 
 /**
  * Author: Sam DePoule
@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.robots.Robot;
+import org.firstinspires.ftc.teamcode.vision.unused.Vuforia;
 
 import java.util.ArrayList;
 

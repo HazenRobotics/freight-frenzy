@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.robots.RRHexBot;
+import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
@@ -33,6 +35,8 @@ public class LiftTeleOpTest extends OpMode {
 
 	Lift lift;
 
+	double bottom, middle, top;
+
 	double distance = 0;
 
 	double height = 0;
@@ -43,6 +47,11 @@ public class LiftTeleOpTest extends OpMode {
 		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, 50, AngleUnit.DEGREES );
 
 		gamepad1.rumble( 1500 );
+
+		RRTippyBot robot = new RRTippyBot( this );
+		bottom = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW );
+		middle = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.MIDDLE );
+		top = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.HIGH );
 
 		player = new GamepadEvents( gamepad1 );
 
@@ -68,6 +77,17 @@ public class LiftTeleOpTest extends OpMode {
 		else if( player.y.onPress() )
 			lift.moveDistanceVelocity( 750, distance, true );
 
+		// default heights
+		else if( player.left_bumper.onPress() )
+			lift.setHeightVelocity( 1000, bottom );
+		else if( player.b.onPress() )
+			lift.setHeightVelocity( 1000, middle );
+		else if( player.right_bumper.onPress() )
+			lift.setHeightVelocity( 1000, top );
+
+		telemetry.addLine( "Default distances (bot, mid, top): " + bottom + ", " + middle + ", " + top );
+		telemetry.addLine( "left bump, b, right bump" );
+		telemetry.addLine( );
 		telemetry.addLine( "Height (a): " + height );
 		telemetry.addLine( "Distance (y): " + distance );
 		telemetry.addLine( );
