@@ -17,6 +17,22 @@ public class CameraDetectionPositioner {
 	public static double blockSize = 1.95; // (3.75, 720) (50, 56.5)
 	public static double ballSize = 2.75; //  (9.08, 720) (50, 40.5) // test to see if these numbers are correct
 
+
+	/*
+
+	short distances
+	2.00
+	2.25
+	2.50
+
+
+	first: https://www.desmos.com/calculator/xjkt5xjnep
+	second: https://www.desmos.com/calculator/ftm6v22gvt
+
+
+	 */
+
+
 	enum ObjectType {
 		DUCK,
 		BLOCK,
