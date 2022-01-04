@@ -13,9 +13,36 @@ public class CameraDetectionPositioner {
 //    public static Vector2d ballMin = new Vector2d( -1, 720 ); // fullscreen image
 //    public static Vector2d ballMax = new Vector2d( 50, -1); // image size at 50 inches
 
-	public static double duckSize = 1.875; // (3.25, 720) (50, 58)
-	public static double blockSize = 1.95; // (3.75, 720) (50, 56.5)
-	public static double ballSize = 2.75; //  (9.08, 720) (50, 40.5) // test to see if these numbers are correct
+	public static final double duckSize = 1.875; // (3.25, 720) (50, 58)
+	public static final double blockSize = 1.95; // (3.75, 720) (50, 56.5)
+	public static final double ballSize = 2.75; //  (9.08, 720) (50, 40.5) // test to see if these numbers are correct
+
+	// Object Dimensions - width, height
+	/**
+	 * the dimensions of a Ball in inches (width, height)
+	 */
+	public static final Vector2d BALL_DIM = new Vector2d( 2.75, 2.75 );
+	/**
+	 * the dimensions of a Duck in inches (width, height)
+	 */
+	public static final Vector2d DUCK_DIM = new Vector2d( 2, 2.125 );
+	/**
+	 * the dimensions of an Element in inches (width, height)
+	 */
+	public static final Vector2d ELEMENT_DIM = new Vector2d( 3, 5 );
+	/**
+	 * the dimensions of a Heavy Cube in inches (width, height)
+	 */
+	public static final Vector2d HEAVY_DIM = new Vector2d( 2, 2 );
+	/**
+	 * the dimensions of a Light Cube in inches (width, height)
+	 */
+	public static final Vector2d LIGHT_DIM = new Vector2d( 2, 2 );
+	/**
+	 * the dimensions of a Medium Cube in inches (width, height)
+	 */
+	public static final Vector2d MEDIUM_DIM = new Vector2d( 2, 2 );
+
 
 
 	/*
