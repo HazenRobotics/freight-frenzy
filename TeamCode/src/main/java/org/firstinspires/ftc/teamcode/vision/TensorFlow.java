@@ -5,8 +5,11 @@ import android.util.Log;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.vision.unused.Vuforia;
 
 import java.util.List;
@@ -22,38 +25,54 @@ public class TensorFlow {
 
 	private List<Recognition> recognitions = null;
 
-	private final Vuforia vuforia = Vuforia.getInstance( );
+	public VuforiaLocalizer vuforia;
+
+	HardwareMap hardwareMap;
 
 	/**
 	 * Creates a TensorFlow
 	 *
 	 * @param tfodModelAssetName  name of the model asset, found in the assets folder
 	 * @param minResultConfidence minimum result confidence to be considered a "Recognition". Value from 0 to 1.
-	 * @param monitorCamera       if the camera monitor should run
 	 * @param hardwareMap         robot's hardware map
 	 * @param labels              labels of the entries in the .tflite file
 	 */
-	public TensorFlow( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hardwareMap, String... labels ) {
-		if( !vuforia.isRunning( ) )
-			vuforia.start( );
+	public TensorFlow( String tfodModelAssetName, float minResultConfidence, HardwareMap hardwareMap, String... labels ) {
 
-		initTfod( tfodModelAssetName, minResultConfidence, monitorCamera, hardwareMap, labels );
+		this.hardwareMap = hardwareMap;
+		initVuforia( );
+		initTfod( tfodModelAssetName, minResultConfidence, labels );
 	}
 
 	/**
-	 * Initializes Tensor Flow for use
-	 *
-	 * @param tfodModelAssetName  name of the model asset, found in the assets folder
-	 * @param minResultConfidence minimum result confidence to be considered a "Recognition". Value from 0 to 1.
-	 * @param monitorCamera       if the camera monitor should run
-	 * @param hardwareMap         robot's hardware map
-	 * @param labels              labels of the entries in the .tflite file
+	 * Initialize the Vuforia localization engine.
 	 */
-	private void initTfod( String tfodModelAssetName, float minResultConfidence, boolean monitorCamera, HardwareMap hardwareMap, String... labels ) {
-		TFObjectDetector.Parameters tfodParameters = monitorCamera ? new TFObjectDetector.Parameters( hardwareMap.appContext.getResources( ).getIdentifier(
-				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) ) ) : new TFObjectDetector.Parameters( );
+	private void initVuforia( ) {
+		/*
+		 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+		 */
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters( );
+
+		parameters.vuforiaLicenseKey = hardwareMap.appContext.getResources( ).getString( R.string.vuforia_key );
+		parameters.cameraName = hardwareMap.get( WebcamName.class, "webcam");
+
+		//  Instantiate the Vuforia engine
+		vuforia = ClassFactory.getInstance( ).createVuforia( parameters );
+
+		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
+	}
+
+	/**
+	 * Initialize the TensorFlow Object Detection engine.
+	 */
+	private void initTfod(  String tfodModelAssetName, float minResultConfidence, String... labels ) {
+		int tfodMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier(
+				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
+		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters( tfodMonitorViewId );
 		tfodParameters.minResultConfidence = minResultConfidence;
-		tfod = ClassFactory.getInstance( ).createTFObjectDetector( tfodParameters, vuforia.getLocalizer( ) );
+		tfodParameters.isModelTensorFlow2 = true;
+		tfodParameters.inputSize = 320;
+		tfod = ClassFactory.getInstance( ).createTFObjectDetector( tfodParameters, vuforia );
 		tfod.loadModelFromAsset( tfodModelAssetName, labels );
 	}
 
@@ -89,9 +108,9 @@ public class TensorFlow {
 	/**
 	 * Gets the current recognition
 	 *
-	 * @return current recognition
+	 * @return the most confident current recognition
 	 */
-	public Recognition getRecognition( ) {
+	public Recognition getMostConfRecognition( ) {
 
 		updateRecognitions( );
 		if( recognitions == null || recognitions.isEmpty( ) )
@@ -101,12 +120,36 @@ public class TensorFlow {
 
 		Recognition mostConfidentRecognition = null;
 		for( Recognition recognition : recognitions ) {
-			if( mostConfidentRecognition == null || recognition.getConfidence( ) > mostConfidentRecognition.getConfidence( ) ) {
+			if( mostConfidentRecognition == null || recognition.getConfidence( ) > mostConfidentRecognition.getConfidence( ) )
 				mostConfidentRecognition = recognition;
-			}
-		}
-		return mostConfidentRecognition;
 
+			Log.e( "TFOD_TEST", "current recognition: " + recognition.getLabel( ) );
+		}
+
+		return mostConfidentRecognition;
+	}
+
+	/**
+	 * Gets the current recognitions
+	 *
+	 * @return the current non-null recognitions
+	 */
+	public List<Recognition> getRecognitions( ) {
+
+		updateRecognitions( );
+		if( recognitions == null || recognitions.isEmpty( ) )
+			return null;
+
+		Log.e( "TFOD_TEST", "checked tfod recognitions " );
+
+		for( int i = 0; i < recognitions.size( ); i++ ) {
+			if( recognitions.get( i ) == null )
+				recognitions.remove( i-- );
+
+			Log.e( "TFOD_TEST", "current recognition: " + recognitions.get(i).getLabel( ) );
+		}
+
+		return recognitions;
 	}
 
 	/**

@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class CarouselSpinnerMotor {
 
-	DcMotor spinner;
+	DcMotorEx spinner;
 
 	/**
 	 * creates a default carousel spinner with a spinnerName of "spinner"
@@ -26,7 +29,7 @@ public class CarouselSpinnerMotor {
 
 	private void setup( HardwareMap hardwareMap, String spinnerName ) {
 
-		spinner = hardwareMap.dcMotor.get( spinnerName );
+		spinner = hardwareMap.get( DcMotorEx.class, spinnerName );
 	}
 
 	// getters and setters
@@ -39,4 +42,19 @@ public class CarouselSpinnerMotor {
 		spinner.setPower( power );
 	}
 
+	public void setVelocity( double velocity ) {
+		setVelocity( velocity, AngleUnit.DEGREES );
+	}
+
+	public void setVelocity( double velocity, AngleUnit angleUnit ) {
+		spinner.setVelocity( velocity, angleUnit );
+	}
+
+	public double getVelocity( ) {
+		return getVelocity( AngleUnit.DEGREES );
+	}
+
+	public double getVelocity( AngleUnit angleUnit ) {
+		return spinner.getVelocity( angleUnit );
+	}
 }

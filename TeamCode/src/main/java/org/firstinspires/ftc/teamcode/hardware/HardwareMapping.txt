@@ -5,8 +5,8 @@ Control Hub Motor 1: "backLeft" - back left motor and encoder
 Control Hub Motor 2: "frontRight" - front right motor and encoder
 Control Hub Motor 3: "backRight" - back right motor and encoder
 Expansion Hub Motor 0: "lift" - the lift's motor and encoder
-Expansion Hub Motor 1: "intake" - the intake's motor and (dead wheel's) parallel encoder
-Expansion Hub Motor 2: "spinner" - the left carousel spinner's motor and (dead wheel's) perpendicular encoder
+Expansion Hub Motor 1: "spinner" - the intake's motor and (dead wheel's) parallel encoder
+Expansion Hub Motor 2: "intake" - the left carousel spinner's motor and (dead wheel's) perpendicular encoder
 
 Servos:
 Control Hub Servo 0: "bucket" - the bucket servo

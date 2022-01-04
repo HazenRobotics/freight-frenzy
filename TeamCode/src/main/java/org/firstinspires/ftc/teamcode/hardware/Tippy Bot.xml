@@ -3,8 +3,8 @@
     <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
         <LynxModule name="Expansion Hub 2" port="2">
             <NeveRest20Gearmotor name="lift" port="0" />
-            <NeveRest60Gearmotor name="intake" port="1" />
-            <NeveRest20Gearmotor name="spinner" port="2" />
+            <NeveRest60Gearmotor name="spinner" port="1" />
+            <NeveRest20Gearmotor name="intake" port="2" />
             <LynxEmbeddedIMU name="imu" port="0" bus="0" />
         </LynxModule>
         <LynxModule name="Control Hub" port="173">

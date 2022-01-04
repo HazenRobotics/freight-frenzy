@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Grabber {
 
-	CRServo grabber;
-
-	private boolean open = true;
+	Servo grabber;
 
 	/**
 	 * creates a default grabber with a grabberName of "grabber"
@@ -29,51 +27,29 @@ public class Grabber {
 
 	public void setup( HardwareMap hardwareMap, String grabberName ) {
 
-		grabber = hardwareMap.crservo.get( grabberName );
+		grabber = hardwareMap.servo.get( grabberName );
 	}
 
 	// getters and setters
-	public void open( ) {
-		open = true;
-		setPowerTime( 1, 1000 );
-	}
 
-	public void close( ) {
-		open = false;
-		setPowerTime( -1, 1000 );
+	/**
+	 * @param position - position to set the servo to
+	 */
+	public void setPosition( double position ) {
+		grabber.setPosition( position );
 	}
 
 	/**
-	 * @param power - power to set the servo to for an amount of time
-	 * @param time  time to set power in milliseconds
+	 * @param position - position to set the servo to asynchronously
 	 */
-	public void setPowerTime( double power, int time ) {
+	public void setPositionAsync( double position ) {
 		new Thread( ( ) -> {
-			grabber.setPower( power );
-			long startTime = System.currentTimeMillis( );
-			while( System.currentTimeMillis( ) < startTime + time ) ;
-			stop( );
+			grabber.setPosition( position );
 		} ).start( );
 	}
 
-	public void stop( ) {
-		setPower( 0 );
-	}
-
-	public void setPower( double power ) {
-		grabber.setPower( power );
-	}
-
-	public double getPower( ) {
-		return grabber.getPower( );
-	}
-
-	public boolean isOpen( ) {
-		return open;
-	}
-
-	public boolean isClosed( ) {
-		return !open;
+	public double getPosition( ) {
+		return grabber.getPosition( );
 	}
 
 }

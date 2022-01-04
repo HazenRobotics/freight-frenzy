@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import java.text.DecimalFormat;
 
 @TeleOp(name = "EncoderPositionTest", group = "test")
-@Disabled
+//@Disabled
 public class EncoderPositionTest extends OpMode {
 
 	DcMotor[] encoder;
@@ -21,7 +21,7 @@ public class EncoderPositionTest extends OpMode {
 
 	@Override
 	public void init( ) {
-		names = new String[]{ "frontLeft", "backLeft", "frontRight", "backRight", "lift", "intake", "perpendicular" };
+		names = new String[]{ "frontLeft", "backLeft", "frontRight", "backRight", "lift", "spinner", "intake", "encoder" };
 		encoder = new DcMotor[names.length];
 		initialPosition = new int[encoder.length];
 		for( int i = 0; i < names.length; i++ ) {

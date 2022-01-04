@@ -138,30 +138,10 @@ public class TippyBotTeleOp extends OpMode {
 		if( player2.x.onPress( ) )
 			robot.odometryLift.raise( );
 
-		// Grabber open/closed
-		if( player1.y.onPress( ) ) { // toggles power
-			if( robot.grabber.isOpen( ) )
-				robot.grabber.close( );
-			else
-				robot.grabber.open( );
-		}
-
 		// bucket auto slant while moving up '(or below min height)
 		autoSlantBucket( ); // no need to since the bucket is already slanted
 
-		// driver assist methods
-		// lift presets
-//		if( gamepad2.dpad_up ) {
-//			inDriverAssist = true;
-//			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-//		} else if( gamepad2.dpad_left ) {
-//			inDriverAssist = true;
-//			robot.lift.setHeightVelocity( 850, 0 );
-//			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-//		} else if( gamepad2.dpad_down ) {
-//			inDriverAssist = true;
-//			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-//		}
+
 
 		// carousel spinner
 		// spinner timed intervals
@@ -217,7 +197,7 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.addLine( "Bucket Position: [Gp1] dpad up/down (intake/dump)" );
 		telemetry.addLine( "Lift Up: [Gp1] right/left triggers (up/down)" );
 		telemetry.addLine( "Grabber Open/Closed Toggle: [Gp1] x" );
-		telemetry.addLine( "Capper Max/Min Toggle: [Gp1] y" );
+//		telemetry.addLine( "Capper Max/Min Toggle: [Gp1] y" ); // y is unused
 		telemetry.addLine( "Capper Hold/Pickup Toggle: [Gp1] a" );
 		telemetry.addLine( "Capper Position: [Gp2] y/a (increase/decrease)" );
 		telemetry.addLine( "Spinner Power Toggle: [Gp1/2] b" );
@@ -254,6 +234,8 @@ public class TippyBotTeleOp extends OpMode {
 
 
 		telemetry.addLine( "Intaken blocks: " + robot.intake.getIntakenBlocks( ) );
+		telemetry.addLine( );
+		telemetry.addLine( "Spinner Velocity " + robot.spinner.getVelocity( ) );
 		telemetry.addLine( );
 		telemetry.addLine( "front left position: " + df.format( robot.mecanumDrive.getFrontLeftPosition( ) ) );
 		telemetry.addLine( "back left position: " + df.format( robot.mecanumDrive.getBackLeftPosition( ) ) );
@@ -294,5 +276,33 @@ public class TippyBotTeleOp extends OpMode {
 		prevLiftPos = robot.lift.getPositionInch( );
 	}
 
+
+
+
+
+
+// unused older code
+
+	// Grabber open/closed
+//		if( player1.y.onPress( ) ) { // toggles position
+//			if( robot.grabber.getPosition( ) > 0.5 )
+//				robot.grabber.setPosition( 0.0 );
+//			else
+//				robot.grabber.setPosition( 1 );
+//	}
+
+	// driver assist methods
+	// lift presets
+//		if( gamepad2.dpad_up ) {
+//			inDriverAssist = true;
+//			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+//		} else if( gamepad2.dpad_left ) {
+//			inDriverAssist = true;
+//			robot.lift.setHeightVelocity( 850, 0 );
+//			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
+//		} else if( gamepad2.dpad_down ) {
+//			inDriverAssist = true;
+//			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+//		}
 
 }

@@ -66,7 +66,7 @@ public class TensorFlowUtil {
 			vuforia.start( );
 		}
 
-		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.8f, true, hardwareMap, LABELS );
+		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.8f, hardwareMap, LABELS );
 	}
 
 	void startTF( ) {
@@ -75,7 +75,7 @@ public class TensorFlowUtil {
 
 	BarcodePosition identifyObjects( ) {
 
-		Recognition recognition = tensorFlow.getRecognition( );
+		Recognition recognition = tensorFlow.getMostConfRecognition( );
 
 		Log.e( "TFOD_TEST", "got recognitions: " + recognition );
 		if( recognition != null ) {
