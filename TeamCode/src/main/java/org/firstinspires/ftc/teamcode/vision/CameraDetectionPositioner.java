@@ -1,4 +1,4 @@
-package com.example.meepmeeppaths;
+package org.firstinspires.ftc.teamcode.vision;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
@@ -21,7 +21,8 @@ public class CameraDetectionPositioner {
 	/**
 	 * the dimensions of a Ball in inches (width, height)
 	 */
-	public static final Vector2d BALL_DIM = new Vector2d( 2.75, 2.75 );
+	public static final Vector2d BALL_DIM = new Vector2d( 2.75, 2.75 ); // 14.75" -> 127 pixels,      27" -> 64 pixels
+
 	/**
 	 * the dimensions of a Duck in inches (width, height)
 	 */
@@ -60,7 +61,7 @@ public class CameraDetectionPositioner {
 	 */
 
 
-	enum ObjectType {
+	public enum ObjectType {
 		BALL,
 		DUCK,
 		ELEMENT,
@@ -127,6 +128,10 @@ public class CameraDetectionPositioner {
 		System.out.println( "Final Distance (from target): " + finalDistance );
 		System.out.println( "--------------------------------------------" );
 
+		double pixelAvg = 50;
+		double xDim = 50;
+		double yDim = 50;
+		System.out.println( distanceFromRatios( pixelAvg, getMinPair( DUCK_DIM.getX( ) ), getMaxPair( DUCK_DIM.getX( ) ) ) );
 
 //		System.out.println( );
 //
@@ -248,5 +253,22 @@ public class CameraDetectionPositioner {
 		return (pixelAvg - b) / m;
 	}
 
+	public static double distanceFromDefault( double pixelAvg ) {
+
+		double x_1 = 14.75;
+		double y_1 = 127;
+		double x_2 = 27;
+		double y_2 = 64;
+
+		double m = (y_2 - y_1) / (x_2 - x_1);
+		double b = y_2 - m * x_2;
+
+		// y = mx + b
+		// x = (y - b)/m
+		return (pixelAvg - b) / m;
+	}
+
+
+	// https://www.desmos.com/calculator/y6r8qx43vk
 
 }
