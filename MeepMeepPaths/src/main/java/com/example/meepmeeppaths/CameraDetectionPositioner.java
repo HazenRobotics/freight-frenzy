@@ -61,9 +61,119 @@ public class CameraDetectionPositioner {
 
 
 	enum ObjectType {
+		BALL,
 		DUCK,
-		BLOCK,
-		BALL
+		ELEMENT,
+		HEAVY,
+		LIGHT,
+		MEDIUM
+
+	}
+
+	public static void main( String[] args ) {
+
+		/*
+
+		use scale to get complete distance
+		use camera angle to get distance from robot
+		use center offset to get lateral error (turning offset)
+		turn the lateral error (turning offset) into an angle and get the x and y components for moving
+
+		 */
+
+		int width = 65, height = 70;
+		ObjectType objectType = ObjectType.DUCK;
+		double distance = straightDistanceFromTarget( width, height, objectType );
+
+		double x = 35, camWidth = 720, camFOV = 70;
+		double error = getLateralError( x, camWidth, camFOV );
+
+		double cameraAngle = 22.5;
+		Vector2d finalDistance = componentDistanceFromTarget( distance, error, cameraAngle );
+
+		System.out.println( "Distance (from target): " + distance );
+		System.out.println( "Lateral Error (from target): " + error );
+		System.out.println( "Final Distance (from target): " + finalDistance );
+		System.out.println( "--------------------------------------------" );
+
+
+//		System.out.println( );
+//
+//		System.out.println( "duckSize min: " + getMinPair( duckSize ) );
+//		System.out.println( "blockSize min: " + getMinPair( blockSize ) );
+//		System.out.println( "ballSize min: " + getMinPair( ballSize ) );
+//
+//		System.out.println( );
+//
+//		System.out.println( "duckSize max: " + getMaxPair( duckSize ) );
+//		System.out.println( "blockSize max: " + getMaxPair( blockSize ) );
+//		System.out.println( "ballSize max: " + getMaxPair( ballSize ) );
+
+
+	}
+
+	/**
+	 * @param distance     the straight distance from the target object
+	 * @param headingError the lateral error (turning offset) from the target object
+	 * @param camAngle     the vertical angle of camera (degrees) (0° is parallel with the ground)
+	 * @return the x and y components of how far the target object is (where x is parallel with the camera, y is perpendicular, and z would be the height)
+	 */
+	public static Vector2d componentDistanceFromTarget( double distance, double headingError, double camAngle ) {
+
+		double flatDistance = distance * Math.cos( Math.toRadians( camAngle ) );
+
+		return new Vector2d( flatDistance / Math.cos( Math.toRadians( headingError ) ), flatDistance / Math.sin( Math.toRadians( headingError ) ) );
+	}
+
+	/**
+	 * @param width      the width of the target object (pixels)
+	 * @param height     the height of the target object (pixels)
+	 * @param objectType the type of the target object (ObjectType)
+	 * @return how far the robot is from the object (inches)
+	 */
+	public static double straightDistanceFromTarget( double width, double height, ObjectType objectType ) {
+
+		double avgSize = (width + height) / 2;
+
+		double distanceFromCam = distanceFromObjectType( avgSize, objectType );
+
+		System.out.println( "Distance (from camera): " + distanceFromCam );
+
+		return distanceFromCam;
+	}
+
+
+	/**
+	 * finds the direction a target is from the camera
+	 *
+	 * @param x        the x position of the target object (pixels)
+	 * @param camWidth the width of the camera (pixels)
+	 * @param camFOV   the field of view of the camera (degrees): normally 55°
+	 * @return the lateral error (turning offset) from the target object
+	 */
+	public static double getLateralError( double x, double camWidth, double camFOV ) {
+
+		double xOffset = camWidth / 2 + x;
+
+		return xOffset * camFOV / camWidth;
+	}
+
+	public static double distanceFromObjectType( double pixelAvg, ObjectType objectType ) {
+
+		switch( objectType ) {
+			default: // (DUCK)
+				return distanceFromRatios( pixelAvg, getMinPair( DUCK_DIM.getX( ) ), getMaxPair( DUCK_DIM.getX( ) ) );
+			case BALL:
+				return distanceFromRatios( pixelAvg, getMinPair( BALL_DIM.getX( ) ), getMaxPair( BALL_DIM.getX( ) ) );
+			case ELEMENT:
+				return distanceFromRatios( pixelAvg, getMinPair( ELEMENT_DIM.getX( ) ), getMaxPair( ELEMENT_DIM.getX( ) ) );
+			case HEAVY:
+				return distanceFromRatios( pixelAvg, getMinPair( HEAVY_DIM.getX( ) ), getMaxPair( HEAVY_DIM.getX( ) ) );
+			case LIGHT:
+				return distanceFromRatios( pixelAvg, getMinPair( LIGHT_DIM.getX( ) ), getMaxPair( LIGHT_DIM.getX( ) ) );
+			case MEDIUM:
+				return distanceFromRatios( pixelAvg, getMinPair( MEDIUM_DIM.getX( ) ), getMaxPair( MEDIUM_DIM.getX( ) ) );
+		}
 	}
 
 	/**
@@ -96,59 +206,6 @@ public class CameraDetectionPositioner {
 		return new Vector2d( 50 /*inches*/, objectSize * m + b /*pixels*/ );
 	}
 
-	public static void main( String[] args ) {
-
-		double distance = distanceFromTarget( 65, 70, ObjectType.DUCK, 22.5 );
-
-		System.out.println( "Distance (from target): " + distance );
-
-//		System.out.println( );
-//
-//		System.out.println( "duckSize min: " + getMinPair( duckSize ) );
-//		System.out.println( "blockSize min: " + getMinPair( blockSize ) );
-//		System.out.println( "ballSize min: " + getMinPair( ballSize ) );
-//
-//		System.out.println( );
-//
-//		System.out.println( "duckSize max: " + getMaxPair( duckSize ) );
-//		System.out.println( "blockSize max: " + getMaxPair( blockSize ) );
-//		System.out.println( "ballSize max: " + getMaxPair( ballSize ) );
-
-
-	}
-
-
-	/**
-	 * @param width      the width of the target object (pixels)
-	 * @param height     the height of the target object (pixels)
-	 * @param objectType the type of the target object (ObjectType)
-	 * @param camAngle   the vertical angle of camera (degrees)
-	 * @return how far the robot is from the object (inches)
-	 */
-	public static double distanceFromTarget( double width, double height, ObjectType objectType, double camAngle ) {
-		double avgSize = (width + height) / 2;
-
-		double distanceFromCam = distanceFromObjectType( avgSize, objectType );
-
-		System.out.println( "Distance (from camera): " + distanceFromCam );
-
-		return distanceFromCam * Math.cos( Math.toRadians( camAngle ) );
-	}
-
-	public static double distanceFromObjectType( double pixelAvg, ObjectType objectType ) {
-
-		switch( objectType ) {
-			default: // (DUCK)
-				return distanceFromRatios( pixelAvg, getMinPair( duckSize ), getMaxPair( duckSize ) );
-//				return distanceFromRatios( pixelAvg, duckMin, duckMax );
-			case BLOCK:
-				return distanceFromRatios( pixelAvg, getMinPair( blockSize ), getMaxPair( blockSize ) );
-//				return distanceFromRatios( pixelAvg, blockMin, blockMax );
-			case BALL:
-				return distanceFromRatios( pixelAvg, getMinPair( ballSize ), getMaxPair( ballSize ) );
-//				return distanceFromRatios( pixelAvg, ballMin, ballMax );
-		}
-	}
 
 	public static double distanceFromRatios( double pixelAvg, Vector2d min, Vector2d max ) {
 
@@ -158,22 +215,6 @@ public class CameraDetectionPositioner {
 		// y = mx + b
 		// x = (y - b)/m
 		return (pixelAvg - b) / m;
-	}
-
-
-	/**
-	 * finds the direction a target is from the camera
-	 *
-	 * @param x        the x position of the target object (pixels)
-	 * @param camWidth the width of the camera (pixels)
-	 * @param camFOV   the field of view of the camera (degrees): normally 55°
-	 * @return the direction the target is from the robot
-	 */
-	public static double directionFromPosition( double x, double camWidth, double camFOV ) {
-
-		double xOffset = camWidth / 2 + x;
-
-		return xOffset * camFOV / camWidth;
 	}
 
 
