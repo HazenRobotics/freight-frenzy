@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import static org.firstinspires.ftc.teamcode.vision.CameraDetectionPositioner.componentDistanceFromTarget;
+import static org.firstinspires.ftc.teamcode.vision.CameraTargetDistance.componentDistanceFromTarget;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.vision.CameraDetectionPositioner;
+import org.firstinspires.ftc.teamcode.vision.CameraTargetDistance;
 import org.firstinspires.ftc.teamcode.vision.TensorFlowUtil2;
 
 import java.util.List;
@@ -55,16 +55,16 @@ public class VuforiaModelTest extends LinearOpMode {
 						telemetry.addLine( "Height: " + height );
 						telemetry.addLine( "Confidence: " + recognition.getConfidence( ) );
 
-						CameraDetectionPositioner.ObjectType objectType = CameraDetectionPositioner.ObjectType.DUCK;
-						double distance = CameraDetectionPositioner.straightDistanceFromTarget( width, height, objectType );
+						CameraTargetDistance.ObjectType objectType = CameraTargetDistance.ObjectType.DUCK;
+						double distance = CameraTargetDistance.straightDistanceFromTarget( width, height, objectType );
 
 						double camWidth = 720, camFOV = 70;
-						double error = CameraDetectionPositioner.getLateralError( x, camWidth, camFOV );
+						double error = CameraTargetDistance.getLateralError( x, camWidth, camFOV );
 
 						double cameraAngle = 22.5; // normal max of 22.5
 						Vector2d finalDistance = componentDistanceFromTarget( distance, error, cameraAngle );
 
-						double dist = CameraDetectionPositioner.distanceFromDefault( (width + height) / 2 );
+						double dist = CameraTargetDistance.distanceFromTargetSize( (width + height) / 2 );
 
 
 						telemetry.addLine( "Distance 2 (from target): " + dist );
