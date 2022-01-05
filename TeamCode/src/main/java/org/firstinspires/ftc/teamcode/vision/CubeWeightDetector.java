@@ -14,8 +14,12 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.*;
 
 public class CubeWeightDetector extends OpenCvPipeline {
+
+	Mat[] srcs = {new Mat(), new Mat(), new Mat(), new Mat(), new Mat(), new Mat(), new Mat()};
+
 
 	Telemetry telemetry;
 	Mat mat = new Mat( );
@@ -44,12 +48,11 @@ public class CubeWeightDetector extends OpenCvPipeline {
 	}
 
 	public Mat processEdgeFrame( Mat src ) {
-
 		//Canny Edge Filter
 		Imgproc.Canny( src, src, 25, 100 );
 		//Dilation Filter
 		Imgproc.morphologyEx( src, src, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
-
+		srcs[5] = src.clone();
 		//copy detected edges to destination matrix
 		//Create list of points and Mat
 		List<MatOfPoint> matsOfPoints = new ArrayList<>( );
@@ -85,11 +88,24 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 		Imgproc.drawContours( src, contourList, -1, new Scalar( 255, 0, 0 ), 2 );
 
-		return src;
+		srcs[6] = src.clone();
+
+		while (true) {
+			int i = 0;
+
+			return srcs[i];
+		}
+
+		//return src;
 	}
 
 	public Mat processHSVColorFrame( Mat input ) {
+
+		srcs[0] = input.clone();
+
 		Imgproc.cvtColor( input, mat, Imgproc.COLOR_RGB2HSV );//f
+
+		srcs[1] = mat.clone();
 		//Imgproc.blur(mat, mat, new Size(3,3));
 //		Mat matWeight = mat.clone( );
 
@@ -99,13 +115,19 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		Scalar weightHighHSV = new Scalar( 100, 30, 255 ); //w
 
 		SetupMatrix( mat, freightLowHSV, freightHighHSV );
+		srcs[2] = mat.clone();
+
 		Rect BUCKET = new Rect( 54, 0, 212, 240 );
 		Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		for( int i = 0; i < 100; i++ ) {
 			Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		}
+		srcs[3] = mat.clone();
+
 		Rect FREIGHT_ROI = ScanMinArea( mat, BUCKET ); //f
 		Mat freightArea = mat.submat( FREIGHT_ROI );//f
+
+		srcs[4] = mat.clone();
 
 
 //		SetupMatrix( matWeight, weightLowHSV, weightHighHSV );
@@ -139,13 +161,16 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		Scalar black = new Scalar( 0, 0, 0 );
 //		Scalar id = blue;
 
-		if (freightBool) {
-			return processEdgeFrame( mat );
-		} else {
-			freightType = FreightType.NOT_CUBE;
-			telemetry.addLine( " Not Cube" );
-			return mat;
-		}
+
+		return processEdgeFrame( mat );
+
+//		if (freightBool) {
+//			return processEdgeFrame( mat );
+//		} else {
+//			freightType = FreightType.NOT_CUBE;
+//			telemetry.addLine( " Not Cube" );
+//			return mat;
+//		}
 
 //		if( freightBool & weightBool ) { //f
 //			freightType = FreightType.WEIGHTED_CUBE;

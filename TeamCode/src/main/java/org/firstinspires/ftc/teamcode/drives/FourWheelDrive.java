@@ -90,10 +90,10 @@ public class FourWheelDrive implements Drive {
 	public void drive( double move, double turn ) {
 
 		// You might have to play with the + or - depending on how your motors are installed
-		double frontLeftPower = move + turn;
-		double backLeftPower = move + turn;
-		double frontRightPower = move - turn;
-		double backRightPower = move - turn;
+		double frontLeftPower = move - turn;
+		double backLeftPower = move - turn;
+		double frontRightPower = move + turn;
+		double backRightPower = move + turn;
 
 		setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );
 	}
