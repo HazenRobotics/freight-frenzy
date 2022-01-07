@@ -54,7 +54,7 @@ public class WebcamExample extends LinearOpMode {
 		 * the RC phone). If no camera monitor is desired, use the alternate
 		 * single-parameter constructor instead (commented out below)
 		 */
-		String webcamName = "webcam";
+		String webcamName = "webcam1";
 		int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
 		webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
 

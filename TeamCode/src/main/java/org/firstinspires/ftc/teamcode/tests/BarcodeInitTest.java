@@ -13,7 +13,7 @@ public class BarcodeInitTest extends LinearOpMode {
 	@Override
 	public void runOpMode( ) throws InterruptedException {
 
-		BarcodeUtil detector = new BarcodeUtil( hardwareMap, "webcam", telemetry );
+		BarcodeUtil detector = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 		detector.init();
 
 		telemetry.addLine( "TensorFlow init finished" );

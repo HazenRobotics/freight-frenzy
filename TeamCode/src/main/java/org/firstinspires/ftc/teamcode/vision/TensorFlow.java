@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.R;
-import org.firstinspires.ftc.teamcode.vision.unused.Vuforia;
 
 import java.util.List;
 
@@ -37,24 +36,24 @@ public class TensorFlow {
 	 * @param hardwareMap         robot's hardware map
 	 * @param labels              labels of the entries in the .tflite file
 	 */
-	public TensorFlow( String tfodModelAssetName, float minResultConfidence, HardwareMap hardwareMap, String... labels ) {
+	public TensorFlow( HardwareMap hardwareMap, String cameraName, String tfodModelAssetName, float minResultConfidence, String... labels ) {
 
 		this.hardwareMap = hardwareMap;
-		initVuforia( );
+		initVuforia( cameraName );
 		initTfod( tfodModelAssetName, minResultConfidence, labels );
 	}
 
 	/**
 	 * Initialize the Vuforia localization engine.
 	 */
-	private void initVuforia( ) {
+	private void initVuforia( String cameraName ) {
 		/*
 		 * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
 		 */
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters( );
 
 		parameters.vuforiaLicenseKey = hardwareMap.appContext.getResources( ).getString( R.string.vuforia_key );
-		parameters.cameraName = hardwareMap.get( WebcamName.class, "webcam");
+		parameters.cameraName = hardwareMap.get( WebcamName.class, cameraName );
 
 		//  Instantiate the Vuforia engine
 		vuforia = ClassFactory.getInstance( ).createVuforia( parameters );
@@ -65,7 +64,7 @@ public class TensorFlow {
 	/**
 	 * Initialize the TensorFlow Object Detection engine.
 	 */
-	private void initTfod(  String tfodModelAssetName, float minResultConfidence, String... labels ) {
+	private void initTfod( String tfodModelAssetName, float minResultConfidence, String... labels ) {
 		int tfodMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier(
 				"tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
 		TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters( tfodMonitorViewId );
@@ -116,14 +115,14 @@ public class TensorFlow {
 		if( recognitions == null || recognitions.isEmpty( ) )
 			return null;
 
-		Log.e( "TFOD_TEST", "checked tfod recognitions " );
+		Log.d( "TFOD_TEST", "checked tfod recognitions " );
 
 		Recognition mostConfidentRecognition = null;
 		for( Recognition recognition : recognitions ) {
 			if( mostConfidentRecognition == null || recognition.getConfidence( ) > mostConfidentRecognition.getConfidence( ) )
 				mostConfidentRecognition = recognition;
 
-			Log.e( "TFOD_TEST", "current recognition: " + recognition.getLabel( ) );
+			Log.d( "TFOD_TEST", "current recognition: " + recognition.getLabel( ) );
 		}
 
 		return mostConfidentRecognition;
@@ -140,13 +139,13 @@ public class TensorFlow {
 		if( recognitions == null || recognitions.isEmpty( ) )
 			return null;
 
-		Log.e( "TFOD_TEST", "checked tfod recognitions " );
+		Log.d( "TFOD_TEST", "checked tfod recognitions " );
 
 		for( int i = 0; i < recognitions.size( ); i++ ) {
 			if( recognitions.get( i ) == null )
 				recognitions.remove( i-- );
 
-			Log.e( "TFOD_TEST", "current recognition: " + recognitions.get(i).getLabel( ) );
+			Log.d( "TFOD_TEST", "current recognition: " + recognitions.get( i ).getLabel( ) );
 		}
 
 		return recognitions;
@@ -157,7 +156,7 @@ public class TensorFlow {
 	 */
 	public void updateRecognitions( ) {
 		recognitions = tfod.getRecognitions( );
-		Log.e( "TFOD_TEST", "got tfod recognitions: " + recognitions );
+		Log.d( "TFOD_TEST", "got tfod recognitions: " + recognitions );
 	}
 
 

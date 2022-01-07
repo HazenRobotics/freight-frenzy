@@ -90,7 +90,7 @@ public class RRTippyBot extends Robot {
 
 		intake = new Intake( hardwareMap );
 
-		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", telemetry );
+		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
 		capper.setPosition( 0 );
 

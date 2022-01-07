@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.List;
 
-public class TensorFlowUtil2 {
+public class TensorFlowUtilBack {
 
 	private final String TENSOR_FLOW_MODEL_NAME = "full_model_with_metadata.tflite";
 
@@ -27,14 +27,14 @@ public class TensorFlowUtil2 {
 	OpMode opMode;
 	HardwareMap hardwareMap;
 
-	public TensorFlowUtil2( OpMode op ) {
+	public TensorFlowUtilBack( OpMode op ) {
 		opMode = op;
 		hardwareMap = opMode.hardwareMap;
 	}
 
 	public void initTensorFlow( ) {
 
-		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.6f, hardwareMap, LABELS );
+		tensorFlow = new TensorFlow( hardwareMap, "webcam1", TENSOR_FLOW_MODEL_NAME, 0.6f, LABELS );
 	}
 
 	public class DetectedInfoUnit {
@@ -61,11 +61,15 @@ public class TensorFlowUtil2 {
 		tensorFlow.activate( );
 	}
 
+	/**
+	 *
+	 * @return the most confident recognition (null if there aren't any)
+	 */
 	public Recognition identifyObject( ) {
 
 		Recognition recognition = tensorFlow.getMostConfRecognition( );
 
-		Log.e( "TFOD_TEST", "got recognitions: " + recognition );
+		Log.d( "TFOD_TEST", "got recognitions: " + recognition );
 		if( recognition != null ) {
 			String label = recognition.getLabel( );
 			switch( label ) {
@@ -94,7 +98,7 @@ public class TensorFlowUtil2 {
 				return recognition;
 		}
 
-		Log.e( "TFOD_TEST", "didn't find a tfod recognition " );
+		Log.d( "TFOD_TEST", "didn't find a tfod recognition " );
 
 		return null;
 	}
@@ -103,7 +107,7 @@ public class TensorFlowUtil2 {
 
 		List<Recognition> recognitions = tensorFlow.getRecognitions( );
 
-		Log.e( "TFOD_TEST", "got recognitions: " + recognitions );
+		Log.d( "TFOD_TEST", "got recognitions: " + recognitions );
 		if( recognitions != null && recognitions.size( ) > 0 ) {
 			for( int i = 0; i < recognitions.size( ); i++ ) {
 
@@ -133,7 +137,7 @@ public class TensorFlowUtil2 {
 					}
 
 					if( label.length( ) < 1 ) {
-						Log.e( "TFOD_TEST", "tfod recognition name invalid: " + label );
+						Log.d( "TFOD_TEST", "tfod recognition name invalid: " + label );
 						recognitions.remove( i-- );
 					}
 
@@ -143,7 +147,7 @@ public class TensorFlowUtil2 {
 		}
 
 
-		Log.e( "TFOD_TEST", "didn't find any tfod recognitions" );
+		Log.d( "TFOD_TEST", "didn't find any tfod recognitions" );
 
 		return null;
 	}

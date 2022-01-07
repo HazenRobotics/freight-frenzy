@@ -271,4 +271,8 @@ public class TrajectorySequenceRunner {
 	public boolean isBusy( ) {
 		return currentTrajectorySequence != null;
 	}
+
+	public void cancelFollowing() {
+		currentTrajectorySequence = null;
+	}
 }

@@ -59,14 +59,14 @@ public class TensorFlowUtil {
 	}
 
 	public void initTensorFlow( ) {
+//
+//		if( !vuforia.isRunning( ) ) {
+//			final String VUFORIA_KEY = hardwareMap.appContext.getResources( ).getString( R.string.vuforia_key );
+//			vuforia.setParameters( VUFORIA_KEY, "webcam1", true, hardwareMap );
+//			vuforia.start( );
+//		}
 
-		if( !vuforia.isRunning( ) ) {
-			final String VUFORIA_KEY = hardwareMap.appContext.getResources( ).getString( R.string.vuforia_key );
-			vuforia.setParameters( VUFORIA_KEY, "webcam", true, hardwareMap );
-			vuforia.start( );
-		}
-
-		tensorFlow = new TensorFlow( TENSOR_FLOW_MODEL_NAME, 0.8f, hardwareMap, LABELS );
+		tensorFlow = new TensorFlow( hardwareMap, "webcam1", TENSOR_FLOW_MODEL_NAME, 0.8f, LABELS );
 	}
 
 	void startTF( ) {
@@ -77,7 +77,7 @@ public class TensorFlowUtil {
 
 		Recognition recognition = tensorFlow.getMostConfRecognition( );
 
-		Log.e( "TFOD_TEST", "got recognitions: " + recognition );
+		Log.d( "TFOD_TEST", "got recognitions: " + recognition );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
 				case "Duck 1":
@@ -90,10 +90,10 @@ public class TensorFlowUtil {
 				case "Element 3": // Right
 					return BarcodePosition.RIGHT;
 			}
-			Log.e( "TFOD_TEST", "tfod recognition name invalid: " + recognition.getLabel( )  );
+			Log.d( "TFOD_TEST", "tfod recognition name invalid: " + recognition.getLabel( )  );
 		}
 
-		Log.e( "TFOD_TEST", "didn't find a tfo recognition "  );
+		Log.d( "TFOD_TEST", "didn't find a tfo recognition "  );
 
 		return null;
 	}
@@ -109,7 +109,7 @@ public class TensorFlowUtil {
 		for( int i = 0; i < loops; i++ ) {
 			recognitions[i] = identifyObjects( );
 
-			Log.e( "TFOD_TEST", " identified an object"  );
+			Log.d( "TFOD_TEST", " identified an object"  );
 
 			if( recognitions[i] == BarcodePosition.LEFT )
 				left++;

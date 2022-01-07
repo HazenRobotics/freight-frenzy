@@ -27,7 +27,7 @@ public class Webcam {
 	}
 
 	public Webcam( HardwareMap hardwareMap ) {
-		this( hardwareMap, "webcam" );
+		this( hardwareMap, "webcam1" );
 	}
 
 	public Webcam( HardwareMap hardwareMap, String webcamName ) {

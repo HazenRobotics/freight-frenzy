@@ -8,21 +8,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.vision.CameraTargetDistance;
-import org.firstinspires.ftc.teamcode.vision.TensorFlowUtil2;
+import org.firstinspires.ftc.teamcode.vision.TensorFlowUtilBack;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @TeleOp(name = "VuforiaModelTest", group = "Test")
 //@Disabled
 public class VuforiaModelTest extends LinearOpMode {
 
-	TensorFlowUtil2 tensorFlowUtil;
+	TensorFlowUtilBack tensorFlowUtil;
+	DecimalFormat fm = new DecimalFormat( "0.###" );
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
 
-
-		tensorFlowUtil = new TensorFlowUtil2( this );
+		tensorFlowUtil = new TensorFlowUtilBack( this );
 		tensorFlowUtil.initTensorFlow( );
 		tensorFlowUtil.startTF( );
 
@@ -40,44 +41,39 @@ public class VuforiaModelTest extends LinearOpMode {
 					Recognition recognition = recognitions.get( i );
 					if( recognition != null ) {
 						String labelName = recognition.getLabel( );
-						telemetry.addLine( "Label Name: " + labelName );
-						telemetry.addLine( );
+						telemetry.addLine( "Label Name: " + labelName + " (" + fm( recognition.getConfidence( ) ) + ")" );
+						telemetry.addLine( "---------" );
 
 						// top, bottom, left, right, height, width, confidence
 
 						double width = recognition.getWidth( ), height = recognition.getHeight( );
-						double x = recognition.getTop( );
-						telemetry.addLine( "Top: " + x );
-//						telemetry.addLine( "Bottom: " + recognition.getBottom( ) );
-//						telemetry.addLine( "Left: " + recognition.getLeft( ) );
-//						telemetry.addLine( "Right: " + recognition.getRight( ) );
-						telemetry.addLine( "Width: " + width );
-						telemetry.addLine( "Height: " + height );
-						telemetry.addLine( "Confidence: " + recognition.getConfidence( ) );
 
-						CameraTargetDistance.ObjectType objectType = CameraTargetDistance.ObjectType.DUCK;
-						double distance = CameraTargetDistance.straightDistanceFromTarget( width, height, objectType );
+						double top = recognition.getTop( ), left = recognition.getLeft( ), bottom = recognition.getBottom( ), right = recognition.getRight( );
+						telemetry.addLine( "Top: " + fm( top ) );
+						telemetry.addLine( "Bottom: " + fm( bottom ) );
+						telemetry.addLine( "Left: " + fm( left ) );
+						telemetry.addLine( "Right: " + fm( right ) );
+						telemetry.addLine( "Width: " + fm( width ) );
+//						telemetry.addLine( "Height: " + height );
 
-						double camWidth = 720, camFOV = 70;
-						double error = CameraTargetDistance.getLateralError( x, camWidth, camFOV );
+						double camWidth = 720, camFOV = 45;
+						double error = CameraTargetDistance.getLateralError( left + (width / 2), camWidth, camFOV );
 
-						double cameraAngle = 22.5; // normal max of 22.5
-						Vector2d finalDistance = componentDistanceFromTarget( distance, error, cameraAngle );
+						double dist = CameraTargetDistance.parDistFromTargetSize( width );
 
-						double dist = CameraTargetDistance.distanceFromTargetSize( (width + height) / 2 );
+						double cameraAngle = 90 - 22.5;
+						Vector2d finalDistance = componentDistanceFromTarget( dist, error, cameraAngle );
 
-
-						telemetry.addLine( "Distance 2 (from target): " + dist );
-						telemetry.addLine( "Distance (from target): " + distance );
-						telemetry.addLine( "Lateral Error (from target): " + error );
+						telemetry.addLine( "Distance (from target): " + fm( dist ) );
+						telemetry.addLine( "Lateral Error (from target): " + fm( error ) );
 						telemetry.addLine( "Final Distance (from target): " + finalDistance );
 
-
 					} else {
-						telemetry.addLine( "no recognitions: " + getRuntime( ) );
+						telemetry.addLine( "no recognitions: " + fm( getRuntime( ) ) );
 					}
 
-					telemetry.addLine( "-------------------------" );
+					telemetry.addLine( );
+					telemetry.addLine( "=============================================" );
 
 				}
 
@@ -96,6 +92,10 @@ public class VuforiaModelTest extends LinearOpMode {
 		telemetry.addLine( "TensorFlow Closed." );
 		telemetry.update( );
 
+	}
+
+	public String fm( double input ) {
+		return fm.format( input );
 	}
 
 }

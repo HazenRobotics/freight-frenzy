@@ -48,7 +48,7 @@ public class HexBot extends Robot {
 		hardwareMap = op.hardwareMap;
 
 		// initialize util objects/classes
-		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", opMode.telemetry );
+		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", opMode.telemetry );
 
 		new SoundLibrary( hardwareMap );
 
