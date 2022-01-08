@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -26,7 +27,7 @@ import java.text.DecimalFormat;
  */
 
 @TeleOp(name = "LiftTeleOpTest", group = "TeleOp")
-//@Disabled
+@Disabled
 public class LiftTeleOpTest extends OpMode {
 
 	GamepadEvents player;

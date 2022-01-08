@@ -34,7 +34,7 @@ public class TensorFlowUtilBack {
 
 	public void initTensorFlow( ) {
 
-		tensorFlow = new TensorFlow( hardwareMap, "webcam1", TENSOR_FLOW_MODEL_NAME, 0.6f, LABELS );
+		tensorFlow = new TensorFlow( hardwareMap, "webcam2", TENSOR_FLOW_MODEL_NAME, 0.6f, LABELS );
 	}
 
 	public class DetectedInfoUnit {

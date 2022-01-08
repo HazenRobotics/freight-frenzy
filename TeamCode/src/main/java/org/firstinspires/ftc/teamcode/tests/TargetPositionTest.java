@@ -2,37 +2,34 @@ package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
+import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.TargetPositionCalculator;
 import org.firstinspires.ftc.teamcode.vision.CameraTargetDistance;
 import org.firstinspires.ftc.teamcode.vision.TensorFlowUtilBack;
 
-@TeleOp(name = "TargetObjectPositionTest", group = "Test")
-@Disabled
-public class TargetObjectPositionTest extends OpMode {
+@TeleOp(name = "TargetPositionTest", group = "Test")
+public class TargetPositionTest extends OpMode {
 
 	TensorFlowUtilBack tf;
 
 	MecanumDrive mecanumDrive;
-
 	RRMecanumDriveTippy42 drive;
-
-	CameraTargetDistance cd;
-
-	boolean driveToTarget = false;
-
 	GamepadEvents gamepad;
 
-	boolean looping = true;
+	CameraTargetDistance cd;
+	TargetPositionCalculator calculator;
+	Vector2d movePosition = new Vector2d( 0, 0 );
 
-	Vector2d moveDistance = new Vector2d( 0, 0 );
+	boolean driveToTarget = false, looping = true;
 
 	static DcMotorSimple.Direction REV = DcMotorSimple.Direction.REVERSE;
 
@@ -44,6 +41,7 @@ public class TargetObjectPositionTest extends OpMode {
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		mecanumDrive.setMotorDirections( REV, DcMotorSimple.Direction.FORWARD, REV, REV );
 		drive = new RRMecanumDriveTippy42( hardwareMap );
+		calculator = new TargetPositionCalculator( new Vector2d( -13 - 9,  8 - 3) );
 		cd = new CameraTargetDistance( 720, 45, 90 - 22.5 );
 
 		tf.initTensorFlow( );
@@ -51,13 +49,17 @@ public class TargetObjectPositionTest extends OpMode {
 
 		telemetry.addLine( "Init Finished!!" );
 
-		//drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
+//		drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
+/*
 
-		/*do {
+		do {
 			telemetry.addLine( "Getting pose estimate. Please wait..." );
 			telemetry.update( );
 			drive.update( );
-		} while( drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );*/
+		} while( drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
+*/
+
+		drive.setPoseEstimate( new Pose2d( 0, 0, Math.toRadians( 0 ) ) );
 
 		telemetry.addLine( "Press 'a' to drive to most conf. target!!" );
 		telemetry.update( );
@@ -69,16 +71,14 @@ public class TargetObjectPositionTest extends OpMode {
 	public void loop( ) {
 
 		if( !driveToTarget )
-			mecanumDrive.drive( -gamepad.left_stick_y, gamepad.left_stick_x, gamepad.right_stick_x );
+			mecanumDrive.drive( 0.7 * -gamepad.left_stick_y, gamepad.left_stick_x, 0.6 * gamepad.right_stick_x );
 
 		if( gamepad.a.onPress( ) ) {
 
 			if( !driveToTarget ) {
 
-				drive.setPoseEstimate( new Pose2d( 0, 0, Math.toRadians( 0 ) ) );
-
 				drive.followTrajectorySequenceAsync( drive.trajectorySequenceBuilder( drive.getPoseEstimate( ) )
-						.lineTo( moveDistance )
+						.lineTo( movePosition )
 //						.splineToLinearHeading( new Pose2d( moveDistance.getX( ), moveDistance.getY( ), Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
 						.build( ) );
 				driveToTarget = true;
@@ -113,16 +113,23 @@ public class TargetObjectPositionTest extends OpMode {
 
 				if( recognition != null ) {
 
-					double left = recognition.getLeft( );
-					double width = recognition.getWidth( );
+					Pose2d position = drive.getPoseEstimate( );
+					telemetry.addLine( "offset: " + position );
 
-					moveDistance = cd.getDistance( left, width );
-					telemetry.addLine( "Move Distance (before): " + moveDistance );
-					moveDistance = new Vector2d( -moveDistance.getX( ), -moveDistance.getY( ) );
-					telemetry.addLine( "Move Distance: " + moveDistance );
+					movePosition = calculator.getTargetPosition( recognition, drive.getExternalHeading( ) );
+					telemetry.addLine( "Corban: " + movePosition );
+					movePosition = new Vector2d( movePosition.getX( ) + position.getX( ), movePosition.getY( ) + position.getY( ) );
+					telemetry.addLine( "Corban + offset: " + movePosition );
 
-					/*new Vector2d( moveDistance.getX() * Math.cos(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS )) + moveDistance.getY() * Math.sin(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS)),
-							moveDistance.getY() * Math.cos( drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS ) ) + moveDistance.getY() * Math.sin(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS )));
+					Vector2d distance = cd.getDistance( recognition.getLeft( ), recognition.getWidth( ) );
+					distance = new Vector2d( -distance.getX( ), -distance.getY( ) );
+					telemetry.addLine( "Sam: " + distance );
+					distance = new Vector2d( distance.getX( ) + position.getX( ), distance.getY( ) + position.getY( ) );
+					telemetry.addLine( "Sam + offset: " + distance );
+
+/*
+					new Vector2d( movePosition.getX() * Math.cos(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS )) + movePosition.getY() * Math.sin(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS)),
+							movePosition.getY() * Math.cos( drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS ) ) + movePosition.getY() * Math.sin(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS )));
 */
 
 					telemetry.update( );

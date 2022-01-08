@@ -115,14 +115,14 @@ public class TensorFlow {
 		if( recognitions == null || recognitions.isEmpty( ) )
 			return null;
 
-		Log.d( "TFOD_TEST", "checked tfod recognitions " );
+//		Log.d( "TFOD_TEST", "checked tfod recognitions " );
 
 		Recognition mostConfidentRecognition = null;
 		for( Recognition recognition : recognitions ) {
 			if( mostConfidentRecognition == null || recognition.getConfidence( ) > mostConfidentRecognition.getConfidence( ) )
 				mostConfidentRecognition = recognition;
 
-			Log.d( "TFOD_TEST", "current recognition: " + recognition.getLabel( ) );
+//			Log.d( "TFOD_TEST", "current recognition: " + recognition.getLabel( ) );
 		}
 
 		return mostConfidentRecognition;

@@ -77,7 +77,7 @@ public class TensorFlowUtil {
 
 		Recognition recognition = tensorFlow.getMostConfRecognition( );
 
-		Log.d( "TFOD_TEST", "got recognitions: " + recognition );
+//		Log.d( "TFOD_TEST", "got recognitions: " + recognition );
 		if( recognition != null ) {
 			switch( recognition.getLabel( ) ) {
 				case "Duck 1":

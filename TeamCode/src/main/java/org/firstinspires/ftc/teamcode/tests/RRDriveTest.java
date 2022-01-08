@@ -9,8 +9,8 @@ import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
-@Disabled
 @TeleOp(name = "Drive Test", group = "Test")
+@Disabled
 public class RRDriveTest extends OpMode {
 
 	RRMecanumDriveHex42 drive;

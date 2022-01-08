@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import static org.firstinspires.ftc.teamcode.vision.CameraTargetDistance.componentDistanceFromTarget;
 
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -14,7 +15,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 @TeleOp(name = "VuforiaModelTest", group = "Test")
-//@Disabled
+@Disabled
 public class VuforiaModelTest extends LinearOpMode {
 
 	TensorFlowUtilBack tensorFlowUtil;
@@ -54,7 +55,7 @@ public class VuforiaModelTest extends LinearOpMode {
 						telemetry.addLine( "Left: " + fm( left ) );
 						telemetry.addLine( "Right: " + fm( right ) );
 						telemetry.addLine( "Width: " + fm( width ) );
-//						telemetry.addLine( "Height: " + height );
+						telemetry.addLine( "Height: " + fm( height ) );
 
 						double camWidth = 720, camFOV = 45;
 						double error = CameraTargetDistance.getLateralError( left + (width / 2), camWidth, camFOV );
