@@ -29,7 +29,7 @@ public class TippyBotRedOutAuto extends LinearOpMode {
 
 		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
-		robot = new RRTippyBot( this );
+		robot = new RRTippyBot( this, true );
 
 		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 

@@ -37,6 +37,7 @@ public class TargetPositionTest extends OpMode {
 	public void init( ) {
 
 		tf = new TensorFlowUtilBack( this );
+
 		gamepad = new GamepadEvents( gamepad1 );
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		mecanumDrive.setMotorDirections( REV, DcMotorSimple.Direction.FORWARD, REV, REV );
@@ -121,11 +122,11 @@ public class TargetPositionTest extends OpMode {
 					movePosition = new Vector2d( movePosition.getX( ) + position.getX( ), movePosition.getY( ) + position.getY( ) );
 					telemetry.addLine( "Corban + offset: " + movePosition );
 
-					Vector2d distance = cd.getDistance( recognition.getLeft( ), recognition.getWidth( ) );
-					distance = new Vector2d( -distance.getX( ), -distance.getY( ) );
-					telemetry.addLine( "Sam: " + distance );
-					distance = new Vector2d( distance.getX( ) + position.getX( ), distance.getY( ) + position.getY( ) );
-					telemetry.addLine( "Sam + offset: " + distance );
+//					Vector2d distance = cd.getDistance( recognition.getLeft( ), recognition.getWidth( ) );
+//					distance = new Vector2d( -distance.getX( ), -distance.getY( ) );
+//					telemetry.addLine( "Sam: " + distance );
+//					distance = new Vector2d( distance.getX( ) + position.getX( ), distance.getY( ) + position.getY( ) );
+//					telemetry.addLine( "Sam + offset: " + distance );
 
 /*
 					new Vector2d( movePosition.getX() * Math.cos(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS )) + movePosition.getY() * Math.sin(drive.getRawExternalHeading() + recognition.estimateAngleToObject( AngleUnit.RADIANS)),

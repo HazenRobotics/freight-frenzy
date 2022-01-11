@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
@@ -15,7 +13,7 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
-public class TippyBotBlueOutAuto extends LinearOpMode {
+public class BlueOutDuckTest extends LinearOpMode {
 
 	RRTippyBot robot;
 
@@ -31,6 +29,7 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
 
 		robot.barcodeUtil.init( );
+
 
 		do {
 			telemetry.addLine( "Getting pose estimate. Please wait..." );
@@ -54,21 +53,13 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
 
+		new Thread( ( ) -> robot.initTF( ) ).start( );
+
 		TrajectorySequence trajectorySequence = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
-				.addTemporalMarker( ( ) -> {
-					robot.liftToShippingHubHeight( height );
-
-				} )
-
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
-				.addTemporalMarker( ( ) -> {
-					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1000 );
-				} )
-				.waitSeconds( 1.2 )
 
 				// Duck spin
-				.lineToLinearHeading( new Pose2d( -62, 58, Math.toRadians( -90 ) ) )
+				.setTangent( Math.toRadians( 225 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( new Pose2d( -61, 57, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0.6 );
 				} )
@@ -77,37 +68,52 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 					robot.spinner.setPower( 0 );
 				} )
 
-				// pickup the duck
+				// start duck scanning, move lift up, and move to drop off block
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0.5 );
+					robot.startDuckScanning( 250 );
+					robot.liftToShippingHubHeight( height );
 				} )
-				.setTangent( 0 )
-				.splineToLinearHeading( new Pose2d( -50, 62.1875, Math.toRadians( -90 ) ), Math.toRadians( 90 ) )
-				.lineToConstantHeading( new Vector2d( -13 - 5, 62.1875 ) )
+
+				.setTangent( Math.toRadians( 300 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 + 22.5 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0 );
-					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+					robot.dumpBucket( );
+					robot.lift.setDefaultHeightVel( 1000 );
+					telemetry.addLine( "Before duck" );
+					telemetry.update( );
+					robot.waitForDuck( );
+					telemetry.addLine( "After duck" );
+					telemetry.update( );
+				} )
+				.waitSeconds( 1.2 )
+
+				// pickup the duck
+				.setTangent( Math.toRadians( 100 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
+				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+					robot.stopDuckScanning( );
 				} )
 
 				// drop duck in top
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 - 22.5 ) )
+				.setTangent( Math.toRadians( 320 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
 				.addTemporalMarker( ( ) -> {
-					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-					robot.odometryLift.raise( );
+//					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
+//					robot.odometryLift.raise( );
 				} )
 				.waitSeconds( 1.2 )
 
-				// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
+				// TODO: move to barrier to park
+//				.setTangent( Math.toRadians( 90 ) )
+//				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
+//				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
+//				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
 
 				.waitSeconds( 6 )
 

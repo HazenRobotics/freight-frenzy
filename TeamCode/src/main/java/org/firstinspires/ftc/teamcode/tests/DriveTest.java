@@ -14,7 +14,7 @@ public class DriveTest extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		robot = new RRTippyBot( this );
+		robot = new RRTippyBot( this, true );
 
 		telemetry.addLine( "Finished init" );
 		telemetry.update( );

@@ -16,7 +16,7 @@ public class BarcodeInitTest extends LinearOpMode {
 		BarcodeUtil detector = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 		detector.init();
 
-		telemetry.addLine( "TensorFlow init finished" );
+		telemetry.addLine( "OpenCv init finished" );
 		telemetry.update( );
 
 		waitForStart( );

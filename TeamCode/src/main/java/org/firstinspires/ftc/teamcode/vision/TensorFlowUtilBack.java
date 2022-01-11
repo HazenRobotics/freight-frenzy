@@ -37,28 +37,12 @@ public class TensorFlowUtilBack {
 		tensorFlow = new TensorFlow( hardwareMap, "webcam2", TENSOR_FLOW_MODEL_NAME, 0.6f, LABELS );
 	}
 
-	public class DetectedInfoUnit {
-
-		String labelName;
-		// top, bottom, left, right, height, width, confidence
-		double[] positions;
-
-		public DetectedInfoUnit( String labelName, double[] positions ) {
-			this.labelName = labelName;
-			this.positions = positions;
-		}
-
-		public String getLabelName( ) {
-			return labelName;
-		}
-
-		public double[] getPositions( ) {
-			return positions;
-		}
-	}
-
 	public void startTF( ) {
 		tensorFlow.activate( );
+	}
+
+	public boolean isActive( ) {
+		return tensorFlow.isActive( );
 	}
 
 	/**

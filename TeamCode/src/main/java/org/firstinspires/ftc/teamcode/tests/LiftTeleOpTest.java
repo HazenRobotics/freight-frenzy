@@ -49,7 +49,7 @@ public class LiftTeleOpTest extends OpMode {
 
 		gamepad1.rumble( 1500 );
 
-		RRTippyBot robot = new RRTippyBot( this );
+		RRTippyBot robot = new RRTippyBot( this, true );
 		bottom = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW );
 		middle = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.MIDDLE );
 		top = robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.HIGH );

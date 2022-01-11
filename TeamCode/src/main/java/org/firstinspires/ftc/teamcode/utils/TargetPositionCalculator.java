@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -21,7 +23,7 @@ public class TargetPositionCalculator {
 	 * @param robotAngle angle of the robot relative to 0, in Radians
 	 * @return field position of the target
 	 */
-	public Vector2d getTargetPosition( Recognition target, double robotAngle ) {
+	public Vector2d getTargetPosition( @NonNull Recognition target, double robotAngle ) {
 
 		//Calculate point at the bottom center of the bounding box
 		double x = (target.getLeft( ) + (target.getWidth( ) / 2));
@@ -41,6 +43,5 @@ public class TargetPositionCalculator {
 		return new Vector2d( -targetX, -targetY );
 
 	}
-
 
 }

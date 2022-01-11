@@ -159,5 +159,4 @@ public class TensorFlow {
 		Log.d( "TFOD_TEST", "got tfod recognitions: " + recognitions );
 	}
 
-
 }

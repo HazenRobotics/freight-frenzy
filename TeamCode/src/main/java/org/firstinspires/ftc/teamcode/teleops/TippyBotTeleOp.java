@@ -52,6 +52,7 @@ public class TippyBotTeleOp extends OpMode {
 	double prevLiftPos = 0;
 
 	double spinnerPower = 0.75;
+	double spinnerVelocity = 1200;
 	boolean inSpinnerThread = false;
 	List<Thread> spinnerThread = new ArrayList<>( );
 
@@ -66,7 +67,7 @@ public class TippyBotTeleOp extends OpMode {
 		player1 = new GamepadEvents( gamepad1 );
 		player2 = new GamepadEvents( gamepad2 );
 
-		robot = new RRTippyBot( this );
+		robot = new RRTippyBot( this, false );
 
 //		SoundLibrary.playRandomStartup( );
 
@@ -97,7 +98,7 @@ public class TippyBotTeleOp extends OpMode {
 		else if( player1.right_bumper.onPress( ) || player2.right_bumper.onPress( ) )
 			robot.intake.setPower( robot.intake.getPower( ) > 0 ? 0 : intakePower );
 
-		// bucket control [dup - intake | ddown - dump | back - exit loops]
+		// bucket control [dup - intake | down - dump | back - exit loops]
 		if( gamepad1.dpad_up ) // parallel, intake
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 		else if( gamepad1.dpad_down ) // like -45°, dump
@@ -159,11 +160,13 @@ public class TippyBotTeleOp extends OpMode {
 			}
 		}
 
-		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
-			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
+//		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
+//			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
+		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles velocity
+			robot.spinner.setPower( Math.abs( robot.spinner.getVelocity( ) ) < 100 ? spinnerVelocity : 0 );
 
 		if( player1.dpad_right.onPress( ) || player2.dpad_right.onPress( ) ) // switches direction
-			spinnerPower *= -1;
+			spinnerVelocity *= -1;
 
 		// reset the lift position to its current zero position
 		if( gamepad1.ps )
@@ -254,7 +257,8 @@ public class TippyBotTeleOp extends OpMode {
 			int i = 0;
 			inSpinnerThread = true;
 			while( inSpinnerThread ) {
-				robot.spinner.setPower( spinnerPower );
+//				robot.spinner.setPower( spinnerPower );
+				robot.spinner.setVelocity( spinnerVelocity );
 				robot.sleepRobot( 2.0 );
 				robot.spinner.setPower( 0.0 );
 				robot.sleepRobot( 0.5 );

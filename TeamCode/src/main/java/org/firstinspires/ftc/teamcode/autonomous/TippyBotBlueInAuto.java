@@ -24,7 +24,7 @@ public class TippyBotBlueInAuto extends LinearOpMode {
 	public void runOpMode( ) throws InterruptedException {
 		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
-		robot = new RRTippyBot( this );
+		robot = new RRTippyBot( this, true );
 
 		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 

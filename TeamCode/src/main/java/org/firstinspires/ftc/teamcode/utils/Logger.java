@@ -118,9 +118,9 @@ public class Logger {
 		File dir = Environment.getRootDirectory( );
 //		File dir = Environment.getDataDirectory( );
 
-		for( File file : Objects.requireNonNull( dir.listFiles( ) ) )
+//		for( File file : Objects.requireNonNull( dir.listFiles( ) ) )
 //			if( !file.getName( ).startsWith( date ) )
-				Log.e( "LOG", "" + file.getName( ) + System.lineSeparator( ) + " :: " + file.getPath( ) + System.lineSeparator( ) + " :: " + file.getAbsolutePath( ) );
+//				Log.e( "LOG", "" + file.getName( ) + System.lineSeparator( ) + " :: " + file.getPath( ) + System.lineSeparator( ) + " :: " + file.getAbsolutePath( ) );
 //				new File( dir.getPath( ) + LOG_PATH, file.getName( ) );
 //				deleteLog( f.getName( ) );
 	}
