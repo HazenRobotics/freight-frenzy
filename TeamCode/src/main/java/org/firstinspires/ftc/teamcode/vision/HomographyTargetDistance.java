@@ -13,20 +13,20 @@ public class HomographyTargetDistance {
 
 	//Value from solvePnP
 	private static final Matrix TRANSLATION_VECTOR = new Matrix( new double[][] {
-			{-40.06944102},
-			{113.57229532},
-			{655.72896487}
+			{-38.29131528},
+			{113.80422094},
+			{659.27536728}
 	} );
 	//Value after applying Rodriguez rotation formula to rotation vector from solvePnP
 	private static final Matrix ROTATION_MATRIX = new Matrix( new double[][] {
-			{-0.99979639, -0.0197295,   0.00423448},
-			{0.00823028, -0.20710507,  0.97828409},
-			{-0.01842407,  0.97811975,  0.20722528}
+			{-0.99985521, -0.01629314,  0.00490925},
+			{0.00818302, -0.20741969,  0.97821782},
+			{-0.01491996,  0.97811636,  0.20752298}
 	} );
 	//Value from camera calibration
 	private static final Matrix CAMERA_MATRIX = new Matrix( new double[][] {
-			{1.42712092e+03, 0.00000000e+00, 6.92836355e+02},
-			{0.00000000e+00, 1.43303450e+03, 3.28652617e+02},
+			{1.43380471e+03, 0.00000000e+00, 6.88915495e+02},
+			{0.00000000e+00, 1.43982105e+03, 3.28228935e+02},
 			{0.00000000e+00, 0.00000000e+00, 1.00000000e+00}
 	} );
 	//Z axis is always 1 since all the objects are on the ground
