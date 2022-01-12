@@ -13,21 +13,21 @@ public class HomographyTargetDistance {
 
 	//Value from solvePnP
 	private static final Matrix TRANSLATION_VECTOR = new Matrix( new double[][] {
-			{-38.29131528},
-			{113.80422094},
-			{659.27536728}
+			{-20.97044681},
+			{59.12198531},
+			{531.10257189}
 	} );
 	//Value after applying Rodriguez rotation formula to rotation vector from solvePnP
 	private static final Matrix ROTATION_MATRIX = new Matrix( new double[][] {
-			{-0.99985521, -0.01629314,  0.00490925},
-			{0.00818302, -0.20741969,  0.97821782},
-			{-0.01491996,  0.97811636,  0.20752298}
+			{-0.99927905, -0.03767002,  0.00472714},
+			{0.0174136,  -0.34413014,  0.93876047},
+			{-0.03373638,  0.93816599,  0.34453801}
 	} );
 	//Value from camera calibration
 	private static final Matrix CAMERA_MATRIX = new Matrix( new double[][] {
-			{1.43380471e+03, 0.00000000e+00, 6.88915495e+02},
-			{0.00000000e+00, 1.43982105e+03, 3.28228935e+02},
-			{0.00000000e+00, 0.00000000e+00, 1.00000000e+00}
+			{813.87098059,       0,      360.18166264},
+			{0,            815.10883372, 228.27266263},
+			{0,               0,               1}
 	} );
 	//Z axis is always 1 since all the objects are on the ground
 	final static double Z_CONST = 1;
@@ -61,7 +61,7 @@ public class HomographyTargetDistance {
 		//Swap X and Y, and add 24 to X to account for camera coordinate system
 		double x = calculatedPosition.get( 0, 0 );
 		double y = calculatedPosition.get( 1, 0 );
-		return new Vector2d( y + 24, x );
+		return new Vector2d( y + 18.5, x );
 	}
 
 }
