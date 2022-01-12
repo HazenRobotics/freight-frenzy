@@ -55,7 +55,7 @@ public class BlueOutDuckTest extends LinearOpMode {
 
 		new Thread( ( ) -> robot.initTF( ) ).start( );
 
-		TrajectorySequence trajectorySequence = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
+		TrajectorySequence beforeDuckPickup = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 
 				// Duck spin
 				.setTangent( Math.toRadians( 225 ) ) // direction to start next movement (line/spline)
@@ -75,24 +75,29 @@ public class BlueOutDuckTest extends LinearOpMode {
 				} )
 
 				.setTangent( Math.toRadians( 300 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 + 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 45, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 + 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
-					telemetry.addLine( "Before duck" );
-					telemetry.update( );
-					robot.waitForDuck( );
-					telemetry.addLine( "After duck" );
-					telemetry.update( );
 				} )
 				.waitSeconds( 1.2 )
+				.build( );
+		robot.drive.followTrajectorySequence( beforeDuckPickup );
 
+		robot.waitForDuck();
+
+		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
 				// pickup the duck
+				.addTemporalMarker( () -> {
+					robot.intake.setPower( 0.6 );
+				} )
 				.setTangent( Math.toRadians( 100 ) ) // direction to start next movement (line/spline)
 				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 					robot.stopDuckScanning( );
+					robot.stopTF();
+					robot.intake.setPower( 0 );
 				} )
 
 				// drop duck in top
@@ -108,17 +113,8 @@ public class BlueOutDuckTest extends LinearOpMode {
 //					robot.odometryLift.raise( );
 				} )
 				.waitSeconds( 1.2 )
+				.build();
+		robot.drive.followTrajectorySequence( afterPickupDuck );
 
-				// TODO: move to barrier to park
-//				.setTangent( Math.toRadians( 90 ) )
-//				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
-//				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-//				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
-
-				.waitSeconds( 6 )
-
-				.build( );
-
-		robot.drive.followTrajectorySequence( trajectorySequence );
 	}
 }

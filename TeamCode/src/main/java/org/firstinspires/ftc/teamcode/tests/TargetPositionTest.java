@@ -42,15 +42,14 @@ public class TargetPositionTest extends OpMode {
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		mecanumDrive.setMotorDirections( REV, DcMotorSimple.Direction.FORWARD, REV, REV );
 		drive = new RRMecanumDriveTippy42( hardwareMap );
-		calculator = new TargetPositionCalculator( new Vector2d( -13 - 9,  8 - 3) );
+		calculator = new TargetPositionCalculator( new Vector2d( -8,  13) );
 		cd = new CameraTargetDistance( 720, 45, 90 - 22.5 );
 
-		tf.initTensorFlow( );
-		tf.startTF( );
+
 
 		telemetry.addLine( "Init Finished!!" );
 
-//		drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
+		drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.EAST );
 /*
 
 		do {
@@ -107,6 +106,8 @@ public class TargetPositionTest extends OpMode {
 	public void loopTargets( ) {
 
 		new Thread( ( ) -> {
+			tf.initTensorFlow( );
+			tf.startTF( );
 
 			while( looping ) {
 

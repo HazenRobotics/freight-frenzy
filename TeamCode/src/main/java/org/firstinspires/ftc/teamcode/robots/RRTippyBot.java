@@ -66,7 +66,7 @@ public class RRTippyBot extends Robot {
 	public static double ROBOT_LENGTH = 13.5;
 	public static double ROBOT_WIDTH = 12.5;
 
-	public RRTippyBot( OpMode op, boolean teleOp ) {
+	public RRTippyBot( OpMode op, boolean auto ) {
 
 		super( op );
 
@@ -79,7 +79,7 @@ public class RRTippyBot extends Robot {
 
 //		new SoundLibrary( hardwareMap );
 
-		if( teleOp )
+		if( auto )
 			drive = new RRMecanumDriveTippy42( hardwareMap );
 
 		spinner = new CarouselSpinnerMotor( hardwareMap );
@@ -100,7 +100,7 @@ public class RRTippyBot extends Robot {
 
 		intake = new Intake( hardwareMap );
 
-		if( teleOp ) {
+		if( auto ) {
 
 			barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
@@ -113,9 +113,12 @@ public class RRTippyBot extends Robot {
 	}
 
 	public void initTF( ) {
-
 		duckTensorFlow.initTensorFlow( );
 		duckTensorFlow.startTF( );
+	}
+
+	public void stopTF() {
+		duckTensorFlow.stopTF();
 	}
 
 	public void waitForDuck( ) {
@@ -181,7 +184,12 @@ public class RRTippyBot extends Robot {
 	 */
 	public Vector2d getDuckPosition( ) {
 
-		return lastIdentified;
+		if( lastIdentified == null ) {
+			Pose2d pos = drive.getPoseEstimate( );
+			return new Vector2d( pos.getX( ) + 0.1, pos.getY( ) + 0.1);
+		}
+
+		return new Vector2d( lastIdentified.getX( ) + drive.getPoseEstimate().getX(), lastIdentified.getY( ) + drive.getPoseEstimate().getY() );
 	}
 
 	/**
@@ -195,7 +203,7 @@ public class RRTippyBot extends Robot {
 			return new Pose2d( pos.getX( ) + 0.1, pos.getY( ) + 0.1, pos.getHeading( ) );
 		}
 
-		return new Pose2d( lastIdentified.getX( ), lastIdentified.getY( ), angle );
+		return new Pose2d( lastIdentified.getX( ) + drive.getPoseEstimate().getX(), lastIdentified.getY( ) + drive.getPoseEstimate().getY(), angle );
 	}
 
 	/**
