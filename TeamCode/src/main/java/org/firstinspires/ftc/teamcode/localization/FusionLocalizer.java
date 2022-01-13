@@ -11,6 +11,8 @@ import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
+import org.firstinspires.ftc.teamcode.robots.Robot;
+import org.firstinspires.ftc.teamcode.utils.Logger;
 
 import java.util.function.Supplier;
 
@@ -57,7 +59,12 @@ public class FusionLocalizer implements Localizer {
 		wheelLocalizer.update( );
 		cameraLocalizer.update( );
 		if( cameraReady && !deadwheelsDisabled ) {
+//			String writeText = "" + (System.currentTimeMillis() / 1000);
+//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getX( );
 			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity( ) );
+//			writeText += ", " + wheelLocalizer.getPoseEstimate( ).getX( );
+//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getX( );
+//			Logger.writeAFile( "PosGraph.csv", writeText, true, false );
 		} else {
 			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 ) {
 				cameraReadyTime = System.currentTimeMillis();

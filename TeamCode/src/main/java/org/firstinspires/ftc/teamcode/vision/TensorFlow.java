@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.vision;
 
 import android.util.Log;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.vuforia.PIXEL_FORMAT;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -57,6 +59,7 @@ public class TensorFlow {
 
 		//  Instantiate the Vuforia engine
 		vuforia = ClassFactory.getInstance( ).createVuforia( parameters );
+		FtcDashboard.getInstance().startCameraStream( vuforia, 10 );
 
 		// Loading trackables is not necessary for the TensorFlow Object Detection engine.
 	}
@@ -73,6 +76,7 @@ public class TensorFlow {
 		tfodParameters.inputSize = 320;
 		tfod = ClassFactory.getInstance( ).createTFObjectDetector( tfodParameters, vuforia );
 		tfod.loadModelFromAsset( tfodModelAssetName, labels );
+		//send stream to FTC Dashboard
 	}
 
 	/**
