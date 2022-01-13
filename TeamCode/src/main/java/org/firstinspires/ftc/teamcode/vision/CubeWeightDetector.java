@@ -23,6 +23,7 @@ public class CubeWeightDetector extends OpenCvPipeline {
 
 	Telemetry telemetry;
 	Mat mat = new Mat( );
+	int displayCount = -1;
 
 	public enum FreightType {
 		WEIGHTED_CUBE,
@@ -52,7 +53,7 @@ public class CubeWeightDetector extends OpenCvPipeline {
 		Imgproc.Canny( src, src, 25, 100 );
 		//Dilation Filter
 		Imgproc.morphologyEx( src, src, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
-		srcs[5] = src.clone();
+		srcs[4] = src.clone();
 		//copy detected edges to destination matrix
 		//Create list of points and Mat
 		List<MatOfPoint> matsOfPoints = new ArrayList<>( );
@@ -70,31 +71,31 @@ public class CubeWeightDetector extends OpenCvPipeline {
 			Imgproc.approxPolyDP( new MatOfPoint2f( points ), approx, 0.01 * Imgproc.arcLength( new MatOfPoint2f( points ), true ), true );
 			double area = Imgproc.contourArea( matsOfPoints.get( i ) );
 			if(/*(approx.toArray( ).length > 10) && */(area < 500)) {
-				telemetry.addLine( "" + area );
+				//telemetry.addLine( "" + area );
 				contourList.add( new MatOfPoint( points ) );
 			}
 		}
 
-		telemetry.addLine("" + contourList.size());
+		//telemetry.addLine("" + contourList.size());
 
-		if (contourList.size() >= 1) {
-			freightType = FreightType.WEIGHTED_CUBE;
-			telemetry.addLine( "Weighted Cube" );
-		} else {
-			freightType = FreightType.UNWEIGHTED_CUBE;
-			telemetry.addLine( "Unweighted Cube" );
-		}
+//		if (contourList.size() >= 1) {
+//			freightType = FreightType.WEIGHTED_CUBE;
+//			telemetry.addLine( "Weighted Cube" );
+//		} else {
+//			freightType = FreightType.UNWEIGHTED_CUBE;
+//			telemetry.addLine( "Unweighted Cube" );
+//		}
 
 
 		Imgproc.drawContours( src, contourList, -1, new Scalar( 255, 0, 0 ), 2 );
 
-		srcs[6] = src.clone();
+		srcs[5] = src.clone();
 
-		while (true) {
-			int i = 0;
-
-			return srcs[i];
-		}
+		displayCount++;
+		long startTime = System.currentTimeMillis();
+		telemetry.addLine("Display count: " + displayCount);
+		while( startTime + 1000 > System.currentTimeMillis() );
+		return srcs[displayCount % 6];
 
 		//return src;
 	}
@@ -117,17 +118,16 @@ public class CubeWeightDetector extends OpenCvPipeline {
 		SetupMatrix( mat, freightLowHSV, freightHighHSV );
 		srcs[2] = mat.clone();
 
-		Rect BUCKET = new Rect( 54, 0, 212, 240 );
+		//Rect BUCKET = new Rect( 54, 0, 212, 240 );
 		Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_DILATE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		for( int i = 0; i < 100; i++ ) {
 			Imgproc.morphologyEx( mat, mat, Imgproc.MORPH_CLOSE, Imgproc.getStructuringElement( Imgproc.MORPH_RECT, new Size( 2, 2 ) ) );
 		}
 		srcs[3] = mat.clone();
 
-		Rect FREIGHT_ROI = ScanMinArea( mat, BUCKET ); //f
-		Mat freightArea = mat.submat( FREIGHT_ROI );//f
+		//Rect FREIGHT_ROI = ScanMinArea( mat, BUCKET ); //f
+		//Mat freightArea = mat.submat( FREIGHT_ROI );//f
 
-		srcs[4] = mat.clone();
 
 
 //		SetupMatrix( matWeight, weightLowHSV, weightHighHSV );
@@ -135,7 +135,7 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		Rect WEIGHT_ROI = ScanMinArea( matWeight, FREIGHT_ROI );
 //		Mat weightArea = matWeight.submat( WEIGHT_ROI );
 
-		double freightValue = Core.sumElems( freightArea ).val[0] / FREIGHT_ROI.area( ) / 255; //f
+		// double freightValue = Core.sumElems( freightArea ).val[0] / FREIGHT_ROI.area( ) / 255; //f
 //		double weightValue = Core.sumElems( weightArea ).val[0] / WEIGHT_ROI.area( ) / 255; //f
 
 //		telemetry.addLine( "FV" + freightValue );
@@ -146,20 +146,20 @@ public class CubeWeightDetector extends OpenCvPipeline {
 //		telemetry.addLine( "WROI X" + WEIGHT_ROI.x );
 //		telemetry.addLine( "WROI Y" + WEIGHT_ROI.y );
 
-		freightArea.release( ); //f
+		//freightArea.release( ); //f
 //		weightArea.release( );
 
-		boolean freightBool = freightValue > FREIGHT_THRESHOLD; //f
+		//boolean freightBool = freightValue > FREIGHT_THRESHOLD; //f
 //		boolean weightBool = weightValue > WEIGHT_THRESHOLD;
 
-//		Scalar red = new Scalar( 255, 0, 0 ); //f
-//		Scalar green = new Scalar( 0, 255, 0 ); //f
-//		Scalar blue = new Scalar( 0, 0, 255 );
-//		Scalar yellow = new Scalar( 255, 255, 0 );
-//		Scalar orange = new Scalar( 255, 165, 0 );
-//		Scalar pink = new Scalar( 255, 0, 255 );
-//		Scalar black = new Scalar( 0, 0, 0 );
-//		Scalar id = blue;
+		Scalar red = new Scalar( 255, 0, 0 ); //f
+		Scalar green = new Scalar( 0, 255, 0 ); //f
+		Scalar blue = new Scalar( 0, 0, 255 );
+		Scalar yellow = new Scalar( 255, 255, 0 );
+		Scalar orange = new Scalar( 255, 165, 0 );
+		Scalar pink = new Scalar( 255, 0, 255 );
+		Scalar black = new Scalar( 0, 0, 0 );
+		Scalar id = blue;
 
 
 		return processEdgeFrame( mat );
