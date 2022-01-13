@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
-public class BlueOutDuckTest extends LinearOpMode {
+public class RedOutDuckTest extends LinearOpMode {
 
 	RRTippyBot robot;
 
@@ -38,7 +38,7 @@ public class BlueOutDuckTest extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( -30.5, 64.125, Math.toRadians( 270 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -30.5, -64.125, Math.toRadians( 90 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -60,7 +60,7 @@ public class BlueOutDuckTest extends LinearOpMode {
 
 				// Duck spin
 				.setTangent( Math.toRadians( 225 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( new Pose2d( -61, 57, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
+				.splineToLinearHeading( new Pose2d( -61, -57, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0.6 );
 				} )
@@ -75,8 +75,8 @@ public class BlueOutDuckTest extends LinearOpMode {
 					robot.liftToShippingHubHeight( height );
 				} )
 
-				.setTangent( Math.toRadians( 300 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 45, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 + 22.5 ) )
+				.setTangent( Math.toRadians( 240 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 45, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 270 + 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 				} )
@@ -89,8 +89,8 @@ public class BlueOutDuckTest extends LinearOpMode {
 
 		if(robot.getDuckPosition() == null) {
 			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
-			.turn( Math.toRadians( -10 ) )
-			.build());
+					.turn( Math.toRadians( -10 ) )
+					.build());
 		}
 
 		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
@@ -100,7 +100,7 @@ public class BlueOutDuckTest extends LinearOpMode {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 				} )
 				.setTangent( Math.toRadians( 100 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 270 ) ) == null ? new Pose2d( -40, 60, Math.toRadians( 270 ) ) : robot.getDuckPosition( Math.toRadians( 270 ) ).plus( new Pose2d( 0, -4 ) ), Math.toRadians( 90 ) )
+				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 90 ) ) == null ? new Pose2d( -40, 60, Math.toRadians( 90 ) ) : robot.getDuckPosition( Math.toRadians( 90 ) ).plus( new Pose2d( 0, 4 ) ), Math.toRadians( 270 ) )
 				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
@@ -111,7 +111,7 @@ public class BlueOutDuckTest extends LinearOpMode {
 
 				// drop duck in top
 				.setTangent( Math.toRadians( 320 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 22, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 22, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );

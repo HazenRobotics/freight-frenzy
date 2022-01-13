@@ -61,7 +61,7 @@ public class HomographyTargetDistance {
 		//Swap X and Y, and add 24 to X to account for camera coordinate system
 		double x = calculatedPosition.get( 0, 0 );
 		double y = calculatedPosition.get( 1, 0 );
-		return new Vector2d( y + 24, x );
+		return new Vector2d( y + 12.9, x - 4.1);
 	}
 
 }

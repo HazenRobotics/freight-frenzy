@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -10,9 +11,9 @@ import org.opencv.core.Point;
 
 public class TargetPositionCalculator {
 
-	private final Vector2d CAMERA_OFFSET;
+	private final Pose2d CAMERA_OFFSET;
 
-	public TargetPositionCalculator( Vector2d cameraOffset ) {
+	public TargetPositionCalculator( Pose2d cameraOffset ) {
 		CAMERA_OFFSET = cameraOffset;
 	}
 
@@ -34,13 +35,13 @@ public class TargetPositionCalculator {
 		Vector2d positionFromCamera = HomographyTargetDistance.positionFromPoint( targetBasePoint );
 
 		//Apply camera offset to get position from center of robot
-		Vector2d positionFromRobot = positionFromCamera.minus( CAMERA_OFFSET );
+		Vector2d positionFromRobot = positionFromCamera.minus( CAMERA_OFFSET.vec() );
 
 		//Calculate field coordinates (no idea if this actually works)
-		double targetX = positionFromRobot.getX( ) * Math.cos( robotAngle ) + positionFromRobot.getY( ) * Math.sin( robotAngle );
-		double targetY = positionFromRobot.getY( ) * Math.cos( robotAngle ) + positionFromRobot.getX( ) * Math.sin( robotAngle );
+		double targetX = positionFromRobot.getX( ) * Math.cos( robotAngle + CAMERA_OFFSET.getHeading() ) - positionFromRobot.getY( ) * Math.sin( robotAngle + CAMERA_OFFSET.getHeading() );
+		double targetY = positionFromRobot.getY( ) * Math.cos( robotAngle + CAMERA_OFFSET.getHeading() ) + positionFromRobot.getX( ) * Math.sin( robotAngle + CAMERA_OFFSET.getHeading() );
 
-		return new Vector2d( -targetX, -targetY );
+		return new Vector2d( targetX, targetY );
 
 	}
 

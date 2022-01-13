@@ -50,9 +50,16 @@ public class BlueOutAutoDuck implements MeepMeepPath {
 				.waitSeconds( 1.2 )
 
 				// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
+				.turn( Math.toRadians(90) )
+				.setTangent( Math.toRadians( 180 ) )
+				.splineToConstantHeading( new Vector2d( -36, 24 ), Math.toRadians( 270 ) )
+				.splineToConstantHeading( new Vector2d( -12, 0 ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 12, 24 ), Math.toRadians( 90 ) )
+				.lineToConstantHeading( new Vector2d( 12, 44 ) )
+
+				/*.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
-				.lineToLinearHeading( new Pose2d( 62, 44, 0 ) )
+				.lineToLinearHeading( new Pose2d( 62, 44, 0 ) )*/
 
 				.waitSeconds( 6 )
 

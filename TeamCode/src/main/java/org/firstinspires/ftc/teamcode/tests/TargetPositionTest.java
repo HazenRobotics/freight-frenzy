@@ -42,7 +42,7 @@ public class TargetPositionTest extends OpMode {
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		mecanumDrive.setMotorDirections( REV, DcMotorSimple.Direction.FORWARD, REV, REV );
 		drive = new RRMecanumDriveTippy42( hardwareMap );
-		calculator = new TargetPositionCalculator( new Vector2d( -8,  13) );
+		calculator = new TargetPositionCalculator( new Pose2d( -6,  -1, Math.toRadians( 180 )) );
 		cd = new CameraTargetDistance( 720, 45, 90 - 22.5 );
 
 

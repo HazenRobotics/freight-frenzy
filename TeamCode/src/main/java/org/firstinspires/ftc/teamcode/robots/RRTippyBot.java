@@ -24,6 +24,8 @@ import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 import org.firstinspires.ftc.teamcode.vision.TensorFlowUtilBack;
 
+import java.util.List;
+
 public class RRTippyBot extends Robot {
 
 	public OpMode opMode;
@@ -105,7 +107,7 @@ public class RRTippyBot extends Robot {
 			barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
 			duckTensorFlow = new TensorFlowUtilBack( opMode );
-			calculator = new TargetPositionCalculator( new Vector2d( -13 - 9, 8 - 3 ) );
+			calculator = new TargetPositionCalculator( new Pose2d( -6,  -1, Math.toRadians( 180 )) );
 		}
 
 		capper.setPosition( 0 );
@@ -183,27 +185,23 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object (will only be null if it hasn't found any recognitions yet)
 	 */
 	public Vector2d getDuckPosition( ) {
-
-		if( lastIdentified == null ) {
-			Pose2d pos = drive.getPoseEstimate( );
-			return new Vector2d( pos.getX( ) + 0.1, pos.getY( ) + 0.1);
+		if(lastIdentified == null) {
+			return null;
 		}
 
-		return new Vector2d( lastIdentified.getX( ) + drive.getPoseEstimate().getX(), lastIdentified.getY( ) + drive.getPoseEstimate().getY() );
+		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate().vec() );
 	}
 
 	/**
 	 * @param angle the pose heading angle to return
-	 * @return the field position of the last identified object (if null returns current position)
+	 * @return the field position of the last identified object
 	 */
 	public Pose2d getDuckPosition( double angle ) {
-
-		if( lastIdentified == null ) {
-			Pose2d pos = drive.getPoseEstimate( );
-			return new Pose2d( pos.getX( ) + 0.1, pos.getY( ) + 0.1, pos.getHeading( ) );
+		if(lastIdentified == null) {
+			return null;
 		}
 
-		return new Pose2d( lastIdentified.getX( ) + drive.getPoseEstimate().getX(), lastIdentified.getY( ) + drive.getPoseEstimate().getY(), angle );
+		return new Pose2d( new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate().vec() ), angle );
 	}
 
 	/**
@@ -231,6 +229,31 @@ public class RRTippyBot extends Robot {
 		intake.setPower( intakePower );
 
 		return calculator.getTargetPosition( delayed, robotAngle );
+	}
+
+	public Vector2d getClosestFreightPosition( ) {
+		if(!duckTensorFlow.isActive()) {
+			duckTensorFlow.startTF();
+			while( opModeIsActive() && !duckTensorFlow.isActive() );
+		}
+		List<Recognition> recognitions = duckTensorFlow.identifyObjects();
+		if(recognitions == null) {
+			return null;
+		}
+		Vector2d closestFreightPosition = null;
+		double closestDistance = 500;
+		for(Recognition recognition : recognitions) {
+			Vector2d freightPosition = calculator.getTargetPosition( recognition, drive.getPoseEstimate().getHeading() );
+			Vector2d robotPosition = drive.getPoseEstimate().vec();
+			double distance = Math.sqrt( Math.pow( robotPosition.getX() - freightPosition.getX(), 2 ) + Math.pow( robotPosition.getY() - freightPosition.getY(), 2 ) );
+			if(distance < closestDistance) {
+				closestFreightPosition = freightPosition;
+				closestDistance = distance;
+			}
+		}
+
+		assert closestFreightPosition != null;
+		return closestFreightPosition.plus( drive.getPoseEstimate().vec() );
 	}
 
 	/**
