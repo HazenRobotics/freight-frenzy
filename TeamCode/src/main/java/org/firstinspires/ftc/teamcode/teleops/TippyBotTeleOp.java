@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
+import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class TippyBotTeleOp extends OpMode {
 	double minStrafe = 0.7, maxStrafe = 1.0;
 	double minRotate = 0.5, maxRotate = 1.0;
 
-	double intakePower = 0.6;
+	double intakePower = 0.55; // .6
 
 	double capperPosition = 0.7;
 
@@ -51,8 +52,7 @@ public class TippyBotTeleOp extends OpMode {
 
 	double prevLiftPos = 0;
 
-	double spinnerPower = 0.75;
-	double spinnerVelocity = 1200;
+	double spinnerVelocity = 325;
 	boolean inSpinnerThread = false;
 	List<Thread> spinnerThread = new ArrayList<>( );
 
@@ -69,7 +69,7 @@ public class TippyBotTeleOp extends OpMode {
 
 		robot = new RRTippyBot( this, false );
 
-//		SoundLibrary.playRandomStartup( );
+		SoundLibrary.playRandomStartup( );
 
 		Log.e( "Mode", "waiting for start" );
 		telemetry.addData( "Mode", "waiting for start" );
@@ -104,6 +104,7 @@ public class TippyBotTeleOp extends OpMode {
 		else if( gamepad1.dpad_down ) // like -45°, dump
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_DUMP );
 
+
 		// exits all loops inside lift methods
 		if( gamepad1.back || gamepad2.back )
 			robot.lift.exitLoops( 250 );
@@ -127,7 +128,7 @@ public class TippyBotTeleOp extends OpMode {
 //			capperPosition = capperPosition > 0.5 ? 0.0 : 1.0;
 //		else
 		if( player1.a.onPress( ) ) // toggle between hold/pickup
-			capperPosition = capperPosition >= RRTippyBot.CAPPER_HOLD + 0.05 ?  RRTippyBot.CAPPER_HOLD : RRTippyBot.CAPPER_PICKUP; // prep the capper for the shipping element
+			capperPosition = capperPosition >= RRTippyBot.CAPPER_HOLD + 0.05 ? RRTippyBot.CAPPER_HOLD : RRTippyBot.CAPPER_PICKUP; // prep the capper for the shipping element
 
 		if( gamepad2.y )
 			capperPosition -= 0.01;
@@ -143,25 +144,19 @@ public class TippyBotTeleOp extends OpMode {
 		autoSlantBucket( ); // no need to since the bucket is already slanted
 
 
-
 		// carousel spinner
 		// spinner timed intervals
 		if( player1.x.onPress( ) ) {
 			Log.e( "runSpinnerAssistMethods", "pressed" );
 			if( inSpinnerThread ) {
 				Log.e( "runSpinnerAssistMethods", "stop" );
-				inSpinnerThread = false;
-				spinnerThread.get( 0 ).interrupt();
-				spinnerThread.clear();
-				robot.spinner.setPower( 0 );
+				stopSpinnerThread( );
 			} else {
 				Log.e( "runSpinnerAssistMethods", "start" );
 				runSpinnerThread( );
 			}
 		}
 
-//		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles power
-//			robot.spinner.setPower( Math.abs( robot.spinner.getPower( ) ) < 0.1 ? spinnerPower : 0 );
 		if( player1.b.onPress( ) || player2.b.onPress( ) ) // toggles velocity
 			robot.spinner.setPower( Math.abs( robot.spinner.getVelocity( ) ) < 100 ? spinnerVelocity : 0 );
 
@@ -208,6 +203,8 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.addLine( "Reset Lift Position: [Gp1] ps" );
 		telemetry.addLine( "Exit Loops: [Gp1/2] back" );
 		telemetry.addLine( );
+		telemetry.addLine( "Spinner vel: " + spinnerVelocity );
+		telemetry.addLine( );
 
 		/*
 
@@ -245,9 +242,24 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.addLine( "front right position: " + df.format( robot.mecanumDrive.getFrontRightPosition( ) ) );
 		telemetry.addLine( "back right position: " + df.format( robot.mecanumDrive.getBackRightPosition( ) ) );
 		telemetry.addLine( );
-		telemetry.addLine( "longitudinal position (ticks, in): " +  robot.encoderTracker.getLongitudinalPosition( ) + ", " + df.format( robot.getLongitudinalPosition( ) ) );
+		telemetry.addLine( "longitudinal position (ticks, in): " + robot.encoderTracker.getLongitudinalPosition( ) + ", " + df.format( robot.getLongitudinalPosition( ) ) );
 		telemetry.addLine( "lateral position (ticks, in): " + robot.encoderTracker.getLateralPosition( ) + ", " + df.format( robot.getLateralPosition( ) ) );
 
+	}
+
+	@Override
+	public void stop( ) {
+
+		if( inSpinnerThread )
+			stopSpinnerThread( );
+	}
+
+	public void stopSpinnerThread( ) {
+
+		inSpinnerThread = false;
+		spinnerThread.get( 0 ).interrupt( );
+		spinnerThread.clear( );
+		robot.spinner.setPower( 0 );
 	}
 
 	public void runSpinnerThread( ) {
@@ -259,9 +271,10 @@ public class TippyBotTeleOp extends OpMode {
 			while( inSpinnerThread ) {
 //				robot.spinner.setPower( spinnerPower );
 				robot.spinner.setVelocity( spinnerVelocity );
-				robot.sleepRobot( 2.0 );
+				// total of 2.5
+				robot.sleepRobot( 1.5 );
 				robot.spinner.setPower( 0.0 );
-				robot.sleepRobot( 0.5 );
+				robot.sleepRobot( 1.0 );
 				telemetry.addLine( "duckSpinAssist loop " + (i++) );
 				telemetry.update( );
 			}
@@ -279,10 +292,6 @@ public class TippyBotTeleOp extends OpMode {
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
 	}
-
-
-
-
 
 
 // unused older code

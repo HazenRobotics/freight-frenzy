@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class BlueInFreightTest extends LinearOpMode {
 
 	RRTippyBot robot;

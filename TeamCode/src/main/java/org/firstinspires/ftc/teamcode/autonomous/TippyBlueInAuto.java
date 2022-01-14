@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
-public class TippyBotBlueInAuto extends LinearOpMode {
+public class TippyBlueInAuto extends LinearOpMode {
 
 	RRTippyBot robot;
 

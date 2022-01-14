@@ -88,30 +88,30 @@ public class MediaTest extends OpMode {
 				paused = false,
 				looping = false;
 
-		if( showTestEvents ) {
-			playing = test.isPlaying( );
-			paused = test.isPaused( );
-			looping = test.isLooping( );
-		} else {
-			AudioPlayer current = SoundLibrary.getAudioPlayer( audios[selected] );
-			if( current != null ) {
-				playing = current.isPlaying( );
-				paused = current.isPaused( );
-				looping = current.isLooping( );
-			}
-		}
+//		if( showTestEvents ) {
+//			playing = test.isPlaying( );
+//			paused = test.isPaused( );
+//			looping = test.isLooping( );
+//		} else {
+//			AudioPlayer current = SoundLibrary.getAudioPlayer( audios[selected] );
+//			if( current != null ) {
+//				playing = current.isPlaying( );
+//				paused = current.isPaused( );
+//				looping = current.isLooping( );
+//			}
+//		}
 
-		if( playing != wasPlaying || paused != wasPaused || looping != wasLooping ) {
-
-			wasPlaying = playing;
-			wasPaused = paused;
-			wasLooping = looping;
-
-			telemetry.addLine( "Test Playing: " + playing );
-			telemetry.addLine( "Test Paused: " + paused );
-			telemetry.addLine( "Test Looping: " + looping );
-			telemetry.update( );
-		}
+//		if( playing != wasPlaying || paused != wasPaused || looping != wasLooping ) {
+//
+//			wasPlaying = playing;
+//			wasPaused = paused;
+//			wasLooping = looping;
+//
+//			telemetry.addLine( "Test Playing: " + playing );
+//			telemetry.addLine( "Test Paused: " + paused );
+//			telemetry.addLine( "Test Looping: " + looping );
+//			telemetry.update( );
+//		}
 
 		if( gamepad.dpad_up.onPress( ) ) {
 			if( selected - 1 < 0 )

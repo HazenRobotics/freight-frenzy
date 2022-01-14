@@ -10,7 +10,7 @@ import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 
-@Autonomous
+//@Autonomous
 public class CameraTest extends LinearOpMode {
 
 	RRMecanumDriveHex42 drive;

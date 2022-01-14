@@ -14,10 +14,15 @@ import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
-public class TippyBotBlueOutAuto extends LinearOpMode {
+//@Autonomous
+public class Old_TippyRedOutAuto extends LinearOpMode {
 
 	RRTippyBot robot;
+
+	static final double tileSize = 23;
+	static final double tileConnector = 0.75;
+	static final double hubRadius = 9;
+	static double robotLength = 13.25;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
@@ -28,7 +33,7 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 
 		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 
-		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
+		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.NORTH );
 
 		robot.barcodeUtil.init( );
 
@@ -38,7 +43,7 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( -30.5, 64.125, Math.toRadians( 270 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -40.75, -64.125, Math.toRadians( 90 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -60,7 +65,7 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 
 				} )
 
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 270, robot.shippingHubDistance( height ), true ), Math.toRadians( 270 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -22.5, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 90 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
@@ -68,11 +73,11 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 				.waitSeconds( 1.2 )
 
 				// Duck spin
-				.lineToLinearHeading( new Pose2d( -62, 58, Math.toRadians( -90 ) ) )
+				.lineToLinearHeading( new Pose2d( -62, -58, Math.toRadians( 90 ) ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setPower( 0.6 );
+					robot.spinner.setVelocity( 325 );
 				} )
-				.waitSeconds( 3.0 )
+				.waitSeconds( 3.2 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -82,8 +87,8 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 					robot.intake.setPower( 0.5 );
 				} )
 				.setTangent( 0 )
-				.splineToLinearHeading( new Pose2d( -50, 62.1875, Math.toRadians( -90 ) ), Math.toRadians( 90 ) )
-				.lineToConstantHeading( new Vector2d( -13 - 5, 62.1875 ) )
+				.splineToLinearHeading( new Pose2d( -50, -62.1875, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
+				.lineToConstantHeading( new Vector2d( -13 - 5, -62.1875 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
@@ -91,7 +96,7 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 				} )
 
 				// drop duck in top
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 - 22.5 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( 0, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 - 22.5 ) )
 				.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -104,10 +109,11 @@ public class TippyBotBlueOutAuto extends LinearOpMode {
 				.waitSeconds( 1.2 )
 
 				// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
+
+				.setTangent( Math.toRadians( 270 ) )
+				.splineToLinearHeading( new Pose2d( 11.5, -44, 0 ), Math.toRadians( 45 ) )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
+				.lineToLinearHeading( new Pose2d( 55, -44, 0 ) )
 
 				.waitSeconds( 6 )
 

@@ -3,6 +3,7 @@ package com.example.meepmeeppaths;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
+import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequence;
 import com.noahbres.meepmeep.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 
@@ -22,9 +23,10 @@ public class MeepMeepPaths {
 
 	public static void main( String[] args ) {
 
-		MeepMeep mm = new MeepMeep( 700 )
+		MeepMeep mm = new MeepMeep( 880 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
-				.setTheme( new ColorSchemeBlueDark( ) )
+				.setTheme( new ColorSchemeRedDark() )
+//				.set
 				.setBackgroundAlpha( 1f )
 				.setBotDimensions( robotWidth, robotLength )
 				.setConstraints( 30, 30, Math.toRadians( 60 ), Math.toRadians( 60 ), 17 )

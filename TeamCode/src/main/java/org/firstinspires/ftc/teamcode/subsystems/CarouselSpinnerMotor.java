@@ -16,7 +16,7 @@ public class CarouselSpinnerMotor {
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 */
 	public CarouselSpinnerMotor( HardwareMap hardwareMap ) {
-		setup( hardwareMap, "spinner" );
+		setup( hardwareMap, "spinner" , false );
 	}
 
 	/**
@@ -24,12 +24,23 @@ public class CarouselSpinnerMotor {
 	 * @param spinnerName the name of the spinner motor in the hardware map
 	 */
 	public CarouselSpinnerMotor( HardwareMap hardwareMap, String spinnerName ) {
-		setup( hardwareMap, spinnerName );
+		setup( hardwareMap, spinnerName, false );
 	}
 
-	private void setup( HardwareMap hardwareMap, String spinnerName ) {
+	/**
+	 * @param hardwareMap the hardwareMap of the current running OpMode
+	 * @param spinnerName the name of the spinner motor in the hardware map
+	 */
+	public CarouselSpinnerMotor( HardwareMap hardwareMap, String spinnerName, boolean runWithEncoders ) {
+		setup( hardwareMap, spinnerName, runWithEncoders );
+	}
+
+	private void setup( HardwareMap hardwareMap, String spinnerName, boolean runWithEncoders ) {
 
 		spinner = hardwareMap.get( DcMotorEx.class, spinnerName );
+		if( runWithEncoders ) {
+			spinner.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
+		}
 	}
 
 	// getters and setters

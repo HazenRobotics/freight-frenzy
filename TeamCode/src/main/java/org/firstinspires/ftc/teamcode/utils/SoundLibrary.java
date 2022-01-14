@@ -8,7 +8,9 @@ public class SoundLibrary {
 
 	private static HardwareMap hardwareMap;
 
-	public /*private*/ static final ArrayList<AudioPlayer> audioList = new ArrayList<>( );
+	private static boolean finishedInit = false;
+
+	public /*private*/ static final ArrayList<Audio> audioList = new ArrayList<>( );
 
 	public SoundLibrary( HardwareMap hardwareMap ) {
 
@@ -43,7 +45,7 @@ public class SoundLibrary {
 		String names = toString( );
 		for( int i = 0; i < soundNames.length; i++ )
 			if( !names.contains( soundNames[i] ) )
-				audioList.add( new AudioPlayer( hardwareMap, soundNames[i], volumes[i] ) );
+				audioList.add( new Audio( hardwareMap, soundNames[i], volumes[i] ) );
 
 		//audioList.add( new Audio( hardwareMap, "" ) );
 
@@ -51,6 +53,12 @@ public class SoundLibrary {
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( !audioList.get( i ).found( ) )
 				audioList.remove( i-- );
+
+		finishedInit = true;
+	}
+
+	public static boolean finishedInit( ) {
+		return finishedInit;
 	}
 
 	/**
@@ -67,12 +75,12 @@ public class SoundLibrary {
 		return "Audio \"" + audioName + "\" :: not found";
 	}
 
-	public static AudioPlayer getAudioPlayer( String audioName ) {
-		for( int i = 0; i < audioList.size( ); i++ )
-			if( audioList.get( i ).getName( ).equals( audioName ) )
-				return audioList.get( i );
-		return null;
-	}
+//	public static AudioPlayer getAudioPlayer( String audioName ) {
+//		for( int i = 0; i < audioList.size( ); i++ )
+//			if( audioList.get( i ).getName( ).equals( audioName ) )
+//				return audioList.get( i );
+//		return null;
+//	}
 
 	/**
 	 * plays the playstation startup (the audio file with the name "ps_startup")
@@ -144,7 +152,7 @@ public class SoundLibrary {
 	 * @return a string saying whether the audio is playing or was not found
 	 */
 	private static String playRandomAudioOfType( String audioType ) {
-		ArrayList<AudioPlayer> list = new ArrayList<>( );
+		ArrayList<Audio> list = new ArrayList<>( );
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( audioList.get( i ).getName( ).contains( audioType ) )
 				list.add( audioList.get( i ) );

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.internal.webserver.websockets.FtcWebSocket;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
@@ -19,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.utils.TargetPositionCalculator;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
@@ -79,12 +79,12 @@ public class RRTippyBot extends Robot {
 
 		// initialize util objects/classes
 
-//		new SoundLibrary( hardwareMap );
+		new Thread( () -> new SoundLibrary( hardwareMap ) ).start( );
 
 		if( auto )
 			drive = new RRMecanumDriveTippy42( hardwareMap );
 
-		spinner = new CarouselSpinnerMotor( hardwareMap );
+		spinner = new CarouselSpinnerMotor( hardwareMap, "spinner", true );
 
 		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
@@ -107,7 +107,7 @@ public class RRTippyBot extends Robot {
 			barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
 			duckTensorFlow = new TensorFlowUtilBack( opMode );
-			calculator = new TargetPositionCalculator( new Pose2d( -6,  -1, Math.toRadians( 180 )) );
+			calculator = new TargetPositionCalculator( new Pose2d( -6, -1, Math.toRadians( 180 ) ) );
 		}
 
 		capper.setPosition( 0 );
@@ -119,8 +119,8 @@ public class RRTippyBot extends Robot {
 		duckTensorFlow.startTF( );
 	}
 
-	public void stopTF() {
-		duckTensorFlow.stopTF();
+	public void stopTF( ) {
+		duckTensorFlow.stopTF( );
 	}
 
 	public void waitForDuck( ) {
@@ -185,11 +185,10 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object (will only be null if it hasn't found any recognitions yet)
 	 */
 	public Vector2d getDuckPosition( ) {
-		if(lastIdentified == null) {
+		if( lastIdentified == null )
 			return null;
-		}
 
-		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate().vec() );
+		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate( ).vec( ) );
 	}
 
 	/**
@@ -197,11 +196,11 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object
 	 */
 	public Pose2d getDuckPosition( double angle ) {
-		if(lastIdentified == null) {
+		if( lastIdentified == null ) {
 			return null;
 		}
 
-		return new Pose2d( new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate().vec() ), angle );
+		return new Pose2d( new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate( ).vec( ) ), angle );
 	}
 
 	/**
@@ -232,28 +231,28 @@ public class RRTippyBot extends Robot {
 	}
 
 	public Vector2d getClosestFreightPosition( ) {
-		if(!duckTensorFlow.isActive()) {
-			duckTensorFlow.startTF();
-			while( opModeIsActive() && !duckTensorFlow.isActive() );
+		if( !duckTensorFlow.isActive( ) ) {
+			duckTensorFlow.startTF( );
+			while( opModeIsActive( ) && !duckTensorFlow.isActive( ) ) ;
 		}
-		List<Recognition> recognitions = duckTensorFlow.identifyObjects();
-		if(recognitions == null) {
+		List<Recognition> recognitions = duckTensorFlow.identifyObjects( );
+		if( recognitions == null ) {
 			return null;
 		}
 		Vector2d closestFreightPosition = null;
 		double closestDistance = 500;
-		for(Recognition recognition : recognitions) {
-			Vector2d freightPosition = calculator.getTargetPosition( recognition, drive.getPoseEstimate().getHeading() );
-			Vector2d robotPosition = drive.getPoseEstimate().vec();
-			double distance = Math.sqrt( Math.pow( robotPosition.getX() - freightPosition.getX(), 2 ) + Math.pow( robotPosition.getY() - freightPosition.getY(), 2 ) );
-			if(distance < closestDistance) {
+		for( Recognition recognition : recognitions ) {
+			Vector2d freightPosition = calculator.getTargetPosition( recognition, drive.getPoseEstimate( ).getHeading( ) );
+			Vector2d robotPosition = drive.getPoseEstimate( ).vec( );
+			double distance = Math.sqrt( Math.pow( robotPosition.getX( ) - freightPosition.getX( ), 2 ) + Math.pow( robotPosition.getY( ) - freightPosition.getY( ), 2 ) );
+			if( distance < closestDistance ) {
 				closestFreightPosition = freightPosition;
 				closestDistance = distance;
 			}
 		}
 
 		assert closestFreightPosition != null;
-		return closestFreightPosition.plus( drive.getPoseEstimate().vec() );
+		return closestFreightPosition.plus( drive.getPoseEstimate( ).vec( ) );
 	}
 
 	/**

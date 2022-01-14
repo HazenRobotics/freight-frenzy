@@ -85,7 +85,7 @@ public class RedInAutoDuck extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( -12, -54 ) )
 				.lineToLinearHeading( new Pose2d( -56, -58.5, 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setPower( 0.75 );
+					robot.spinner.setVelocity( 325 );
 				} )
 				.waitSeconds( 3.2 )
 				.addTemporalMarker( ( ) -> {
