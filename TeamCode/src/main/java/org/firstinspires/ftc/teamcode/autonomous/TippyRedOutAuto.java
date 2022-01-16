@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +12,9 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
+import org.firstinspires.ftc.teamcode.teleops.TippyBotTeleOp;
+import org.firstinspires.ftc.teamcode.utils.GameTimer;
+import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
@@ -20,6 +24,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
+		TippyBotTeleOp.isBlueSide = false;
 
 		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
@@ -27,10 +32,9 @@ public class TippyRedOutAuto extends LinearOpMode {
 
 		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 
-		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
+		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.NORTH );
 
 		robot.barcodeUtil.init( );
-
 
 		do {
 			telemetry.addLine( "Getting pose estimate. Please wait..." );
@@ -38,7 +42,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 			robot.drive.update( );
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
-		robot.drive.setPoseEstimate( new Pose2d( -30.5, -64.125, Math.toRadians( 90 ) ) );
+		robot.drive.setPoseEstimate( new Pose2d( -40.75, -64.125, Math.toRadians( 90 ) ) );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -48,6 +52,8 @@ public class TippyRedOutAuto extends LinearOpMode {
 		}
 
 		waitForStart( );
+		//start timer
+		GameTimer.start();
 
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
@@ -59,12 +65,16 @@ public class TippyRedOutAuto extends LinearOpMode {
 		TrajectorySequence beforeDuckPickup = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 
 				// Duck spin
-				.setTangent( Math.toRadians( 225 ) ) // direction to start next movement (line/spline)
+				.setTangent( Math.toRadians( 135 ) ) // direction to start next movement (line/spline)
 				.splineToLinearHeading( new Pose2d( -61, -57, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( 325 );
+					robot.spinner.setVelocity( -300 );
 				} )
-				.waitSeconds( 3.0 )
+				.waitSeconds( 0.38 )
+				.addTemporalMarker( ( ) -> {
+					robot.spinner.setVelocity( -2000 );
+				} )
+				.waitSeconds( 0.45 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -75,8 +85,9 @@ public class TippyRedOutAuto extends LinearOpMode {
 					robot.liftToShippingHubHeight( height );
 				} )
 
-				.setTangent( Math.toRadians( 240 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 45, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 270 + 22.5 ) )
+				.setTangent( Math.toRadians( 60 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 70 ) )
+				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 				} )
@@ -85,50 +96,85 @@ public class TippyRedOutAuto extends LinearOpMode {
 		robot.drive.followTrajectorySequence( beforeDuckPickup );
 		robot.lift.setDefaultHeightVel( 1000 );
 
-		robot.waitForDuck();
+		robot.waitForDuck( );
 
-		if(robot.getDuckPosition() == null) {
-			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
-					.turn( Math.toRadians( -10 ) )
-					.build());
+		if( robot.getDuckPosition( ) == null ) {
+			SoundLibrary.playAudio( "nooo" );
+			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
+					.turn( Math.toRadians( 30 ) )
+					.build( ) );
+		}
+		else {
+			SoundLibrary.playAudio( "fine_addition" );
 		}
 
-		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
+		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 				// pickup the duck
-				.addTemporalMarker( () -> {
+				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0.4 );
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 				} )
-				.setTangent( Math.toRadians( 100 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 90 ) ) == null ? new Pose2d( -40, 60, Math.toRadians( 90 ) ) : robot.getDuckPosition( Math.toRadians( 90 ) ).plus( new Pose2d( 0, 4 ) ), Math.toRadians( 270 ) )
-				.waitSeconds( 1 )
+				.setTangent( Math.toRadians( 260 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( robot.getDuckPosition( Math.toRadians( 90 ) ) == null ? new Pose2d( -40, -60, Math.toRadians( 90 ) ) : robot.getDuckPosition( Math.toRadians( 90 ) ).plus( new Pose2d( 0, 7 ) ), Math.toRadians( 270 ) )
+				.strafeRight( 2 )
+				.strafeLeft( 4 )
+
+				//.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
+					robot.sleepRobot( 1.5 );
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 					robot.stopDuckScanning( );
-					robot.stopTF();
+					robot.stopTF( );
 				} )
+				//.waitSeconds( 1.0 )
 
 				// drop duck in top
-				.setTangent( Math.toRadians( 320 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( 22, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
+				.setTangent( Math.toRadians( 40 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
+				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
+					robot.sleepRobot( 1 );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				/*.addTemporalMarker( ( ) -> {
-					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-					robot.odometryLift.raise( );
-				} )*/
-				.waitSeconds( 1.2 )
+				.waitSeconds( 1.5 )
+				//Line up for parking
+				.lineToLinearHeading( new Pose2d( -36, -44, Math.toRadians( 0 ) ) )
+				/*
+
 
 				// move to barrier to park
-				/*.setTangent( Math.toRadians( 90 ) )
+				.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
+				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
+				*/
+				/*.setVelConstraint( new MecanumVelocityConstraint( 45, 11.5 ) )
+				.setTangent( Math.toRadians( 90 ) )
+				.splineToConstantHeading( new Vector2d( -55, 36 ), Math.toRadians( 90 ) )
+				.splineToSplineHeading( new Pose2d( -12, 0, Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 12, 44 ), Math.toRadians( 90 ) )
+				.addTemporalMarker( ( ) -> {
+
+				} )
+				.waitSeconds( 1.2 )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
 				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )*/
-				.build();
+				.build( );
 		robot.drive.followTrajectorySequence( afterPickupDuck );
+
+		robot.drive.setDeadwheelsDisabledCheck( () -> true );
+		robot.odometryLift.raise( );
+		//Park in last 3 seconds
+		while(opModeIsActive() && GameTimer.remainingTimeAutonomous() > 3);
+		robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
+				.lineToConstantHeading(new Vector2d( 55, -44 ))
+				.build());
+
+
+		while( !isStopRequested( ) && !opModeIsActive( ) );
 
 	}
 }

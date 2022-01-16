@@ -23,7 +23,7 @@ public class MeepMeepPaths {
 
 	public static void main( String[] args ) {
 
-		MeepMeep mm = new MeepMeep( 880 )
+		MeepMeep mm = new MeepMeep( 700 )
 				.setBackground( MeepMeep.Background.FIELD_FREIGHT_FRENZY )
 				.setTheme( new ColorSchemeRedDark() )
 //				.set

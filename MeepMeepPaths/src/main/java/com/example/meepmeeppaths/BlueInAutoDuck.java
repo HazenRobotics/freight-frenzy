@@ -11,100 +11,59 @@ public class BlueInAutoDuck implements MeepMeepPath {
 	@Override
 	public TrajectorySequence getTrajectorySequence( DriveShim drive ) {
 		double wallPos = 64.625;
-		return drive.trajectorySequenceBuilder( new Pose2d( -6.375, 62.1875, Math.toRadians( 270 ) ) )
+		return drive.trajectorySequenceBuilder( new Pose2d( -42.5, -64.125, Math.toRadians( 90 ) ) )
 
-				// move to dump initial block in designated layer
 				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( height );
+//					robot.intake.setPower( 0.4 );
+//					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 				} )
-				.setTangent( Math.toRadians( 180 ) )
-				.splineToLinearHeading( MeepMeepPath.getHubPosition( -22.5, 270, 4, true ), Math.toRadians( 270 - 22.5 ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
-				} )
+				.setTangent( Math.toRadians( 260 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( new Pose2d( -40, -60, Math.toRadians( 90 ) ), Math.toRadians( 90 ) )
+				.strafeRight( 2 )
+				.strafeLeft( 4 )
 
-				.waitSeconds( 0.8 )
-
-				// move to grab block 1
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				//.waitSeconds( 1 )
 				.addTemporalMarker( ( ) -> {
-//					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
-				} )
-				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
-				.addTemporalMarker( ( ) -> {
+//					robot.sleepRobot( 1.5 );
 //					robot.intake.setPower( 0 );
-				} )
-
-				// move to dump block 1 in the top layer
-				.addTemporalMarker( ( ) -> {
 //					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+//					robot.stopDuckScanning( );
+//					robot.stopTF( );
 				} )
-				.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
+				//.waitSeconds( 1.0 )
+
+				// drop duck in top
+				.setTangent( Math.toRadians( 40 ) ) // direction to start next movement (line/spline)
+				.splineToLinearHeading( MeepMeepPath.getHubPosition( -45, 90, 9, false ), Math.toRadians( 90 ) )
+				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
+//					robot.sleepRobot( 1 );
+//					robot.lift.setDefaultHeightVel( 1000 );
 				} )
-				.waitSeconds( 0.8 )
+				.waitSeconds( 1.5 )
+				//Line up for parking
+				.lineToLinearHeading( new Pose2d( -36, -44, Math.toRadians( 0 ) ) )
+				/*
 
-				// move to grab block 2
+
+				// move to barrier to park
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
-				} )
-				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 );
-				} )
-
-				// move to dump block 2 in the top layer
-				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-				} )
-				.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-//					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
-				} )
-				.waitSeconds( 0.8 )
-
-				// move to grab block 3
+				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
+				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
+				*/
+				/*.setVelConstraint( new MecanumVelocityConstraint( 45, 11.5 ) )
 				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( -55, 36 ), Math.toRadians( 90 ) )
+				.splineToSplineHeading( new Pose2d( -12, 0, Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 12, 44 ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
-//					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
-				} )
-				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.intake.setPower( 0 );
-				} )
 
-				// move to dump block 3 in the top layer
-				.addTemporalMarker( ( ) -> {
-//					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.splineToSplineHeading( MeepMeepPath.getHubPosition( -22.5, 270, 7, true ), Math.toRadians( 270 ) )
-				.addTemporalMarker( ( ) -> {
-//					robot.dumpBucket( );
-				} )
-				.addTemporalMarker( ( ) -> {
-//					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
-//					robot.odometryLift.raise( );
-//					robot.lift.setHeightVelocity( 1200, 23 );
-				} )
-				.waitSeconds( 0.8 )
-
-				// turn towards the
-				.turn( Math.toRadians( 110 ) )
-				/*// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( 62, 44 ) )*/
+				.waitSeconds( 1.2 )
+				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
+				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )*/
 				.build( );
 	}
 }

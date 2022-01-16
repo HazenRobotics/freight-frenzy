@@ -55,15 +55,16 @@ public class FusionLocalizer implements Localizer {
 
 	@Override
 	public void update( ) {
+//		Logger.writeAFile( "PosGraph.csv", "updating", true, false );
 		driveLocalizer.update( );
 		wheelLocalizer.update( );
 		cameraLocalizer.update( );
 		if( cameraReady && !deadwheelsDisabled ) {
-//			String writeText = "" + (System.currentTimeMillis() / 1000);
-//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getX( );
+//			String writeText = "" + (System.currentTimeMillis() / 1000.0 );
+//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getY( );
 			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity( ) );
-//			writeText += ", " + wheelLocalizer.getPoseEstimate( ).getX( );
-//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getX( );
+//			writeText += ", " + wheelLocalizer.getPoseEstimate( ).getY( );
+//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getY( );
 //			Logger.writeAFile( "PosGraph.csv", writeText, true, false );
 		} else {
 			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 ) {
@@ -72,8 +73,6 @@ public class FusionLocalizer implements Localizer {
 			else if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && System.currentTimeMillis() > cameraReadyTime + 1000) {
 				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
 				cameraReady = true;
-			} else if (cameraReady) {
-				cameraLocalizer.sendOdometryData( driveLocalizer.getPoseVelocity() );
 			}
 		}
 	}

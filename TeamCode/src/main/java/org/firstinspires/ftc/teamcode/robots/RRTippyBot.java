@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
+import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.utils.TargetPositionCalculator;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
@@ -47,6 +48,8 @@ public class RRTippyBot extends Robot {
 	public OdometryLift odometryLift;
 
 	public Intake intake;
+
+	public RGBLights lights;
 
 	TensorFlowUtilBack duckTensorFlow;
 	TargetPositionCalculator calculator;
@@ -102,12 +105,16 @@ public class RRTippyBot extends Robot {
 
 		intake = new Intake( hardwareMap );
 
+		RGBLights lights = new RGBLights( hardwareMap, "blinkin" );
+
+		lights.showStatus( RGBLights.StatusLights.CELEBRATION );
+
 		if( auto ) {
 
 			barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
 			duckTensorFlow = new TensorFlowUtilBack( opMode );
-			calculator = new TargetPositionCalculator( new Pose2d( -6, -1, Math.toRadians( 180 ) ) );
+			calculator = new TargetPositionCalculator( new Pose2d( -6, 1, Math.toRadians( 180 ) ) );
 		}
 
 		capper.setPosition( 0 );
@@ -185,7 +192,7 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object (will only be null if it hasn't found any recognitions yet)
 	 */
 	public Vector2d getDuckPosition( ) {
-		if( lastIdentified == null )
+		if( lastIdentified == null || (Math.abs( lastIdentified.getX() ) > 62 && Math.abs( lastIdentified.getY() ) > 62) || (Math.abs( lastIdentified.getX() ) > 71 || Math.abs( lastIdentified.getY() ) > 71) )
 			return null;
 
 		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate( ).vec( ) );
@@ -196,7 +203,7 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object
 	 */
 	public Pose2d getDuckPosition( double angle ) {
-		if( lastIdentified == null ) {
+		if( lastIdentified == null || (Math.abs( lastIdentified.getX() ) > 62 && Math.abs( lastIdentified.getY() ) > 62) || (Math.abs( lastIdentified.getX() ) > 71 || Math.abs( lastIdentified.getY() ) > 71) ) {
 			return null;
 		}
 
@@ -311,7 +318,7 @@ public class RRTippyBot extends Robot {
 			default: // (LOW)
 				return 2; // 1.5
 			case MIDDLE:
-				return 3; // 5
+				return 3.2; // 5
 			case HIGH:
 				return 7;
 		}

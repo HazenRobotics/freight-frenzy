@@ -183,11 +183,6 @@ public class Lift {
 
 	public void setDefaultHeightVel( double velocity ) {
 		setDefaultHeightVel( velocity, ( ) -> { } );
-//		setHeightVelocity( velocity, groundBucketHeight );
-//		new Thread( ( ) -> {
-//			waitForMoveFinish( );
-//			disableMotorIfUnused( );
-//		} ).start( );
 	}
 
 	public void setDefaultHeightVel( double velocity, Runnable runnable ) {

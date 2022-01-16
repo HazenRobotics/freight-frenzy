@@ -30,7 +30,7 @@ public class BOutDuckTest implements MeepMeepPath {
 				} )
 
 				.setTangent( Math.toRadians( 300 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( MeepMeepPath.getHubPosition( 0, 270, 5, true ), Math.toRadians( 270 + 22.5 ) )
+				.splineToLinearHeading( MeepMeepPath.getHubPosition( 45, 270, 5, true ), Math.toRadians( 230 ) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 				} )
@@ -52,7 +52,7 @@ public class BOutDuckTest implements MeepMeepPath {
 
 				// drop duck in top
 				.setTangent( Math.toRadians( 320 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( MeepMeepPath.getHubPosition( 22, 270, 7, true ), Math.toRadians( 270 ) )
+				.splineToLinearHeading( MeepMeepPath.getHubPosition( 45, 270, 7, true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 //					robot.dumpBucket( );
 //					robot.lift.setDefaultHeightVel( 1000 );
@@ -62,12 +62,16 @@ public class BOutDuckTest implements MeepMeepPath {
 					robot.odometryLift.raise( );
 				} )*/
 				.waitSeconds( 1.2 )
+				.splineToLinearHeading( new Pose2d( -36, 44, Math.toRadians( 0 ) ), Math.toRadians( 180 ) )
 
 				// move to barrier to park
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
+				/*.setTangent( Math.toRadians( 90 ) )
+				.splineToConstantHeading( new Vector2d( -55, 36 ), Math.toRadians( 270 ) )
+				.splineToSplineHeading( new Pose2d( -12, 0, Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
+				.splineToConstantHeading( new Vector2d( 12, 44 ), Math.toRadians( 90 ) )
+//				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )
+				.lineToLinearHeading( new Pose2d( 55, 44, 0 ) )*/
 				.build( );
 //		robot.drive.followTrajectorySequence( afterPickupDuck );
 	}

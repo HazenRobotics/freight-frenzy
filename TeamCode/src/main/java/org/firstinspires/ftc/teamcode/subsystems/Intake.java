@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -49,10 +47,8 @@ public class Intake {
 	public void setPower( double power ) {
 
 		intakeMotor.setPower( power );
-		if( power > 0 ) {
-			intakenBlocks = -1;
+		if( power > 0 )
 			new Thread( this::startIntakeChecking ).start( );
-		}
 	}
 
 	/**
@@ -75,10 +71,9 @@ public class Intake {
 	}
 
 	/**
-	 *
-	 * @param power to set the motor
+	 * @param power      to set the motor
 	 * @param maxIntaken max number of blocks to intake
-	 * @param maxTime max time to run the intake
+	 * @param maxTime    max time to run the intake
 	 */
 	public void intakeBlocks( double power, int maxIntaken, int maxTime ) {
 		setPower( power );
@@ -86,13 +81,12 @@ public class Intake {
 	}
 
 	/**
-	 *
 	 * @param maxIntaken max number of blocks to intake
-	 * @param maxTime max time to run the intake
+	 * @param maxTime    max time to run the intake
 	 */
 	public void intakeBlocks( int maxIntaken, int maxTime ) {
 
-		new Thread( () -> {
+		new Thread( ( ) -> {
 
 			int intakeTimeLimit = 10 * 1000; // 10 seconds
 			double startTime = System.currentTimeMillis( );
@@ -104,13 +98,10 @@ public class Intake {
 				} catch( InterruptedException ignored ) {
 				}
 			}
-//			startTime = System.currentTimeMillis( );
-//			while( startTime + 500 > System.currentTimeMillis( ) ) { // while the power is up, and it has been less than 10 seconds
-				try {
-					Thread.sleep( maxTime );
-				} catch( InterruptedException ignored ) {
-				}
-//			}
+			try {
+				Thread.sleep( maxTime );
+			} catch( InterruptedException ignored ) {
+			}
 			setPower( 0 );
 
 
@@ -130,16 +121,17 @@ public class Intake {
 			}
 		}
 
-		int intakeTimeLimit = 30 * 1000; // 30 seconds
+		int intakeTimeLimit = 15 * 1000; // 30 seconds
 		startTime = System.currentTimeMillis( );
 
 		boolean previouslyIntaking = false;
 		while( getPower( ) > 0 && startTime + intakeTimeLimit > System.currentTimeMillis( ) && intakenBlocks >= 0 ) { // while the power is up, and it has been less than 30 seconds
-			if( intaking( ) && !previouslyIntaking ) {
-				intakenBlocks++;
+			if( intaking( ) )
 				previouslyIntaking = true;
-			} else if( !intaking( ) )
+			else if( previouslyIntaking ) {
+				intakenBlocks++;
 				previouslyIntaking = false;
+			}
 
 			try {
 				Thread.sleep( 50 );

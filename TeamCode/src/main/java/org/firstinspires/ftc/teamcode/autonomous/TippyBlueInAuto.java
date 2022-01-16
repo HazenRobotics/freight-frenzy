@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
+import org.firstinspires.ftc.teamcode.teleops.TippyBotTeleOp;
+import org.firstinspires.ftc.teamcode.utils.GameTimer;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
@@ -22,6 +24,8 @@ public class TippyBlueInAuto extends LinearOpMode {
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
+		TippyBotTeleOp.isBlueSide = true;
+
 		Robot.createMatchLogFile( getClass( ).getSimpleName( ) );
 
 		robot = new RRTippyBot( this, true );
@@ -49,6 +53,9 @@ public class TippyBlueInAuto extends LinearOpMode {
 
 		waitForStart( );
 
+		//start timer
+		GameTimer.start();
+
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
@@ -73,18 +80,18 @@ public class TippyBlueInAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
+					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
-				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
-				} )
-
-				// move to dump block 1 in the top layer
-				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
+
+				// move to dump block 1 in the top layer
+
 				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -96,54 +103,61 @@ public class TippyBlueInAuto extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
+					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
-				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
-				} )
-
-				// move to dump block 2 in the top layer
-				.addTemporalMarker( ( ) -> {
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
+
+				// move to dump block 2 in the top layer
 				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
 				} )
-				.waitSeconds( 0.8 )
-
-				// move to grab block 3
-				.setTangent( Math.toRadians( 90 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.addTemporalMarker( ( ) -> {
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
-				} )
-				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
-				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0 );
-				} )
-
-				// move to dump block 3 in the top layer
-				.addTemporalMarker( ( ) -> {
-					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
-				} )
-				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
-				.addTemporalMarker( ( ) -> {
-					robot.dumpBucket( );
-				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
 					robot.odometryLift.raise( );
-					robot.lift.setHeightVelocity( 1200, 23 );
 				} )
 				.waitSeconds( 0.8 )
 
+				/*// move to grab block 3
+				.setTangent( Math.toRadians( 90 ) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.addTemporalMarker( ( ) -> {
+					robot.intake.intakeBlocks( 0.6, 2, 500 ); // should stop the intake after 1 block has been intaken
+				} )
+				.lineToConstantHeading( new Vector2d( 54, wallPos ) )
+				.addTemporalMarker( ( ) -> {
+					robot.intake.setPower( 0 );
+					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+				} )
+				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
+
+				// move to dump block 3 in the top layer
+				.splineToSplineHeading( RRTippyBot.getHubPosition( -22.5, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 270 ) )
+				.addTemporalMarker( ( ) -> {
+					robot.dumpBucket( );
+					robot.lift.setDefaultHeightVel( 1200 );
+				} )*/
+
+				//.waitSeconds( 0.8 )
+				//park
+
+				.addTemporalMarker( ( ) -> {
+					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
+					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+				} )
+				.setTangent( Math.toRadians( 90 ) )
+				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
+
 				// turn towards the
-				.turn( Math.toRadians( 110 ) )
+				//.turn( Math.toRadians( 110 ) )
 				/*// move to barrier to park
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 11.5, 44, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
