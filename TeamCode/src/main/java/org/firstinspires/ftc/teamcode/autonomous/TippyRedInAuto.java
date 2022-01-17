@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.teleops.TippyBotTeleOp;
 import org.firstinspires.ftc.teamcode.utils.GameTimer;
+import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
@@ -43,6 +45,7 @@ public class TippyRedInAuto extends LinearOpMode {
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
 		robot.drive.setPoseEstimate( new Pose2d( 6.75, -64.125, Math.toRadians( 90 ) ) );
+		robot.lights.showStatus( RGBLights.StatusLights.WAITING );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -56,6 +59,7 @@ public class TippyRedInAuto extends LinearOpMode {
 		//start timer
 		GameTimer.start();
 
+		robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BREATH_RED );
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
@@ -81,9 +85,9 @@ public class TippyRedInAuto extends LinearOpMode {
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
 				} )
-				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
@@ -104,7 +108,7 @@ public class TippyRedInAuto extends LinearOpMode {
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
 				.addTemporalMarker( ( ) -> {
@@ -150,11 +154,11 @@ public class TippyRedInAuto extends LinearOpMode {
 
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
 				} )
 				.setTangent( Math.toRadians( 270) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 55, wallPos ) )
 
 				// turn towards the
 				//.turn( Math.toRadians( 110 ) )

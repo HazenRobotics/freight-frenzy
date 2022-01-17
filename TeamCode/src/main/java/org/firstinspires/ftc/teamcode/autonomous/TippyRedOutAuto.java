@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.teleops.TippyBotTeleOp;
 import org.firstinspires.ftc.teamcode.utils.GameTimer;
+import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
@@ -43,6 +45,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
 		robot.drive.setPoseEstimate( new Pose2d( -40.75, -64.125, Math.toRadians( 90 ) ) );
+		robot.lights.showStatus( RGBLights.StatusLights.WAITING );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -54,6 +57,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 		waitForStart( );
 		//start timer
 		GameTimer.start();
+		robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BREATH_RED );
 
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
@@ -66,15 +70,15 @@ public class TippyRedOutAuto extends LinearOpMode {
 
 				// Duck spin
 				.setTangent( Math.toRadians( 135 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( new Pose2d( -61, -57, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
+				.splineToLinearHeading( new Pose2d( -61, -57.5, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( -300 );
+					robot.spinner.setVelocity( -250 );
 				} )
-				.waitSeconds( 0.38 )
+				.waitSeconds( 0.9 )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( -2000 );
+					robot.spinner.setVelocity( -1500 );
 				} )
-				.waitSeconds( 0.45 )
+				.waitSeconds( 0.3 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -86,7 +90,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 				} )
 
 				.setTangent( Math.toRadians( 60 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 70 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( height ) + 1, false ), Math.toRadians( 70 ) )
 				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -131,7 +135,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 
 				// drop duck in top
 				.setTangent( Math.toRadians( 40 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ) + 1, false ), Math.toRadians( 90 ) )
 				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -169,8 +173,8 @@ public class TippyRedOutAuto extends LinearOpMode {
 		//Park in last 3 seconds
 		while(opModeIsActive() && GameTimer.remainingTimeAutonomous() > 3);
 		robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToConstantHeading(new Vector2d( 55, -44 ))
+				/*.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )*/
+				.lineToConstantHeading(new Vector2d( 48, -40 ))
 				.build());
 
 

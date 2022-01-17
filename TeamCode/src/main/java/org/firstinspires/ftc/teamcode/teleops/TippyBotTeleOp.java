@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.utils.GameTimer;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
+import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 import java.text.DecimalFormat;
@@ -63,6 +65,8 @@ public class TippyBotTeleOp extends OpMode {
 
 	public static boolean isBlueSide = true;
 
+	private long lightControlEnd = 0;
+
 	@Override
 	public void init( ) {
 
@@ -90,6 +94,7 @@ public class TippyBotTeleOp extends OpMode {
 				.addStep( 1, 1, 100 )
 				.build( );
 		gamepad1.runRumbleEffect( effect );
+		robot.lights.showStatus( RGBLights.StatusLights.WAITING );
 	}
 
 	@Override
@@ -106,9 +111,10 @@ public class TippyBotTeleOp extends OpMode {
 				gamepad1.right_stick_x * (gamepad1.right_stick_button ? maxRotate : minRotate) );
 
 		// intake [right - in | left - out]
-		if( player1.left_bumper.onPress( ) || player2.left_bumper.onPress( ) )
+		if( player1.left_bumper.onPress( ) || player2.left_bumper.onPress( ) ) {
+//			robot.intake.intakeNum( 0.6, 1 );
 			robot.intake.setPower( robot.intake.getPower( ) < 0 ? 0 : -intakePower );
-		else if( player1.right_bumper.onPress( ) || player2.right_bumper.onPress( ) )
+		} else if( player1.right_bumper.onPress( ) || player2.right_bumper.onPress( ) )
 			robot.intake.setPower( robot.intake.getPower( ) > 0 ? 0 : intakePower );
 
 		// lift control [up - top layer | down - dump | left - shared]
@@ -126,8 +132,10 @@ public class TippyBotTeleOp extends OpMode {
 			robot.lift.setDefaultHeightVel( 1200 );
 		}
 
+		telemetry.addLine( "" + robot.lift.getVelocity( ) );
+
 		// bucket control
-		if( gamepad1.dpad_down ) // like -45°, dump
+		if( gamepad1.dpad_down || gamepad2.right_trigger > 0.5 ) // like -45°, dump
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_DUMP );
 //		else if( gamepad1.dpad_up ) // parallel, intake
 //			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
@@ -152,10 +160,12 @@ public class TippyBotTeleOp extends OpMode {
 		}
 
 		telemetry.addLine( (spinnerVelocity > 0 ? "Blue" : "Red") + " Side Velocity" );
-		if( spinnerVelocity > 0 )
-			robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BLUE );
-		else
-			robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.RED );
+		if(System.currentTimeMillis() > lightControlEnd) {
+			if( spinnerVelocity > 0 )
+				robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BLUE );
+			else
+				robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.RED );
+		}
 
 
 		// capper position
@@ -232,10 +242,14 @@ public class TippyBotTeleOp extends OpMode {
 			int prevIntaken = 0;
 			while( inThread ) {
 
-				if( robot.intake.getIntakenBlocks( ) > prevIntaken )
+				if( robot.intake.getIntakenBlocks( ) > prevIntaken ) {
 					gamepad1.runRumbleEffect( new Gamepad.RumbleEffect.Builder( )
 							.addStep( 1, 1, 250 )
 							.build( ) );
+					lightControlEnd = System.currentTimeMillis() + 200;
+					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.SHOT_WHITE );
+
+				}
 
 				prevIntaken = robot.intake.getIntakenBlocks( );
 
@@ -250,9 +264,8 @@ public class TippyBotTeleOp extends OpMode {
 
 	public void addWarnEndGameThread( ) {
 		new Thread( ( ) -> {
-			double startTime = getRuntime( );
 			inThread = true;
-			while( inThread && getRuntime( ) < startTime + 115 ) {
+			while( inThread && GameTimer.inEndgame() ) {
 				try {
 					Thread.sleep( 1000 );
 				} catch( InterruptedException ignored ) {

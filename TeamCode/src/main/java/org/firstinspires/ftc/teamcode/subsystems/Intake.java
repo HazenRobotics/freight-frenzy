@@ -108,6 +108,45 @@ public class Intake {
 		} ).start( );
 	}
 
+	/**
+	 * @param power      to set the motor
+	 * @param maxIntaken max number of blocks to intake
+	 */
+	public void intakeNum( double power, int maxIntaken ) {
+		setPower( power );
+		intakeNum( maxIntaken );
+	}
+
+	/**
+	 * intakes the number of blocks intaken and continues till all are out
+	 * @param maxIntaken max number of objects to intake
+	 */
+	public void intakeNum( double maxIntaken ) {
+
+		new Thread( ( ) -> {
+
+			int intakeTimeLimit = 10 * 1000; // 10 seconds
+			double startTime = System.currentTimeMillis( );
+			while( getPower( ) > 0 && startTime + intakeTimeLimit > System.currentTimeMillis( ) ) { // while the power is up, and it has been less than 10 seconds
+				if( intakenBlocks >= maxIntaken )
+					break;
+				try {
+					Thread.sleep( 50 );
+				} catch( InterruptedException ignored ) {
+				}
+			}
+			while( getCurrent( ) > 7.7 ) {
+				try {
+					Thread.sleep( 100 );
+				} catch( InterruptedException ignored ) {
+				}
+			}
+			setPower( 0 );
+
+
+		} ).start( );
+	}
+
 	private void startIntakeChecking( ) {
 
 		intakenBlocks = 0;

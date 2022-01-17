@@ -33,7 +33,7 @@ public class RGBLights {
 				setPattern( BlinkinPattern.GREEN );
 				break;
 			case WAITING:
-				setPattern( BlinkinPattern.STROBE_GOLD );
+				setPattern( BlinkinPattern.GOLD );
 				break;
 			case NORMAL:
 				setPattern( BlinkinPattern.CP1_2_SPARKLE_1_ON_2 );

@@ -105,7 +105,7 @@ public class RRTippyBot extends Robot {
 
 		intake = new Intake( hardwareMap );
 
-		RGBLights lights = new RGBLights( hardwareMap, "blinkin" );
+		lights = new RGBLights( hardwareMap, "blinkin" );
 
 		lights.showStatus( RGBLights.StatusLights.CELEBRATION );
 
@@ -118,6 +118,7 @@ public class RRTippyBot extends Robot {
 		}
 
 		capper.setPosition( 0 );
+
 
 	}
 

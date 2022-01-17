@@ -163,7 +163,7 @@ public class Lift {
 	}
 
 	public void waitForMoveFinish( ) {
-		while( isBusy( ) && motor.getCurrent( CurrentUnit.AMPS ) < 7.9 ) {
+		while( isBusy( ) && getCurrent( CurrentUnit.AMPS ) < 7.9 ) {
 			try {
 				Thread.sleep( 50 );
 			} catch( InterruptedException ignored ) {

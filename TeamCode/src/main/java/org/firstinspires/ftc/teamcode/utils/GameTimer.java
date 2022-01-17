@@ -48,4 +48,12 @@ public class GameTimer {
 		return 158 - elapsedTime();
 	}
 
+	public static boolean inEndgame() {
+		return elapsedTime() > 128;
+	}
+
+	public static boolean inTeleop() {
+		return elapsedTime() > 38;
+	}
+
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.teleops.TippyBotTeleOp;
 import org.firstinspires.ftc.teamcode.utils.GameTimer;
+import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 @Autonomous
@@ -43,6 +45,7 @@ public class TippyBlueInAuto extends LinearOpMode {
 		} while( !isStopRequested( ) && !isStarted( ) && robot.drive.getPoseConfidence( ).compareTo( T265Camera.PoseConfidence.Medium ) < 0 );
 
 		robot.drive.setPoseEstimate( new Pose2d( 17, 64.125, Math.toRadians( 270 ) ) );
+		robot.lights.showStatus( RGBLights.StatusLights.WAITING );
 
 
 		while( opModeIsActive( ) && !isStarted( ) ) {
@@ -55,6 +58,7 @@ public class TippyBlueInAuto extends LinearOpMode {
 
 		//start timer
 		GameTimer.start();
+		robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE );
 
 		BarcodePositionDetector.BarcodePosition barcodePosition = robot.barcodeUtil.getBarcodePosition( );
 
@@ -81,7 +85,8 @@ public class TippyBlueInAuto extends LinearOpMode {
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+					robot.intake.intakeNum( 0.6, 1 );
+//					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
 				.addTemporalMarker( ( ) -> {
@@ -99,12 +104,15 @@ public class TippyBlueInAuto extends LinearOpMode {
 				} )
 				.waitSeconds( 0.8 )
 
+
 				// move to grab block 2
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
+					robot.intake.intakeNum( 0.6, 1 );
+//					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
 				.addTemporalMarker( ( ) -> {

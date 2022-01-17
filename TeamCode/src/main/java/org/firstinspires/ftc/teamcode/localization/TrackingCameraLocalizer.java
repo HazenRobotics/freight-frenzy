@@ -47,10 +47,10 @@ public class TrackingCameraLocalizer implements Localizer {
 		_frameOfReference = frameOfReference;
 		if(slamra == null) {
 			if(loadMap && new File(String.format("/sdcard/FIRST/localization/maps/%s", mapName)).exists()) {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.8, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
 			}
 			else {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.8,  hardwareMap.appContext);
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3,  hardwareMap.appContext);
 			}
 		}
 		try {
