@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.drives.Drive;
 import org.firstinspires.ftc.teamcode.localization.Field;
 import org.firstinspires.ftc.teamcode.utils.Logger;
 
+import java.io.IOException;
+
 /**
  * This class sets up and manages a robot
  */
@@ -40,11 +42,18 @@ public abstract class Robot {
 			module.setBulkCachingMode( LynxModule.BulkCachingMode.AUTO );
 	}
 
+	public static void waitTime( long waitTime ) {
+		try {
+			Thread.sleep( waitTime );
+		} catch( InterruptedException ignored ) {
+		}
+	}
+
 	public static void createMatchLogFile( String className ) {
 		Logger.createMatchLogFile( className );
 	}
 
-	public static void createDefaultMatchLogFile() {
+	public static void createDefaultMatchLogFile( ) {
 		Logger.writeToDefaultFile( "Created Default Log Fil", false, true );
 	}
 
