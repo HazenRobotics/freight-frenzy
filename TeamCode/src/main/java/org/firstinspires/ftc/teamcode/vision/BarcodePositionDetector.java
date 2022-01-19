@@ -98,12 +98,12 @@ public class BarcodePositionDetector extends OpenCvPipeline {
 	public Mat processFrame( Mat input ) {
 
 		Mat elementImage = processFrame( input, "element" );
-		//Mat duckImage = processFrame( input, "duck" );
-		double eleValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
-		//double duckValue = Core.sumElems( duckImage ).val[0] / (duckImage.rows( ) * duckImage.cols( )) / 255;
+		Mat duckImage = processFrame( input, "duck" );
+		double elementValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
+		double duckValue = Core.sumElems( duckImage ).val[0] / (duckImage.rows( ) * duckImage.cols( )) / 255;
 		telemetry.update( );
-//		if( eleValue < duckValue )
-//			return duckImage;
+		if( elementValue < duckValue )
+			return duckImage;
 		return elementImage;
 	}
 

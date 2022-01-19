@@ -8,7 +8,9 @@ public class SoundLibrary {
 
 	private static HardwareMap hardwareMap;
 
-	private static final ArrayList<Audio> audioList = new ArrayList<>( );
+	private static boolean finishedInit = false;
+
+	public /*private*/ static final ArrayList<Audio> audioList = new ArrayList<>( );
 
 	public SoundLibrary( HardwareMap hardwareMap ) {
 
@@ -20,27 +22,30 @@ public class SoundLibrary {
 	private void initSounds( ) {
 
 		String[] soundNames = new String[]{
-				"ps_startup",
-				"slurp_yummy",
+				"falcon_punch_smash",
 				"fine_addition",
+				"gamecube_startup",
+//				"gold",
+				"hallelujah_chorus",
 				"have_hulk",
 				"hello_there_startup",
 				"my_precious",
-				"falcon_punch_smash",
-				"seismic_charge_smash",
-				"smash",
 				"nooo",
-				"windows_startup",
-				"gamecube_startup",
-				"hallelujah_chorus" };
+				"ps_startup",
+				"punch",
+//				"seismic_charge_smash",
+//				"silver",
+				"slurp_yummy",
+				"smash",
+				"windows_startup" };
 
-		float[] volumes = new float[]{ /*0.5f*/1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f };
+		float[] volumes = new float[]{ /*0.5f*/1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f };
 
 		// other audios
 		String names = toString( );
 		for( int i = 0; i < soundNames.length; i++ )
 			if( !names.contains( soundNames[i] ) )
-				audioList.add( new Audio( hardwareMap, soundNames[i], 1f ) );
+				audioList.add( new Audio( hardwareMap, soundNames[i], volumes[i] ) );
 
 		//audioList.add( new Audio( hardwareMap, "" ) );
 
@@ -48,6 +53,12 @@ public class SoundLibrary {
 		for( int i = 0; i < audioList.size( ); i++ )
 			if( !audioList.get( i ).found( ) )
 				audioList.remove( i-- );
+
+		finishedInit = true;
+	}
+
+	public static boolean finishedInit( ) {
+		return finishedInit;
 	}
 
 	/**
@@ -63,6 +74,13 @@ public class SoundLibrary {
 		}
 		return "Audio \"" + audioName + "\" :: not found";
 	}
+
+//	public static AudioPlayer getAudioPlayer( String audioName ) {
+//		for( int i = 0; i < audioList.size( ); i++ )
+//			if( audioList.get( i ).getName( ).equals( audioName ) )
+//				return audioList.get( i );
+//		return null;
+//	}
 
 	/**
 	 * plays the playstation startup (the audio file with the name "ps_startup")

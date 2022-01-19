@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class BlueOutAuto extends LinearOpMode {
 
 	RRHexBot robot;
@@ -40,20 +40,19 @@ public class BlueOutAuto extends LinearOpMode {
 
 		while( !isStopRequested( ) && !isStarted( ) ) {
 			robot.drive.update( );
-			telemetry.addData( "Element position", robot.barcodeUtil.getBarcodePosition() );
-			telemetry.addLine(  );
-			telemetry.addData( "Current pose estimate", robot.drive.getPoseEstimate() );
-			telemetry.addLine(  );
+			telemetry.addData( "Element position", robot.barcodeUtil.getBarcodePosition( ) );
+			telemetry.addLine( );
+			telemetry.addData( "Current pose estimate", robot.drive.getPoseEstimate( ) );
+			telemetry.addLine( );
 			telemetry.addLine( "Pose estimate should be somewhere close to (0, 0, 0). If not, run the \"ResetCamera\" Autonomous." );
-			telemetry.update();
+			telemetry.update( );
 		}
-
 
 		waitForStart( );
 
 		//set it to mecanum wheels in very beginning
 
-		Localizer localizer = robot.drive.getLocalizer();
+		Localizer localizer = robot.drive.getLocalizer( );
 		robot.drive.setLocalizer( new MecanumDrive.MecanumLocalizer( robot.drive ) );
 
 
@@ -62,87 +61,52 @@ public class BlueOutAuto extends LinearOpMode {
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
 
-		TrajectorySequence cameraFix = robot.getTrajectorySequenceBuilder()
-				.setAccelConstraint( new ProfileAccelerationConstraint( 50 ) )
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
-				.forward( 8 )
-				.strafeRight( 8 )
-				.strafeLeft( 8 )
-				.back( 8 )
-				.build();
-		robot.drive.followTrajectorySequence( cameraFix );
+//		TrajectorySequence cameraFix = robot.getTrajectorySequenceBuilder( )
+//				.setAccelConstraint( new ProfileAccelerationConstraint( 50 ) )
+//				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
+//				.forward( 8 )
+//				.strafeRight( 8 )
+//				.strafeLeft( 8 )
+//				.back( 8 )
+//				.build( );
+//		robot.drive.followTrajectorySequence( cameraFix );
 		robot.drive.setLocalizer( localizer );
-		robot.drive.setPoseEstimate( new Pose2d( /*-29.375*/-42.375, 62.1875, Math.toRadians( -90 ) ) );
-
+		robot.drive.setPoseEstimate( new Pose2d( -42.375, 62.1875, Math.toRadians( -90 ) ) );
 
 		TrajectorySequence mainTrajectory = robot.getTrajectorySequenceBuilder( )
 
-				//Drop block in Shipping Hub
-				.lineToLinearHeading( new Pose2d( barcodePosition == BarcodePositionDetector.BarcodePosition.LEFT ? -32 : barcodePosition == BarcodePositionDetector.BarcodePosition.RIGHT ?  -40 : -36 , 48, 0 ) )
+				.splineToLinearHeading( robot.getHubPosition( 22.5, 270, robot.shippingHubHeightToInches( height ), true ), Math.toRadians( 270 - 22.5 ) )
+				.addTemporalMarker( ( ) -> {
+//											robot.dumpBucket( );
+//											robot.lift.setDefaultHeightVel( 1000 );
+				} )
+				.waitSeconds( 1.2 )
 
-				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( height ) )
-				.strafeRight( 30 )
-				//.splineToLinearHeading( new Pose2d( -58, -36, Math.toRadians( -45 ) ), Math.toRadians( 90 ) )
-				.lineToConstantHeading( new Vector2d( -36, 24 ))
-				.lineToConstantHeading( new Vector2d( -12 - robot.distanceFromShippingHub( height ), 24 ))
+				// Duck spin
+				.lineToLinearHeading( new Pose2d( -58.5, 56, Math.toRadians( -90 ) ) )
+				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0.5 ) )
+				.waitSeconds( 3.2 )
+				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0 ) )
+
+				// pickup the duck
+				.addTemporalMarker( ( ) -> robot.intake.setPower( 0.6 ) )
+				.setTangent( 0 )
+				.splineToLinearHeading( new Pose2d( -50, 62.1875, Math.toRadians( -90 ) ), Math.toRadians( 90 ) )
+				.lineToConstantHeading( new Vector2d( -13 - 5, 62.1875 ) )
+				.addTemporalMarker( ( ) -> robot.intake.setPower( 0 ) )
+
+				// drop duck in bottom (always)
+				.splineToLinearHeading( robot.getHubPosition( 0, 270, robot.shippingHubHeightToInches( RRHexBot.ShippingHubHeight.LOW ), true ), Math.toRadians( 270 - 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
 				.waitSeconds( 1.2 )
 
-				//Duck spin
-				.lineToConstantHeading( new Vector2d( -36, 24 ) )
-				.lineToConstantHeading( new Vector2d( -58.5, 56  ) )
-				.addTemporalMarker( ( ) -> {
-					robot.spinnerLeft.setPower( 0.5 );
-				} )
-				.waitSeconds( 3.2 )
-				.addTemporalMarker( ( ) -> robot.spinnerLeft.setPower( 0 ) )
-
-				//Pickup duck from ground
-				/*.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( -0.6 );
-				} )
-				.splineToConstantHeading( new Vector2d( -51, -53 ), Math.toRadians( 270 ) )
-				.lineToConstantHeading( new Vector2d( -51,-61 ) )
-				.strafeLeft( 2 )
-				.strafeRight( 12 )
-
-				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0 );
-				} )
-
-				//Drop duck in Shipping Hub
-				.addTemporalMarker( ( ) -> {
-					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
-				} )
-				.splineToLinearHeading( new Pose2d( -36, -24, Math.toRadians( 0 ) ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( -12 - robot.distanceFromShippingHub( RRHexBot.ShippingHubHeight.LOW ), -24 ) )
-				.addTemporalMarker( ( ) -> {
-					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1000 );
-				} )
-				.waitSeconds( 1.2 )*/
-
-				//Park in Warehouse
-				//.lineToConstantHeading( new Vector2d( -36, -24 ) )
-				/*.splineToConstantHeading( new Vector2d( -36, -32 ), Math.toRadians( 270 ) )
-				.splineToConstantHeading( new Vector2d( -10, -50 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( 6, -50 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( 10, -40 ), Math.toRadians( 90 ) )*/
-
-				.splineToConstantHeading( new Vector2d( -30, 24 ), Math.toRadians( 270 ) )
-				.splineToConstantHeading( new Vector2d( -26, 2 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( -10, 2 ), Math.toRadians( 0 ) )
-				.splineToConstantHeading( new Vector2d( 6, 2 ), Math.toRadians( 90 ) )
-				.splineToConstantHeading( new Vector2d( 8, 42 ), Math.toRadians( 90 ) )
-
-
-				.setVelConstraint( new MecanumVelocityConstraint( 50, 17 ) )
-				.lineTo( new Vector2d( 36, 42 ) )
-				.resetVelConstraint( )
-				.splineTo( new Vector2d( 60, 44 ), 0 )
+				// move to barrier to park
+				.setTangent( Math.toRadians( 90 ) )
+				.splineToLinearHeading( new Pose2d( 11.5, 40.25, 0 ), Math.toRadians( -45 ) )
+				.lineToLinearHeading( new Pose2d( 62, 40.25, 0 ) )
 				.build( );
 
 		robot.drive.followTrajectorySequence( mainTrajectory );

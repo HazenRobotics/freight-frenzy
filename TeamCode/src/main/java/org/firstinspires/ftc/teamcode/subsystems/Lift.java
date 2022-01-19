@@ -40,8 +40,8 @@ public class Lift {
 	 *
 	 * @param hardwareMap the hardwareMap of the current running OpMode
 	 */
-	public Lift( HardwareMap hardwareMap ) {
-		setup( hardwareMap, "lift", 2.375,
+	public Lift( HardwareMap hardwareMap ) { // the defaults for the 18" robot
+		setup( hardwareMap, "lift", true, 2.375,
 				(38.2 / 25.4) / 2, 55, AngleUnit.DEGREES ); // diameter of 45mm
 	}
 
@@ -49,27 +49,41 @@ public class Lift {
 	 * @param hardwareMap        the hardwareMap of the current running OpMode
 	 * @param motorName          the name of the lift motor in the hardware map
 	 * @param groundBucketHeight the height of the bottom of the lift to the ground
-	 * @param spoolRadius        the radius of the spool attached om 'angleUnit's
-	 * @param liftAngle          the angle of the lift from the ground in
+   	 * @param spoolRadius        the radius of the spool attached om 'angleUnit's
+	0 * @param liftAngle          the angle of the lift from the ground in
 	 * @param angleUnit          the angle unit to make calculations and input variables
 	 */
-	public Lift( HardwareMap hardwareMap, String motorName, double groundBucketHeight,
+	public Lift( HardwareMap hardwareMap, String motorName, boolean reverseMotor, double groundBucketHeight,
 				 double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
-		setup( hardwareMap, motorName, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
+		setup( hardwareMap, motorName, reverseMotor, groundBucketHeight, spoolRadius, liftAngle, angleUnit );
 	}
 
-	public void setup( HardwareMap hardwareMap, String leftMotorName, double groundBucketHeight,
-					   double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
+	public void setup( HardwareMap hardwareMap, String motorName, boolean reverseMotor,
+					   double groundBucketHeight, double spoolRadius, double liftAngle, AngleUnit angleUnit ) {
 
-		motor = hardwareMap.get( DcMotorEx.class, leftMotorName );
+		motor = hardwareMap.get( DcMotorEx.class, motorName );
 
-		motor.setDirection( DcMotorSimple.Direction.REVERSE );
-		resetLift( );
+		if( reverseMotor )
+			motor.setDirection( DcMotorSimple.Direction.REVERSE );
 
 		setGroundBucketHeight( groundBucketHeight );
 		setSpoolRadius( spoolRadius );
 		setLiftAngle( liftAngle );
 		setAngleUnit( angleUnit );
+
+		resetLift( );
+		motor.setTargetPosition( 10 );
+		motor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
+
+	}
+
+	/**
+	 * reverses the motor direction
+	 * (if it is FORWARD sets it to REVERSE or if it is REVERSE, sets it to FORWARD)
+	 */
+	public void reverseMotor( ) {
+		motor.setDirection( motor.getDirection( ) == DcMotorSimple.Direction.FORWARD ?
+				DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD );
 	}
 
 	/**
@@ -149,7 +163,12 @@ public class Lift {
 	}
 
 	public void waitForMoveFinish( ) {
-		while( isBusy( ) && motor.getCurrent( CurrentUnit.AMPS ) < 7.9 ) ;
+		while( isBusy( ) && getCurrent( CurrentUnit.AMPS ) < 7.9 ) {
+			try {
+				Thread.sleep( 50 );
+			} catch( InterruptedException ignored ) {
+			}
+		}
 	}
 
 	// simple lift setters
@@ -163,10 +182,15 @@ public class Lift {
 	}
 
 	public void setDefaultHeightVel( double velocity ) {
+		setDefaultHeightVel( velocity, ( ) -> { } );
+	}
+
+	public void setDefaultHeightVel( double velocity, Runnable runnable ) {
 		setHeightVelocity( velocity, groundBucketHeight );
 		new Thread( ( ) -> {
 			waitForMoveFinish( );
 			disableMotorIfUnused( );
+			runnable.run( );
 		} ).start( );
 	}
 
@@ -214,9 +238,15 @@ public class Lift {
 		allowLoops = false;
 		long start = System.currentTimeMillis( );
 		new Thread( ( ) -> {
-			while( System.currentTimeMillis( ) < start + waitTimeMillis ) ;
+			while( System.currentTimeMillis( ) < start + waitTimeMillis ) {
+				try {
+					Thread.sleep( 50 );
+				} catch( InterruptedException ignored ) {
+				}
+			}
 			allowLoops = true;
 		} ).start( );
+
 	}
 
 	/**
@@ -230,9 +260,9 @@ public class Lift {
 		// stop and reset encoder sets the encoder position to zero
 	}
 
-	public void runAfterBusy( Runnable runnable ) {
+	public void runAfterMove( Runnable runnable ) {
 		waitForMoveFinish( );
-		runnable.run( );
+		new Thread( runnable ).start( );
 	}
 
 	// converters and calculators
@@ -289,7 +319,7 @@ public class Lift {
 	}
 
 	public double calcBucketDistanceFromHeight( double height ) {
-		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height * Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
+		Robot.writeToDefaultFile( "calcBucketDistanceFromHeight: " + (height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) )), true, true );
 		return height / Math.tan( getLiftAngle( AngleUnit.RADIANS ) );
 	}
 
@@ -309,6 +339,12 @@ public class Lift {
 		motor.setPower( power );
 	}
 
+	/**
+	 * set Tele-O-Power
+	 * sets the lift to a power and sets the lift mode to run without encoders (still tracks position)
+	 *
+	 * @param power the power to set the motors to
+	 */
 	public void setTeleOPower( double power ) {
 		motor.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
 		setPower( power );
@@ -407,5 +443,13 @@ public class Lift {
 		else if( angle.equals( AngleUnit.DEGREES ) )
 			return Math.toDegrees( liftAngle );
 		return liftAngle;
+	}
+
+	public double getCurrent( ) {
+		return getCurrent( CurrentUnit.AMPS );
+	}
+
+	public double getCurrent( CurrentUnit currentUnit ) {
+		return motor.getCurrent( currentUnit );
 	}
 }

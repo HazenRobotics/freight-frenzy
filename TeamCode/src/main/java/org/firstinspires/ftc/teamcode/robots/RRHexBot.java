@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robots;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,9 +11,9 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
-import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinner;
+import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
-import org.firstinspires.ftc.teamcode.subsystems.NoodleIntake;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
@@ -26,23 +27,34 @@ public class RRHexBot extends Robot {
 	public RRMecanumDriveHex42 drive;
 	public MecanumDrive mecanumDrive;
 
-	public CarouselSpinner spinnerLeft;
-	public CarouselSpinner spinnerRight;
+	public CarouselSpinnerMotor spinner;
 
 	public Lift lift;
 	public Bucket bucket;
 	public Capper capper;
 
-	public NoodleIntake intake;
+	public Intake intake;
 
-//	public GyroTracker gyroTracker;
-//	public EncoderTracker encoderTracker;
+
+
+	// 13" robot (l, w): 13.25, 13.5
+	// 18" robot (l, w): 17.375, 17.5
+	static double ROBOT_LENGTH = 17.375;
+	static double ROBOT_WIDTH = 17.5; // with belts
+
+	static final double TILE_SIZE = 23;
+	static final double TILE_CONNECTOR = 0.75;
+
+	static final double HUB_RADIUS = 9;
 
 	public static final double LIFT_ANGLE = 55;
 
 	public static final double BUCKET_ANGLE_INTAKE = 85; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly
 	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
 	public static final double BUCKET_ANGLE_DUMP = -35;
+
+	public static final double CAPPER_PICKUP = 1.0;
+	public static final double CAPPER_HOLD = 0.8;
 
 	public enum ShippingHubHeight {
 		LOW,
@@ -55,33 +67,29 @@ public class RRHexBot extends Robot {
 		super( op );
 
 		Robot.createDefaultMatchLogFile( );
-		Robot.writeToDefaultFile( "***Created Default Log File***", false, true );
+		Robot.writeToDefaultFile( "Creating " + getClass( ).getSimpleName( ), false, false );
 
 		opMode = op;
 		hardwareMap = op.hardwareMap;
 
 		// initialize util objects/classes
-		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam", opMode.telemetry );
+		barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", opMode.telemetry );
 
 //		new SoundLibrary( hardwareMap );
 
 		drive = new RRMecanumDriveHex42( hardwareMap );
 		mecanumDrive = new MecanumDrive( hardwareMap );
 
-		spinnerLeft = new CarouselSpinner( hardwareMap, "spinnerLeft" );
-		spinnerRight = new CarouselSpinner( hardwareMap, "spinnerRight" );
+		spinner = new CarouselSpinnerMotor( hardwareMap, "spinner" );
 
-		lift = new Lift( hardwareMap, "lift", 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
+		lift = new Lift( hardwareMap, "lift", false, 2.375, (38.2 / 25.4) / 2, LIFT_ANGLE, AngleUnit.DEGREES );
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", LIFT_ANGLE - 80, 170 ); // was , LIFT_ANGLE - 90, 180
 		capper = new Capper( hardwareMap, "capper" );
 
-		intake = new NoodleIntake( hardwareMap );
+		intake = new Intake( hardwareMap );
 
 		capper.setPosition( 0 );
-
-//		gyroTracker = new GyroTracker( hardwareMap, false );
-//		encoderTracker = new EncoderTracker( hardwareMap, "intake", "perpendicular" );
 
 	}
 
@@ -91,6 +99,19 @@ public class RRHexBot extends Robot {
 	public void sleepRobot( double time ) {
 		double startTime = opMode.getRuntime( );
 		while( opModeIsActive( ) && startTime + time > opMode.getRuntime( ) ) ;
+	}
+
+	/**
+	 * @param angle           the number of degrees to turn to reach the side of the shipping hub
+	 * @param angleOffset     the starting angle of the robot
+	 * @param distanceFromHub the distance away from the shipping hub base to be
+	 * @param blueSide        whether or not the robot is on the blue side
+	 * @return the position (Pose2D) of where to go
+	 */
+	public Pose2d getHubPosition( double angle, double angleOffset, double distanceFromHub, boolean blueSide ) {
+		double x = TILE_CONNECTOR / 2 + TILE_SIZE / 2 + Math.sin( Math.toRadians( angle ) ) * (HUB_RADIUS + distanceFromHub + ROBOT_LENGTH / 2);
+		double y = TILE_CONNECTOR + TILE_SIZE + Math.cos( Math.toRadians( angle ) ) * (HUB_RADIUS + distanceFromHub + ROBOT_LENGTH / 2);
+		return new Pose2d( -x, y * (blueSide ? 1 : -1), Math.toRadians( angleOffset + angle ) );
 	}
 
 	public TrajectorySequenceBuilder getTrajectorySequenceBuilder( ) {
@@ -113,7 +134,7 @@ public class RRHexBot extends Robot {
 			case HIGH:
 				return 18;
 			default:
-				return 9;
+				return 8;
 		}
 	}
 

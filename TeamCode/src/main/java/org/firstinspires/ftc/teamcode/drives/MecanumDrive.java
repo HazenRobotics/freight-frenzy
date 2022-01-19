@@ -10,7 +10,7 @@ public class MecanumDrive extends FourWheelDrive {
 	final double WHEEL_DIAMETER = 38 / 25.4; // odometry wheel 38mm
 
 	/**
-	 * Creates a MechanumDrive with default names for the wheels
+	 * Creates a MecanumDrive with default names for the wheels
 	 *
 	 * @param hardwareMap robot's hardware map
 	 */
@@ -19,7 +19,7 @@ public class MecanumDrive extends FourWheelDrive {
 	}
 
 	/**
-	 * Creates a MechanumDrive with specified names for the wheels
+	 * Creates a MecanumDrive with specified names for the wheels
 	 *
 	 * @param hardwareMap         robot's hardware map
 	 * @param frontLeftMotorName  name of front left motor in the hardware map
@@ -43,10 +43,10 @@ public class MecanumDrive extends FourWheelDrive {
 	/**
 	 * Sets specified power to the motors
 	 *
-	 * @param frontRightPower power at which to run the front right motor.
 	 * @param frontLeftPower  power at which to run the front left motor.
-	 * @param backRightPower  power at which to run the back right motor.
 	 * @param backLeftPower   power at which to run the back left motor.
+	 * @param frontRightPower power at which to run the front right motor.
+	 * @param backRightPower  power at which to run the back right motor.
 	 */
 	public void setMotorPower( double frontLeftPower, double backLeftPower, double frontRightPower, double backRightPower ) {
 		super.setMotorPower( frontLeftPower, backLeftPower, frontRightPower, backRightPower );

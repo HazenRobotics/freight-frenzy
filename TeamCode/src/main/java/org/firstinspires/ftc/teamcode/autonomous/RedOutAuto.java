@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class RedOutAuto extends LinearOpMode {
 
 	RRHexBot robot;
@@ -96,10 +96,10 @@ public class RedOutAuto extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( -36, -24 ) )
 				.lineToConstantHeading( new Vector2d( -58.5, -56  ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( -0.5 );
+					robot.spinner.setPower( -0.5 );
 				} )
 				.waitSeconds( 3.2 )
-				.addTemporalMarker( ( ) -> robot.spinnerRight.setPower( 0 ) )
+				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0 ) )
 
 				//Pickup duck from ground
 				/*.addTemporalMarker( ( ) -> {
@@ -168,9 +168,9 @@ public class RedOutAuto extends LinearOpMode {
 				.lineToLinearHeading( new Pose2d( -58, -58, 0 ) )
 				.build( );
 		robot.drive.followTrajectorySequence( duckSpinner );
-		robot.spinnerRight.setPower( 0.75 );
+		robot.spinner.setPower( 0.75 );
 		robot.sleepRobot( 3.2 );
-		robot.spinnerRight.setPower( 0 );
+		robot.spinner.setPower( 0 );
 
 		TrajectorySequence pickupDuck = robot.getTrajectorySequenceBuilder( )
 				.lineToConstantHeading( new Vector2d( -60, -51 ) )

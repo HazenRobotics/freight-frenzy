@@ -3,13 +3,17 @@ package org.firstinspires.ftc.teamcode.utils;
 import android.os.Environment;
 import android.util.Log;
 
+import com.sun.tools.doclint.Env;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class Logger {
@@ -75,13 +79,13 @@ public class Logger {
 			if( includeTimeStamp || deleteOldLogs )
 				date = new Date( );
 			if( includeTimeStamp )
-				time = new SimpleDateFormat( "MM-dd HH:mm:ss" ).format( date ) + " :: ";
+				time = new SimpleDateFormat( "MM-dd HH:mm:ss", Locale.getDefault( ) ).format( date ) + " :: ";
 
 			//".../Internal Storage";
 			String path = Environment.getExternalStorageDirectory( ).getPath( ) + LOG_PATH;
 
 			try {
-				FileWriter writer = new FileWriter( new File( path + fileName ), isAppending );
+				FileWriter writer = new FileWriter( path + fileName, isAppending );
 				writer.write( time + writeText + System.lineSeparator( ) );
 				writer.close( );
 			} catch( IOException e ) {
@@ -89,17 +93,17 @@ public class Logger {
 			}
 
 			if( deleteOldLogs )
-				deleteOldLogsDay( new SimpleDateFormat( "MM-dd" ).format( date ) );
+				deleteOldLogsDay( new SimpleDateFormat( "MM-dd", Locale.getDefault( ) ).format( date ) );
 		} ).start( );
 
 	}
 
-	private static void deleteLog( String oldFileName ) {
+	private static boolean deleteLog( String oldFileName ) {
 
 		//".../Internal Storage";
 		String path = Environment.getExternalStorageDirectory( ).getPath( ) + LOG_PATH;
 
-		new File( path, oldFileName ).delete( );
+		return new File( path, oldFileName ).delete( );
 	}
 
 	/**
@@ -109,43 +113,68 @@ public class Logger {
 	 */
 	public static void deleteOldLogsDay( String date ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) )
-			if( !f.getName( ).startsWith( date ) )
-				deleteLog( f.getName( ) );
+
+//		File dir = Environment.getExternalStorageDirectory( );
+		File dir = Environment.getRootDirectory( );
+//		File dir = Environment.getDataDirectory( );
+
+//		for( File file : Objects.requireNonNull( dir.listFiles( ) ) )
+//			if( !file.getName( ).startsWith( date ) )
+//				Log.e( "LOG", "" + file.getName( ) + System.lineSeparator( ) + " :: " + file.getPath( ) + System.lineSeparator( ) + " :: " + file.getAbsolutePath( ) );
+//				new File( dir.getPath( ) + LOG_PATH, file.getName( ) );
+//				deleteLog( f.getName( ) );
 	}
 
 	/**
 	 * deletes all files in the /FIRST/LOG/ directory without the date(s) provided
 	 *
 	 * @param dates the date(s) to not delete - formatted like this: "08-31"
+	 * @return an array with which files were deleted (true = success)
 	 */
-	public static void deleteOldLogsDay( String[] dates ) {
+	public static boolean[] deleteOldLogsDay( String[] dates ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) ) {
-			boolean startsWithDate = false;
-			for( int i = 0; i < dates.length; i++ )
-				if( f.getName( ).startsWith( dates[i] ) )
-					startsWithDate = true;
-			if( !startsWithDate )
-				deleteLog( f.getName( ) );
-		}
+		return deleteOldLogsDay( (ArrayList<String>) Arrays.asList( dates ) );
+
+//		File dir = Environment.getExternalStorageDirectory( );
+//
+//		boolean[] successfulOperations = new boolean[dates.length];
+//		int index = 0;
+//
+//		for( File file : Objects.requireNonNull( dir.listFiles( ) ) ) {
+//			boolean startsWithDate = false;
+//			for( String date : dates )
+//				if( file.getName( ).startsWith( date ) )
+//					startsWithDate = true;
+//			if( !startsWithDate )
+//				successfulOperations[index++] = new File( dir.getPath( ) + LOG_PATH, file.getName( ) ).delete( );
+//		}
+//
+//		return successfulOperations;
 	}
 
 	/**
 	 * deletes all files in the /FIRST/LOG/ directory without the date(s) provided
 	 *
 	 * @param dates the date(s) to not delete - formatted like this: "08-31"
+	 * @return an array with which files were deleted (true = success)
 	 */
-	public static void deleteOldLogsDay( ArrayList<String> dates ) {
+	public static boolean[] deleteOldLogsDay( ArrayList<String> dates ) {
 
-		for( File f : Environment.getExternalStorageDirectory( ).listFiles( ) ) {
+		File dir = Environment.getExternalStorageDirectory( );
+
+		boolean[] successfulOperations = new boolean[dates.size( )];
+		int index = 0;
+
+		for( File file : Objects.requireNonNull( dir.listFiles( ) ) ) {
 			boolean startsWithDate = false;
 			for( int i = 0; i < dates.size( ); i++ )
-				if( f.getName( ).startsWith( dates.get( i ) ) )
+				if( file.getName( ).startsWith( dates.get( i ) ) )
 					startsWithDate = true;
 			if( !startsWithDate )
-				deleteLog( f.getName( ) );
+				successfulOperations[index++] = new File( dir.getPath( ) + LOG_PATH, file.getName( ) ).delete( );
 		}
+
+		return successfulOperations;
 	}
 
 

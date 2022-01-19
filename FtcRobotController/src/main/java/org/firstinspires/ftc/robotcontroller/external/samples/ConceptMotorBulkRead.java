@@ -74,7 +74,7 @@ import java.util.List;
         the bulk-read AUTO mode to streamline your cycle timing.
 
      */
-@TeleOp (name = "Motor Bulk Reads", group = "Test")
+@TeleOp(name = "Motor Bulk Reads", group = "Test")
 @Disabled
 public class ConceptMotorBulkRead extends LinearOpMode {
 

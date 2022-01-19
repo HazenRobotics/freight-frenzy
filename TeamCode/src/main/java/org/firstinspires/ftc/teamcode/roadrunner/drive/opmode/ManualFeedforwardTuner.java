@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 
 import java.util.Objects;
 
@@ -49,7 +49,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
 	private FtcDashboard dashboard = FtcDashboard.getInstance( );
 
-	private RRMecanumDriveHex42 drive;
+	private RRMecanumDriveTippy42 drive;
 
 	enum Mode {
 		DRIVER_MODE,
@@ -73,7 +73,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
 		telemetry = new MultipleTelemetry( telemetry, dashboard.getTelemetry( ) );
 
-		drive = new RRMecanumDriveHex42( hardwareMap );
+		drive = new RRMecanumDriveTippy42( hardwareMap );
 
 		mode = Mode.TUNING_MODE;
 

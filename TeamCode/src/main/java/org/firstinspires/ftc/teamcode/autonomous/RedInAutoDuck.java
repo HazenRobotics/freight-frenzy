@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
-@Autonomous
+//@Autonomous
 public class RedInAutoDuck extends LinearOpMode {
 
 	RRHexBot robot;
@@ -85,11 +85,11 @@ public class RedInAutoDuck extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( -12, -54 ) )
 				.lineToLinearHeading( new Pose2d( -56, -58.5, 0 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( 0.75 );
+					robot.spinner.setVelocity( 325 );
 				} )
 				.waitSeconds( 3.2 )
 				.addTemporalMarker( ( ) -> {
-					robot.spinnerRight.setPower( 0 );
+					robot.spinner.setPower( 0 );
 				} )
 
 				//Pickup duck from ground

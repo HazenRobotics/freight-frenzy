@@ -6,13 +6,12 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
 import org.firstinspires.ftc.robotcore.internal.system.Misc;
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveHex42;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
+import org.firstinspires.ftc.teamcode.drives.RRDriveConstantsTippy42;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 
 /*
  * This routine determines the effective track width. The procedure works by executing a point turn
@@ -25,7 +24,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class TrackWidthTuner extends LinearOpMode {
 
 	public static double ANGLE = 180; // deg
@@ -36,7 +35,7 @@ public class TrackWidthTuner extends LinearOpMode {
 	public void runOpMode( ) throws InterruptedException {
 		telemetry = new MultipleTelemetry( telemetry, FtcDashboard.getInstance( ).getTelemetry( ) );
 
-		RRMecanumDriveHex42 drive = new RRMecanumDriveHex42( hardwareMap );
+		RRMecanumDriveTippy42 drive = new RRMecanumDriveTippy42( hardwareMap );
 		// TODO: if you haven't already, set the localizer to something that doesn't depend on
 		// drive encoders for computing the heading
 
@@ -70,7 +69,7 @@ public class TrackWidthTuner extends LinearOpMode {
 				drive.update( );
 			}
 
-			double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians( ANGLE ) / headingAccumulator;
+			double trackWidth = RRDriveConstantsTippy42.TRACK_WIDTH * Math.toRadians( ANGLE ) / headingAccumulator;
 			trackWidthStats.add( trackWidth );
 
 			sleep( DELAY );

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robots.HexBot;
+import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
@@ -46,7 +47,7 @@ public class BucketTest extends OpMode {
 
 //		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
-		bucket = new Bucket( hardwareMap, "bucket", 55 - 90, 180 );
+		bucket = new Bucket( hardwareMap, "bucket", RRTippyBot.BUCKET_ANGLE_INTAKE - RRTippyBot.BUCKET_ANGLE_RANGE, RRTippyBot.BUCKET_ANGLE_RANGE );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
@@ -63,6 +64,8 @@ public class BucketTest extends OpMode {
 		if( gamepad1.a )
 			bucket.setAngle( bucketAngle );
 
+		telemetry.addLine( "press a to set position" );
+		telemetry.addLine( "-----------------------" );
 		telemetry.addLine( "bucketAngle" + bucketAngle );
 		telemetry.addLine( "bucketPosition" + bucket.getPosition( ) );
 
