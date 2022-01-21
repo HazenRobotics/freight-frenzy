@@ -31,7 +31,7 @@ public class FusionLocalizer implements Localizer {
 	public FusionLocalizer( HardwareMap hardwareMap, RRMecanumDriveTippy42 drive, Pose2d cameraFromRobot ) {
 		driveLocalizer = new MecanumDrive.MecanumLocalizer( drive );
 		wheelLocalizer = new TwoWheelTrackingLocalizerTippy( hardwareMap, drive );
-		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, cameraFromRobot );
+		cameraLocalizer = new TrackingCameraLocalizer( hardwareMap, cameraFromRobot, drive );
 	}
 
 	@NonNull

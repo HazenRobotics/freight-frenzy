@@ -5,6 +5,7 @@ import android.graphics.Camera;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -16,6 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 
 import java.io.File;
 
@@ -27,6 +29,8 @@ public class TrackingCameraLocalizer implements Localizer {
 	private static T265Camera slamra;
 	private Pose2d _offset = new Pose2d(  );
 	private CardinalDirection _frameOfReference;
+	private final RRMecanumDriveTippy42 drive;
+
 
 	public enum CardinalDirection {
 		NORTH,
@@ -43,14 +47,15 @@ public class TrackingCameraLocalizer implements Localizer {
 	 * @param mapName File name of the relocalization map
 	 * @param frameOfReference Direction of the frame of reference for the robot
 	 */
-	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap, String mapName, CardinalDirection frameOfReference ) {
+	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, RRMecanumDriveTippy42 drive, boolean loadMap, String mapName, CardinalDirection frameOfReference ) {
 		_frameOfReference = frameOfReference;
+		this.drive = drive;
 		if(slamra == null) {
 			if(loadMap && new File(String.format("/sdcard/FIRST/localization/maps/%s", mapName)).exists()) {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.8, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
 			}
 			else {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3,  hardwareMap.appContext);
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.8,  hardwareMap.appContext);
 			}
 		}
 		try {
@@ -60,16 +65,16 @@ public class TrackingCameraLocalizer implements Localizer {
 		}
 	}
 
-	public TrackingCameraLocalizer(HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap, CardinalDirection frameOfReference) {
-		this(hardwareMap, cameraFromRobot, loadMap, "map", frameOfReference);
+	public TrackingCameraLocalizer(HardwareMap hardwareMap, Pose2d cameraFromRobot, RRMecanumDriveTippy42 drive, boolean loadMap, CardinalDirection frameOfReference) {
+		this(hardwareMap, cameraFromRobot, drive, loadMap, "map", frameOfReference);
 	}
 
-	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, CardinalDirection frameOfReference) {
-		this(hardwareMap, cameraFromRobot, false, frameOfReference);
+	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, RRMecanumDriveTippy42 drive, CardinalDirection frameOfReference) {
+		this(hardwareMap, cameraFromRobot, drive, false, frameOfReference);
 	}
 
-	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot) {
-		this(hardwareMap, cameraFromRobot, false, CardinalDirection.EAST);
+	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, RRMecanumDriveTippy42 drive) {
+		this(hardwareMap, cameraFromRobot, drive, false, CardinalDirection.EAST);
 	}
 
 	@NonNull
@@ -80,7 +85,7 @@ public class TrackingCameraLocalizer implements Localizer {
 
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
-		_offset = correctFrameOfReference( getCameraUpdate().pose ).minus( pose2d );
+		_offset = new Pose2d( correctFrameOfReference( getCameraUpdate().pose ).vec().minus( pose2d.vec() ), 0 );
 	}
 
 	@Nullable
@@ -94,8 +99,8 @@ public class TrackingCameraLocalizer implements Localizer {
 		CameraUpdateRR cameraUpdate = getCameraUpdate();
 		_confidence = cameraUpdate.confidence;
 
-		_poseEstimate = cameraUpdate.pose;
-		_poseVelocity = cameraUpdate.velocity;
+		_poseEstimate = new Pose2d( cameraUpdate.pose.vec(), drive.getRawExternalHeading());
+		_poseVelocity = new Pose2d( cameraUpdate.velocity.vec(), drive.getExternalHeadingVelocity() );
 
 	}
 
@@ -139,7 +144,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {
-		return new com.arcrobotics.ftclib.geometry.Pose2d( -rrPose.getY() * DistanceUnit.mPerInch, rrPose.getX() * DistanceUnit.mPerInch,  new Rotation2d( rrPose.getHeading() ) );
+		return new com.arcrobotics.ftclib.geometry.Pose2d( -rrPose.getY() * DistanceUnit.mPerInch, rrPose.getX() * DistanceUnit.mPerInch, new Rotation2d( rrPose.getHeading() ) );
 	}
 
 	/**
@@ -200,11 +205,11 @@ public class TrackingCameraLocalizer implements Localizer {
 
 
 		private Pose2d ftclibPose2dToRR( com.arcrobotics.ftclib.geometry.Pose2d ftclibPose ) {
-			return new Pose2d(-ftclibPose.getY() /DistanceUnit.mPerInch,ftclibPose.getX() / DistanceUnit.mPerInch,   ftclibPose.getHeading());
+			return new Pose2d(-ftclibPose.getY() / DistanceUnit.mPerInch, ftclibPose.getX() /DistanceUnit.mPerInch,   ftclibPose.getHeading());
 		}
 		private Pose2d ftclibChassisSpeedsToRR( ChassisSpeeds ftclibChassisSpeeds ) {
-			return new Pose2d( -ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch
-					,ftclibChassisSpeeds.vxMetersPerSecond / DistanceUnit.mPerInch
+			return new Pose2d( -ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch,
+					ftclibChassisSpeeds.vxMetersPerSecond / DistanceUnit.mPerInch
 					, ftclibChassisSpeeds.omegaRadiansPerSecond);
 		}
 	}

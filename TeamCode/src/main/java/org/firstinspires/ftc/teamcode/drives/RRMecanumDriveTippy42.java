@@ -90,8 +90,8 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 	private FusionLocalizer fusionLocalizer;
 
-	public static final double CAMERA_X = 0;
-	public static final double CAMERA_Y = 4;
+	public static final double CAMERA_X = 6.375;
+	public static final double CAMERA_Y = -5.375;//4;
 
 	public RRMecanumDriveTippy42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
@@ -161,7 +161,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		if(!(mapName == null)) {
 			mapName = mapName + ".bin";
 		}
-//		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 )) );
+		//setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 ), this) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
