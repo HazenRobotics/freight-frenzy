@@ -23,8 +23,6 @@ public class IntakePowerDrawTest extends OpMode {
 
 	String fileName = "*powerDraw.csv";
 
-	Date date = new Date( );
-
 	GamepadEvents player;
 
 	boolean logging = false;
@@ -41,7 +39,6 @@ public class IntakePowerDrawTest extends OpMode {
 		player = new GamepadEvents( gamepad1 );
 
 		intake = new Intake( hardwareMap, "intake" );
-		lift = new Lift( hardwareMap, "lift", true, 2.375, (38.2 / 25.4) / 2, 55, AngleUnit.DEGREES );
 
 		Logger.writeAFile( fileName, "Time,Power,Motor Current,Hub Current", false, false );
 
@@ -54,20 +51,22 @@ public class IntakePowerDrawTest extends OpMode {
 	@Override
 	public void loop( ) {
 
-//		intake.setPower( -player.right_trigger.getTriggerValue( ) );
-
 		if( player.left_bumper.onPress( ) )
 			intake.setPower( intake.getPower( ) > 0 ? 0 : intakePower );
 		else if( player.right_bumper.onPress( ) )
 			intake.setPower( intake.getPower( ) < 0 ? 0 : -intakePower );
 
 		if( player.a.onPress( ) ) {
-			logging = !logging;
-			startTime = System.currentTimeMillis( );
+			intake.intakeNum( intakePower, 1, 50 );
 		}
 
-		if( logging )
-			Logger.writeAFile( fileName, formatData( System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS ) ), true, false );
+//		if( player.a.onPress( ) ) {
+//			logging = !logging;
+//			startTime = System.currentTimeMillis( );
+//		}
+//
+//		if( logging )
+//			Logger.writeAFile( fileName, formatData( System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS ) ), true, false );
 
 		telemetry.addLine( "intake: right bumper" );
 		telemetry.addLine( "outtake: right bumper" );
@@ -84,10 +83,6 @@ public class IntakePowerDrawTest extends OpMode {
 		telemetry.update( );
 		player.update( );
 	}
-
-/*	public String formatData( long time, double power, double current ) {
-		return time + "," + power + "," + current;
-	}*/
 
 	public String formatData( long time, double... data ) {
 		StringBuilder text = new StringBuilder( time + "," );

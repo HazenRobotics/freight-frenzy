@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.robots.Robot;
 
 public class Intake {
 
@@ -109,19 +110,24 @@ public class Intake {
 	}
 
 	/**
+	 * intakes <i>maxIntaken</i> number of objects and continues until the intake is clear for <i>clearTime</i> milliseconds
+	 *
 	 * @param power      to set the motor
-	 * @param maxIntaken max number of blocks to intake
+	 * @param maxIntaken max number of objects to intake
+	 * @param clearTime  the number of milliseconds to keep spinning after the intake is thought to be empty
 	 */
-	public void intakeNum( double power, int maxIntaken ) {
+	public void intakeNum( double power, int maxIntaken, long clearTime ) {
 		setPower( power );
-		intakeNum( maxIntaken );
+		intakeNum( maxIntaken, clearTime );
 	}
 
 	/**
-	 * intakes the number of blocks intaken and continues till all are out
+	 * intakes <i>maxIntaken</i> number of objects and continues until the intake is clear for <i>clearTime</i> milliseconds
+	 *
 	 * @param maxIntaken max number of objects to intake
+	 * @param clearTime  the number of milliseconds to keep spinning after the intake is thought to be empty
 	 */
-	public void intakeNum( double maxIntaken ) {
+	public void intakeNum( double maxIntaken, long clearTime ) {
 
 		new Thread( ( ) -> {
 
@@ -130,16 +136,21 @@ public class Intake {
 			while( getPower( ) > 0 && startTime + intakeTimeLimit > System.currentTimeMillis( ) ) { // while the power is up, and it has been less than 10 seconds
 				if( intakenBlocks >= maxIntaken )
 					break;
-				try {
-					Thread.sleep( 50 );
-				} catch( InterruptedException ignored ) {
-				}
+				Robot.waitTime( 50 );
+//				try {
+//					Thread.sleep( 50 );
+//				} catch( InterruptedException ignored ) {
+//				}
 			}
-			while( getCurrent( ) > 7.7 ) {
-				try {
-					Thread.sleep( 100 );
-				} catch( InterruptedException ignored ) {
-				}
+			startTime = System.currentTimeMillis( );
+			while( startTime + clearTime > System.currentTimeMillis( ) ) {
+				if( getCurrent( ) > 7.9 )
+					startTime = System.currentTimeMillis( );
+				Robot.waitTime( 50 );
+//				try {
+//					Thread.sleep( 50 );
+//				} catch( InterruptedException ignored ) {
+//				}
 			}
 			setPower( 0 );
 
@@ -147,6 +158,9 @@ public class Intake {
 		} ).start( );
 	}
 
+	/**
+	 * start tracking how many blocks have been intaken
+	 */
 	private void startIntakeChecking( ) {
 
 		intakenBlocks = 0;
