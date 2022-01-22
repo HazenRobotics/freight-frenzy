@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.robots.Robot;
-
 public class Bucket {
 
 	public Servo bucket;
@@ -51,7 +49,6 @@ public class Bucket {
 	 * @param angleFromGround of the bucket
 	 */
 	public void setAngle( double angleFromGround ) {
-//		Robot.writeToDefaultFile( "setAngle " + angleFromGround + ", " + angleToPosition( angleFromGround ), true, true );
 		setPosition( angleToPosition( angleFromGround ) );
 	}
 
@@ -70,13 +67,36 @@ public class Bucket {
 	}
 
 	/**
+	 * Bucket's programmatic position is between 0 & 1
+	 *
+	 * @param position    angle between 0 & 1
+	 * @param maxAngle    the max angle of the bucket
+	 * @param bucketRange the range of the bucket in degrees
+	 * @return that position converted to be between maxAngle° & maxAngle - bucketRange (default: 180)°
+	 */
+	public static double positionToAngle( double position, double maxAngle, double bucketRange ) {
+		return bucketRange * (1 - position) + maxAngle;
+	}
+
+	/**
 	 * Bucket's physical position is between 0° & bucketRange (default: 180)°
 	 *
 	 * @param angle angle between 0° & bucketRange (default: 180)°
 	 * @return that angle converted to be between 0 & 1
 	 */
 	public double angleToPosition( double angle ) {
-//		Robot.writeToDefaultFile( "Calc: " + (1 - ((angle - maxAngle) / bucketRange)), true, true );
+		return angleToPosition( angle, maxAngle, bucketRange );
+	}
+
+	/**
+	 * Bucket's physical position is between 0° & bucketRange (default: 180)°
+	 *
+	 * @param angle       angle between 0° & bucketRange (default: 180)°
+	 * @param maxAngle    the max angle of the bucket
+	 * @param bucketRange the range of the bucket in degrees
+	 * @return that angle converted to be between 0 & 1
+	 */
+	public static double angleToPosition( double angle, double maxAngle, double bucketRange ) {
 		return 1 - ((angle - maxAngle) / bucketRange);
 	}
 

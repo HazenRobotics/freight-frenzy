@@ -1,18 +1,11 @@
 package org.firstinspires.ftc.teamcode.tests;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.robots.HexBot;
-import org.firstinspires.ftc.teamcode.robots.RRTippyBot;
-import org.firstinspires.ftc.teamcode.robots.Robot;
-import org.firstinspires.ftc.teamcode.subsystems.Bucket;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
-import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -28,15 +21,15 @@ import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name = "BucketTest", group = "Test")
+@TeleOp(name = "BucketServoTest", group = "Test")
 @Disabled
-public class BucketTest extends OpMode {
-
-	Bucket bucket;
+public class BucketServoTest extends OpMode {
 
 	GamepadEvents player;
 
-	double bucketAngle = 0;
+	double servoPosition = 0;
+
+	Servo servo;
 
 	@Override
 	public void init( ) {
@@ -48,7 +41,7 @@ public class BucketTest extends OpMode {
 
 //		Robot.createMatchLogFile( "HexRobotTeleOp" );
 
-		bucket = new Bucket( hardwareMap, "bucket", RRTippyBot.BUCKET_ANGLE_INTAKE - RRTippyBot.BUCKET_ANGLE_RANGE, RRTippyBot.BUCKET_ANGLE_RANGE );
+		servo = hardwareMap.servo.get( "verBucket" );
 
 		telemetry.addData( "Mode", "waiting for start" );
 		telemetry.update( );
@@ -57,18 +50,12 @@ public class BucketTest extends OpMode {
 	@Override
 	public void loop( ) {
 
-		if( player.dpad_up.onPress( ) )
-			bucketAngle += 22.5;
-		else if( player.dpad_down.onPress( ) )
-			bucketAngle -= 22.5;
-
-		if( gamepad1.a )
-			bucket.setAngle( bucketAngle );
+		servoPosition = (gamepad1.left_stick_x + 1) / 4 + (gamepad1.right_stick_x + 1) / 4;
+		servo.setPosition( servoPosition );
 
 		telemetry.addLine( "press a to set position" );
 		telemetry.addLine( "-----------------------" );
-		telemetry.addLine( "bucketAngle" + bucketAngle );
-		telemetry.addLine( "bucketPosition" + bucket.getPosition( ) );
+		telemetry.addLine( "Servo pos: " + servoPosition );
 
 		//updates
 		telemetry.update( );
