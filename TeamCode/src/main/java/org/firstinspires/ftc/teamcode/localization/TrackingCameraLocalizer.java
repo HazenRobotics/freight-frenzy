@@ -80,12 +80,13 @@ public class TrackingCameraLocalizer implements Localizer {
 	@NonNull
 	@Override
 	public Pose2d getPoseEstimate( ) {
-		return correctFrameOfReference(_poseEstimate).minus( _offset );
+		return correctFrameOfReference( _poseEstimate ).minus( _offset );
 	}
 
 	@Override
 	public void setPoseEstimate( @NonNull Pose2d pose2d ) {
-		_offset = new Pose2d( correctFrameOfReference( getCameraUpdate().pose ).vec().minus( pose2d.vec() ), 0 );
+		update();
+		_offset = correctFrameOfReference( _poseEstimate ).minus( pose2d );
 	}
 
 	@Nullable
