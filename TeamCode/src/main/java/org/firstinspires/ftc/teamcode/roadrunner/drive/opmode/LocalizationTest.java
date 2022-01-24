@@ -25,6 +25,8 @@ public class LocalizationTest extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
+
         waitForStart();
 
         while (!isStopRequested()) {

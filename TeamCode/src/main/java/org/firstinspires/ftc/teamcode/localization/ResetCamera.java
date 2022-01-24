@@ -5,19 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.robots.RRHexBot;
 
 @Autonomous
 public class ResetCamera extends LinearOpMode {
-	RRMecanumDriveTippy42 drive;
+	RRHexBot robot;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
-		drive = new RRMecanumDriveTippy42( hardwareMap );
+		robot = new RRHexBot( this );
 		telemetry.addLine( "This will reset the robot controller app. Continue?" );
 		waitForStart();
-		new TrackingCameraLocalizer(hardwareMap, new Pose2d(  ), drive ).resetCamera();
+		new TrackingCameraLocalizer(hardwareMap, new Pose2d(  ) ).resetCamera();
 		System.exit( 0 );
 	}
 }
