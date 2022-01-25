@@ -56,17 +56,23 @@ public class IntakePowerDrawTest extends OpMode {
 		else if( player.right_bumper.onPress( ) )
 			intake.setPower( intake.getPower( ) < 0 ? 0 : -intakePower );
 
-		if( player.a.onPress( ) ) {
-			intake.intakeNum( intakePower, 1, 50 );
+		if( player.dpad_up.onPress( ) ) {
+			intakePower += 0.05;
+		} else if( player.dpad_down.onPress( ) ) {
+			intakePower -= 0.05;
 		}
 
-//		if( player.a.onPress( ) ) {
-//			logging = !logging;
-//			startTime = System.currentTimeMillis( );
-//		}
+		if( player.a.onPress( ) )
+			intake.intakeNum( intakePower, 1, 50 );
+
+
+		if( player.a.onPress( ) ) {
+			logging = !logging;
+			startTime = System.currentTimeMillis( );
+		}
 //
-//		if( logging )
-//			Logger.writeAFile( fileName, formatData( System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS ) ), true, false );
+		if( logging )
+			Logger.writeAFile( fileName, formatData( System.currentTimeMillis( ) - startTime, intake.getPower( ), intake.getCurrent( ), controlHub.getCurrent( CurrentUnit.AMPS ) ), true, false );
 
 		telemetry.addLine( "intake: right bumper" );
 		telemetry.addLine( "outtake: right bumper" );

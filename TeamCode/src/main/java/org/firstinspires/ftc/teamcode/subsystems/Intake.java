@@ -94,15 +94,9 @@ public class Intake {
 			while( getPower( ) > 0 && startTime + intakeTimeLimit > System.currentTimeMillis( ) ) { // while the power is up, and it has been less than 10 seconds
 				if( intakenBlocks >= maxIntaken )
 					break;
-				try {
-					Thread.sleep( 50 );
-				} catch( InterruptedException ignored ) {
-				}
+				Robot.waitTime( 50 );
 			}
-			try {
-				Thread.sleep( maxTime );
-			} catch( InterruptedException ignored ) {
-			}
+			Robot.waitTime( maxTime );
 			setPower( 0 );
 
 
@@ -137,20 +131,12 @@ public class Intake {
 				if( intakenBlocks >= maxIntaken )
 					break;
 				Robot.waitTime( 50 );
-//				try {
-//					Thread.sleep( 50 );
-//				} catch( InterruptedException ignored ) {
-//				}
 			}
 			startTime = System.currentTimeMillis( );
 			while( startTime + clearTime > System.currentTimeMillis( ) ) {
 				if( getCurrent( ) > 7.9 )
 					startTime = System.currentTimeMillis( );
 				Robot.waitTime( 50 );
-//				try {
-//					Thread.sleep( 50 );
-//				} catch( InterruptedException ignored ) {
-//				}
 			}
 			setPower( 0 );
 
