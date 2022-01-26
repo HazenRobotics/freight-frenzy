@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 public class DistanceSensorLocalizer implements Localizer {
 
 	private Rev2mDistanceSensor left;
-	private double leftDistanceFromRobotCenter;
+	Vector2d leftPosition;
 	private Rev2mDistanceSensor right;
-	double rightDistanceFromRobotCenter;
+	Vector2d rightPosition;
 	private Rev2mDistanceSensor back;
-	double backDistanceFromRobotCenter;
+	Vector2d backPosition;
 
 	private RRMecanumDriveTippy42 drive;
 
@@ -29,18 +30,18 @@ public class DistanceSensorLocalizer implements Localizer {
 	private Pose2d previousPoseEstimate = new Pose2d(  );
 	private long previousPoseEstimateTime = System.currentTimeMillis();
 
-	public DistanceSensorLocalizer( HardwareMap hardwareMap, String leftSensorName, double leftDistanceFromRobotCenter, String rightSensorName, double rightDistanceFromRobotCenter, String backSensorName, double backDistanceFromRobotCenter, RRMecanumDriveTippy42 drive ) {
+	public DistanceSensorLocalizer( HardwareMap hardwareMap, String leftSensorName, Vector2d leftPosition, String rightSensorName, Vector2d rightPosition, String backSensorName, Vector2d backPosition, RRMecanumDriveTippy42 drive ) {
 		this.drive = drive;
 		left = hardwareMap.get( Rev2mDistanceSensor.class, leftSensorName );
-		this.leftDistanceFromRobotCenter = leftDistanceFromRobotCenter;
+		this.leftPosition = leftPosition;
 		right = hardwareMap.get( Rev2mDistanceSensor.class, rightSensorName );
-		this.rightDistanceFromRobotCenter = rightDistanceFromRobotCenter;
+		this.rightPosition = rightPosition;
 		back = hardwareMap.get( Rev2mDistanceSensor.class, backSensorName );
-		this.backDistanceFromRobotCenter = backDistanceFromRobotCenter;
+		this.backPosition = backPosition;
 	}
 
-	public DistanceSensorLocalizer( HardwareMap hardwareMap, double leftDistanceFromRobotCenter, double rightDistanceFromRobotCenter, double backDistanceFromRobotCenter, RRMecanumDriveTippy42 drive ) {
-		this(hardwareMap, "leftDistance", leftDistanceFromRobotCenter, "rightDistance", rightDistanceFromRobotCenter, "backDistance", backDistanceFromRobotCenter, drive);
+	public DistanceSensorLocalizer( HardwareMap hardwareMap, Vector2d leftPosition, Vector2d rightPosition, Vector2d backPosition, RRMecanumDriveTippy42 drive ) {
+		this(hardwareMap, "leftDistance", leftPosition, "rightDistance", rightPosition, "backDistance", backPosition, drive);
 	}
 
 	@NonNull
@@ -66,13 +67,14 @@ public class DistanceSensorLocalizer implements Localizer {
 	public void update( ) {
 		previousPoseEstimate = poseEstimate;
 		previousPoseEstimateTime = poseEstimateTime;
-		double yFromLeftSensor = 72 - left.getDistance( DistanceUnit.INCH ) - leftDistanceFromRobotCenter;
-		double yFromRightSensor = -72 + right.getDistance( DistanceUnit.INCH ) + rightDistanceFromRobotCenter;
-		double robotX = -72 + back.getDistance( DistanceUnit.INCH ) + backDistanceFromRobotCenter;
+		double robotHeading = drive.getRawExternalHeading();
+		double yFromLeftSensor = 72 - left.getDistance( DistanceUnit.INCH ) - leftPosition.getY();
+		double yFromRightSensor = -72 + right.getDistance( DistanceUnit.INCH ) + rightPosition.getY();
+		double robotX = -72 + back.getDistance( DistanceUnit.INCH ) + backPosition.getX();
 
 		//figure out which sensor is reading
 		double robotY = left.getDistance( DistanceUnit.INCH ) < right.getDistance( DistanceUnit.INCH ) ? yFromLeftSensor : yFromRightSensor;
-		double robotHeading = drive.getRawExternalHeading();
+
 
 		double absoluteX = robotX * Math.cos( robotHeading ) - robotY * Math.sin( robotHeading );
 		double absoluteY = robotY * Math.cos( robotHeading ) + robotX * Math.sin( robotHeading );
