@@ -2,4 +2,7 @@
 <resources>
 
     <string name="vuforia_key">ASZZxs//////AAABmZH+VLl/YE2ekt+27Dayd/8VPb+94QyyfpWCvrKJmZO4LmYykX4/iMfk2R7qvaDVllKYEjyuF7pPxkH4TMmXulQMt+/snHA1TsS7+lWVL2naborYEbp2YjAzjbyqLS0bB+KpVH4o0piCviop3XuHFE+b+1L0wyiHTVmwnEC5eyGuwVPB2iL2JrsXqYQcaKFD4EKr9hUarDSc4tNSTrwknvfCHsGWfTvI+euQAUxKzBOCKyApx4x1Y3xLZyj1J6Mk2/fTsfHTuBUoGfHzdinX7eOKo8CJ/uo66pvxBpU6fH/IeQBR6JuqvUNiSKP5lUI+c8bHR9oTd9hFxboX41DzpDJAmex0SNiODJwKGMrCKC+d</string>
+    <string name="tfe_ic_app_name" translation_description="Image Classification demo app [CHAR_LIMIT=40]">TFL Classify</string>
+    <string name="tfe_ic_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
+    <string name="tfe_ic_gpu_quant_error" translation_description="Error regarding GPU support for Quant models[CHAR_LIMIT=60]">GPU does not yet supported quantized models.</string>
 </resources>
