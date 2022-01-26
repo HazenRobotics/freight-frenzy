@@ -93,6 +93,8 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 	public static final double CAMERA_X = 0;
 	public static final double CAMERA_Y = 4;
 
+	private Supplier<Boolean> deadwheelCheckFunc = null;
+
 	public RRMecanumDriveTippy42( HardwareMap hardwareMap, boolean loadMap, String mapName ) {
 		super( kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER );
 
@@ -148,7 +150,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 //		setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
 		fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
 		List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
-			fusionLocalizer.setDeadwheelsDisabledCheck( ( ) -> {
+			setDeadwheelsDisabledCheck( ( ) -> {
 						for( LynxModule hub : hubs ) {
 							if(hub.isNotResponding( )) {
 								return true;
@@ -374,6 +376,11 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc) {
 		fusionLocalizer.setDeadwheelsDisabledCheck( checkFunc );
+		deadwheelCheckFunc = checkFunc;
+	}
+
+	public Supplier<Boolean> getDeadwheelsDisabledCheck() {
+		return deadwheelCheckFunc;
 	}
 
 	public void setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection frameOfReference ) {

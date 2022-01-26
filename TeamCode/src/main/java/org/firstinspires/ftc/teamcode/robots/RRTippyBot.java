@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
+import org.firstinspires.ftc.teamcode.localization.DistanceSensorLocalizer;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
@@ -50,6 +51,8 @@ public class RRTippyBot extends Robot {
 	public Intake intake;
 
 	public RGBLights lights;
+
+	public DistanceSensorLocalizer distanceSensorLocalizer;
 
 	TensorFlowUtilBack duckTensorFlow;
 	TargetPositionCalculator calculator;
@@ -100,6 +103,8 @@ public class RRTippyBot extends Robot {
 		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD, Direction.REVERSE, Direction.REVERSE );
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
+		if(auto)
+			distanceSensorLocalizer = new DistanceSensorLocalizer( hardwareMap, 6, 6, 7.25, drive );
 
 		odometryLift = new OdometryLift( hardwareMap, "odometryLift", true );
 
