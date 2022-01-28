@@ -70,10 +70,10 @@ public class DistanceSensorLocalizer implements Localizer {
 		double robotHeading = drive.getRawExternalHeading();
 		double yFromLeftSensor = 72 - left.getDistance( DistanceUnit.INCH ) - leftPosition.getY();
 		double yFromRightSensor = -72 + right.getDistance( DistanceUnit.INCH ) + rightPosition.getY();
-		double robotX = -72 + back.getDistance( DistanceUnit.INCH ) + backPosition.getX() + (backPosition.getY() * Math.tan(robotHeading));
+		double robotX = -72 + back.getDistance( DistanceUnit.INCH ) + backPosition.getX() /*+ (backPosition.getY() * Math.tan(robotHeading))*/;
 
 		//figure out which sensor is reading
-		double robotY = left.getDistance( DistanceUnit.INCH ) < right.getDistance( DistanceUnit.INCH ) ? yFromLeftSensor + (leftPosition.getX() * Math.tan(robotHeading)) : yFromRightSensor + (rightPosition.getX() * Math.tan(robotHeading));
+		double robotY = left.getDistance( DistanceUnit.INCH ) < right.getDistance( DistanceUnit.INCH ) ? yFromLeftSensor /*+ (leftPosition.getX() * Math.tan(robotHeading))*/ : yFromRightSensor /*+ (rightPosition.getX() * Math.tan(robotHeading))*/;
 
 
 		double absoluteX = robotX * Math.cos( robotHeading ) - robotY * Math.sin( robotHeading );

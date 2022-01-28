@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.roadrunner.drive.opmode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,8 +28,8 @@ public class LocalizationTest extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        //drive.setLocalizer( new DistanceSensorLocalizer( hardwareMap, 6, 6, 7.25, drive ) );
-        drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
+        //drive.setLocalizer( new DistanceSensorLocalizer( hardwareMap, new Vector2d( 4.5, 6.25 ), new Vector2d( 4.5, 6.25 ), new Vector2d( 7.25, 0 ), drive ) );
+        //drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
 
         waitForStart();
 

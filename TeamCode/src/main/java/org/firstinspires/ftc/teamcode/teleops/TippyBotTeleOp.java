@@ -215,7 +215,7 @@ public class TippyBotTeleOp extends OpMode {
 			home( );
 
 		// reset the lift position to its current zero position
-		if( gamepad1.ps || robot.lift.getCurrent( CurrentUnit.AMPS ) > 7.9 )
+		if( gamepad1.ps || (robot.lift.getCurrent( CurrentUnit.AMPS ) > 7.9 && robot.lift.getMotorPositionInch() < 10) )
 			robot.lift.resetLift( );
 
 		addControlTelemetry( );

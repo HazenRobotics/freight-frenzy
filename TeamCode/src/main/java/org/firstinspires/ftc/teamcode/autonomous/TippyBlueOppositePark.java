@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.spartronics4915.lib.T265Camera;
 
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 
 import java.util.function.Supplier;
 
+@Autonomous
 public class TippyBlueOppositePark extends LinearOpMode {
 
 	RRTippyBot robot;
@@ -83,7 +85,7 @@ public class TippyBlueOppositePark extends LinearOpMode {
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( -61, 57, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 250 ) )
-				.waitSeconds( 0.9 )
+				.waitSeconds( 1.1 )
 				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 1500 ) )
 				.waitSeconds( 0.3 )
 				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0 ) )
@@ -96,8 +98,8 @@ public class TippyBlueOppositePark extends LinearOpMode {
 				.addTemporalMarker( ( ) -> robot.intake.setPower( 0 ) )
 
 				//drop duck in alliance hub while turning
-				.splineToSplineHeading( new Pose2d( -36, 24, 0 ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH ) )
+				.splineToSplineHeading( new Pose2d( -36, 24, 0 ), Math.toRadians( 270 ) )
 				.splineToSplineHeading( RRTippyBot.getHubPosition( 180, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );

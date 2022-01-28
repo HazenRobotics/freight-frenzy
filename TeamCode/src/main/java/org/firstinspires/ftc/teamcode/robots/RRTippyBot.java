@@ -104,7 +104,7 @@ public class RRTippyBot extends Robot {
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
 		if(auto)
-			distanceSensorLocalizer = new DistanceSensorLocalizer( hardwareMap, 6, 6, 7.25, drive );
+			distanceSensorLocalizer = new DistanceSensorLocalizer( hardwareMap, new Vector2d( 4.5, 6.25 ), new Vector2d( 4.5, 6.25 ), new Vector2d( 6.5, 0 ), drive );
 
 		odometryLift = new OdometryLift( hardwareMap, "odometryLift", true );
 
