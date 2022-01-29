@@ -311,27 +311,6 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.addLine( "Reset Lift Position: [Gp1] ps" );
 		telemetry.addLine( "Exit Loops: [Gp1/2] back" );
 
-		/*
-
-		          Controls:
-		Drive: [Gp1] left stick y (axis)
-		Strafe: [Gp1] left stick x (axis)
-		Rotate: [Gp1] right stick x (axis)
-		Intake: [Gp1] right bumper
-		Outtake: [Gp1] left bumper
-		Bucket Position: [Gp1] dpad up/down (intake/dump)
-		Lift Up: [Gp1] right/left triggers (up/down)
-		Capper Max/Min Toggle: [Gp1] y
-		Capper Hold/Pickup Toggle: [Gp1] a
-		Capper Position: [Gp2] y/a (increase/decrease)
-		Spinner Power Toggle: [Gp1/2] b
-		Spinner Direction Toggle: [Gp1/2] dpad right
-		Reset Lift Position: [Gp1] ps
-		Exit Loops: [Gp1/2] back
-
-
-		 */
-
 
 	}
 
@@ -340,7 +319,10 @@ public class TippyBotTeleOp extends OpMode {
 
 		telemetry.addLine( "Intaken blocks: " + robot.intake.getIntakenBlocks( ) );
 		telemetry.addLine( );
-		telemetry.addLine( "Spinner Velocity " + robot.spinner.getVelocity( ) );
+		telemetry.addLine( "Spinner Velocity: " + robot.spinner.getVelocity( ) );
+		telemetry.addLine( );
+		telemetry.addLine( "Lift Position: " + robot.lift.getPosition( ) );
+		telemetry.addLine( "Lift Position Inch: " + robot.lift.getPositionInch( ) );
 		telemetry.addLine( );
 		telemetry.addLine( "front left position: " + df.format( robot.mecanumDrive.getFrontLeftPosition( ) ) );
 		telemetry.addLine( "back left position: " + df.format( robot.mecanumDrive.getBackLeftPosition( ) ) );
@@ -393,9 +375,11 @@ public class TippyBotTeleOp extends OpMode {
 	 */
 	public void autoSlantBucket( ) {
 
-		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT ) // at bottom
+		if( robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // at the bottom
+//		|| inaccurateVelocity >= 0 && robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // moving up at bottom
+		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-		else if( Math.abs( robot.lift.getVelocity( ) ) > 100 )
+		else if( Math.abs( robot.lift.getVelocity( ) ) > 150 )
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 	}
 

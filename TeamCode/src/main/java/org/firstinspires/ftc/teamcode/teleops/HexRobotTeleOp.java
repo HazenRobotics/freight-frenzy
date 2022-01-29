@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -228,7 +227,7 @@ public class HexRobotTeleOp extends OpMode {
 		telemetry.addLine( "intakePower: " + df.format( intakePower ) );
 		telemetry.addLine( "bucket: " + robot.bucket.getPosition( ) );
 		telemetry.addLine( "capper: " + robot.capper.getPosition( ) );
-		telemetry.addLine( "lift ground & limit: " + robot.lift.getGroundBucketHeight( ) + ", " + Lift.LIFT_SWITCH_LIMIT );
+		telemetry.addLine( "lift ground & limit: " + robot.lift.getGroundBucketHeight( ) + ", " + Lift.LIFT_DISABLE_LIMIT );
 		telemetry.addLine( "lift target: " + df.format( robot.lift.getTargetPositionInch( ) ) + " (" + robot.lift.getTargetPosition( ) + ")" );
 		telemetry.addLine( "lift diff: " + df.format( robot.lift.getPositionInch( ) ) + " - " + df.format( prevLiftPos ) );
 	}
@@ -255,9 +254,9 @@ public class HexRobotTeleOp extends OpMode {
 	 * slants the bucket depending on the height of the lift
 	 */
 	public void autoSlantBucket( ) {
-		if( robot.lift.getPositionInch( ) < Lift.LIFT_SWITCH_LIMIT )
+		if( robot.lift.getPositionInch( ) < Lift.LIFT_DISABLE_LIMIT )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_INTAKE );
-		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_SWITCH_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
+		else if( robot.lift.getPositionInch( ) >= Lift.LIFT_DISABLE_LIMIT && robot.lift.getPositionInch( ) > prevLiftPos )
 			robot.bucket.setAngle( RRHexBot.BUCKET_ANGLE_MOVING );
 		prevLiftPos = robot.lift.getPositionInch( );
 	}
