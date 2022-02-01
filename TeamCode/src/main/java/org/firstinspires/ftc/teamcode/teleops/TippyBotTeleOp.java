@@ -45,17 +45,17 @@ public class TippyBotTeleOp extends OpMode {
 
 	DecimalFormat df = new DecimalFormat( "0.###" );
 
-	double minDrive = 0.5, maxDrive = 0.8;
+	double minDrive = 0.5, maxDrive = 1.0; // 0.8
 	double minStrafe = 0.7, maxStrafe = 1.0;
 	double minRotate = 0.5, maxRotate = 1.0;
 
-	double intakePower = 0.55; // .6
+	double intakePower = 0.75; // .55
 
 	double capperPosition = 0.7;
 
 	boolean inDriverAssist = false;
 
-	double prevLiftPos = 0;
+//	double prevLiftPos = 0;
 
 	double spinnerVelocity = 325;
 	boolean inSpinnerThread = false;
@@ -99,11 +99,6 @@ public class TippyBotTeleOp extends OpMode {
 
 	@Override
 	public void loop( ) {
-
-		if( firstTime ) {
-			addWarnEndGameThread( );
-			firstTime = false;
-		}
 
 		//gamepad inputs
 		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
@@ -225,6 +220,12 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.update( );
 		player1.update( );
 		player2.update( );
+
+
+		if( firstTime ) {
+			addWarnEndGameThread( );
+			firstTime = false;
+		}
 	}
 
 	@Override
