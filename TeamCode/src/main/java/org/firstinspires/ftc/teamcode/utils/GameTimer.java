@@ -6,18 +6,25 @@ import java.util.concurrent.TimeUnit;
 
 public class GameTimer {
 
+	private static long offset = 0;
+
 	private static Timer timer = new Timer(158, TimeUnit.SECONDS);
 
 	public static long remainingTime() {
-		return timer.remainingTime();
+		return timer.remainingTime() - offset;
 	}
 
 	public static long elapsedTime() {
-		return timer.elapsedTime();
+		return timer.elapsedTime() + offset;
 	}
 
 	public static void start() {
 		timer.start();
+	}
+
+	public static void startFromTeleop() {
+		offset = 38;
+		start();
 	}
 
 	public static void pause() {
@@ -41,7 +48,7 @@ public class GameTimer {
 	}
 
 	public static long remainingTimeTeleop() {
-		return 158 - elapsedTime();
+		return 128 - elapsedTime();
 	}
 
 	public static long remainingTimeEndgame() {

@@ -84,22 +84,22 @@ public class TippyBlueOppositePark extends LinearOpMode {
 				//duck spin
 				.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( -61, 57, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
-				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 250 ) )
-				.waitSeconds( 1.1 )
-				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 1500 ) )
-				.waitSeconds( 0.3 )
+				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 150 ) )
+				.waitSeconds( 1.2 )
+				.addTemporalMarker( ( ) -> robot.spinner.setVelocity( 5000 ) )
+				.waitSeconds( 0.4 )
 				.addTemporalMarker( ( ) -> robot.spinner.setPower( 0 ) )
 
 				//pickup duck sweep
-				.addTemporalMarker( ( ) -> robot.intake.setPower( 0.4 ) )
+				.addTemporalMarker( ( ) -> robot.intake.setPower( 0.75 ) )
 				.setTangent( Math.toRadians( 270 ) )
 				.splineToLinearHeading( new Pose2d( -48, 63, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
 				.lineToConstantHeading( new Vector2d( -24, 63 ) )
 				.addTemporalMarker( ( ) -> robot.intake.setPower( 0 ) )
 
 				//drop duck in alliance hub while turning
-				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH ) )
 				.splineToSplineHeading( new Pose2d( -36, 24, 0 ), Math.toRadians( 270 ) )
+				.addTemporalMarker( ( ) -> robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH ) )
 				.splineToSplineHeading( RRTippyBot.getHubPosition( 180, 270, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), true ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );

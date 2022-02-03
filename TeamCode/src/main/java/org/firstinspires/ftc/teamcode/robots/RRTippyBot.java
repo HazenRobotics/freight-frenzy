@@ -60,12 +60,12 @@ public class RRTippyBot extends Robot {
 
 	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_RANGE = 167.5; // 90 - -77.5 = 167.5
+	public static final double BUCKET_ANGLE_RANGE = 180; // 90 - -77.5 = 167.5
 	// lift default is 35, max of 165, range = 200
 
 	public static final double BUCKET_ANGLE_INTAKE = 90; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
-	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
-	public static final double BUCKET_ANGLE_DUMP = -25; // should be around -45 but the servo is weird
+	public static final double BUCKET_ANGLE_MOVING = 25;
+	public static final double BUCKET_ANGLE_DUMP = -45; // should be around -45 but the servo is weird
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;

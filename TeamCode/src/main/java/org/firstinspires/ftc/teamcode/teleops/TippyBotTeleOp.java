@@ -57,7 +57,7 @@ public class TippyBotTeleOp extends OpMode {
 
 //	double prevLiftPos = 0;
 
-	double spinnerVelocity = 325;
+	double spinnerVelocity = 150;
 	boolean inSpinnerThread = false;
 	boolean inThread = false;
 	List<Thread> spinnerThread = new ArrayList<>( );
@@ -224,6 +224,9 @@ public class TippyBotTeleOp extends OpMode {
 
 		if( firstTime ) {
 			addWarnEndGameThread( );
+			if(!GameTimer.isTimerOn()) {
+				GameTimer.startFromTeleop();
+			}
 			firstTime = false;
 		}
 	}
@@ -249,6 +252,9 @@ public class TippyBotTeleOp extends OpMode {
 							.build( ) );
 					lightControlEnd = System.currentTimeMillis() + 200;
 					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.SHOT_WHITE );
+					robot.sleep( 200 );
+					lightControlEnd = System.currentTimeMillis() + 800;
+					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.HOT_PINK );
 
 				}
 
@@ -266,7 +272,7 @@ public class TippyBotTeleOp extends OpMode {
 	public void addWarnEndGameThread( ) {
 		new Thread( ( ) -> {
 			inThread = true;
-			while( inThread && GameTimer.inEndgame() ) {
+			while( inThread && GameTimer.remainingTimeTeleop() > 6 ) {
 				try {
 					Thread.sleep( 1000 );
 				} catch( InterruptedException ignored ) {
@@ -280,6 +286,10 @@ public class TippyBotTeleOp extends OpMode {
 					.addStep( 0, 0, 70 )
 					.addStep( 1, 1, 70 )
 					.build( ) );
+
+			lightControlEnd = System.currentTimeMillis() + 6000;
+			robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD );
+
 		} ).start( );
 	}
 
@@ -358,7 +368,7 @@ public class TippyBotTeleOp extends OpMode {
 			while( inSpinnerThread ) {
 				robot.spinner.setVelocity( spinnerVelocity );
 				// total of 2.5
-				robot.sleepRobot( 0.7 );
+				robot.sleepRobot( 1.2 );
 				robot.spinner.setVelocity( Math.signum( spinnerVelocity ) * 9000 );
 				robot.sleepRobot( 0.6 );
 				// stop and rest 1 sec
@@ -376,9 +386,9 @@ public class TippyBotTeleOp extends OpMode {
 	 */
 	public void autoSlantBucket( ) {
 
-		if( robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // at the bottom
+		if(robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT ) // at the bottom
 //		|| inaccurateVelocity >= 0 && robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // moving up at bottom
-		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
+//		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 		else if( Math.abs( robot.lift.getVelocity( ) ) > 150 )
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
