@@ -64,9 +64,9 @@ import java.util.function.Supplier;
 public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 	public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients( 4, 0, 0 );
-	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 4, 0, 0 );
+	public static PIDCoefficients HEADING_PID = new PIDCoefficients( 6, 0, 0 );
 
-	public static double LATERAL_MULTIPLIER = 1.237;
+	public static double LATERAL_MULTIPLIER = 1.3;
 
 	public static double VX_WEIGHT = 1;
 	public static double VY_WEIGHT = 1;
@@ -143,11 +143,11 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: reverse any motors using DcMotor.setDirection()
 		leftFront.setDirection( DcMotorSimple.Direction.REVERSE );
-		leftRear.setDirection( DcMotorSimple.Direction.FORWARD );
+		leftRear.setDirection( DcMotorSimple.Direction.REVERSE );
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-//		setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
+		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
 		fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
 		List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
 			setDeadwheelsDisabledCheck( ( ) -> {

@@ -45,19 +45,19 @@ public class TippyBotTeleOp extends OpMode {
 
 	DecimalFormat df = new DecimalFormat( "0.###" );
 
-	double minDrive = 0.5, maxDrive = 0.8;
+	double minDrive = 0.5, maxDrive = 1.0; // 0.8
 	double minStrafe = 0.7, maxStrafe = 1.0;
 	double minRotate = 0.5, maxRotate = 1.0;
 
-	double intakePower = 0.55; // .6
+	double intakePower = 0.75; // .55
 
 	double capperPosition = 0.7;
 
 	boolean inDriverAssist = false;
 
-	double prevLiftPos = 0;
+//	double prevLiftPos = 0;
 
-	double spinnerVelocity = 325;
+	double spinnerVelocity = 150;
 	boolean inSpinnerThread = false;
 	boolean inThread = false;
 	List<Thread> spinnerThread = new ArrayList<>( );
@@ -99,11 +99,6 @@ public class TippyBotTeleOp extends OpMode {
 
 	@Override
 	public void loop( ) {
-
-		if( firstTime ) {
-			addWarnEndGameThread( );
-			firstTime = false;
-		}
 
 		//gamepad inputs
 		robot.mecanumDrive.drive( -gamepad1.left_stick_y * (gamepad1.left_stick_button ? maxDrive : minDrive),
@@ -225,6 +220,15 @@ public class TippyBotTeleOp extends OpMode {
 		telemetry.update( );
 		player1.update( );
 		player2.update( );
+
+
+		if( firstTime ) {
+			addWarnEndGameThread( );
+			if(!GameTimer.isTimerOn()) {
+				GameTimer.startFromTeleop();
+			}
+			firstTime = false;
+		}
 	}
 
 	@Override
@@ -248,6 +252,9 @@ public class TippyBotTeleOp extends OpMode {
 							.build( ) );
 					lightControlEnd = System.currentTimeMillis() + 200;
 					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.SHOT_WHITE );
+					robot.sleep( 200 );
+					lightControlEnd = System.currentTimeMillis() + 800;
+					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.HOT_PINK );
 
 				}
 
@@ -265,7 +272,7 @@ public class TippyBotTeleOp extends OpMode {
 	public void addWarnEndGameThread( ) {
 		new Thread( ( ) -> {
 			inThread = true;
-			while( inThread && GameTimer.inEndgame() ) {
+			while( inThread && GameTimer.remainingTimeTeleop() > 6 ) {
 				try {
 					Thread.sleep( 1000 );
 				} catch( InterruptedException ignored ) {
@@ -279,6 +286,10 @@ public class TippyBotTeleOp extends OpMode {
 					.addStep( 0, 0, 70 )
 					.addStep( 1, 1, 70 )
 					.build( ) );
+
+			lightControlEnd = System.currentTimeMillis() + 6000;
+			robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD );
+
 		} ).start( );
 	}
 
@@ -357,7 +368,7 @@ public class TippyBotTeleOp extends OpMode {
 			while( inSpinnerThread ) {
 				robot.spinner.setVelocity( spinnerVelocity );
 				// total of 2.5
-				robot.sleepRobot( 0.7 );
+				robot.sleepRobot( 1.2 );
 				robot.spinner.setVelocity( Math.signum( spinnerVelocity ) * 9000 );
 				robot.sleepRobot( 0.6 );
 				// stop and rest 1 sec
@@ -375,9 +386,9 @@ public class TippyBotTeleOp extends OpMode {
 	 */
 	public void autoSlantBucket( ) {
 
-		if( robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // at the bottom
+		if(robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT ) // at the bottom
 //		|| inaccurateVelocity >= 0 && robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // moving up at bottom
-		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
+//		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 		else if( Math.abs( robot.lift.getVelocity( ) ) > 150 )
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );

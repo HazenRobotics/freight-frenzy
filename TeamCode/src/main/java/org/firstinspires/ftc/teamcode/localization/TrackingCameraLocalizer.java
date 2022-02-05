@@ -139,7 +139,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	}
 
 	private com.arcrobotics.ftclib.geometry.Pose2d rrPose2dToFtclib(Pose2d rrPose) {
-		return new com.arcrobotics.ftclib.geometry.Pose2d( -rrPose.getY() * DistanceUnit.mPerInch, rrPose.getX() * DistanceUnit.mPerInch,  new Rotation2d( rrPose.getHeading() ) );
+		return new com.arcrobotics.ftclib.geometry.Pose2d( rrPose.getY() * DistanceUnit.mPerInch, -rrPose.getX() * DistanceUnit.mPerInch,  new Rotation2d( rrPose.getHeading() ) );
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class TrackingCameraLocalizer implements Localizer {
 
 
 		private Pose2d ftclibPose2dToRR( com.arcrobotics.ftclib.geometry.Pose2d ftclibPose ) {
-			return new Pose2d(-ftclibPose.getY() /DistanceUnit.mPerInch,ftclibPose.getX() / DistanceUnit.mPerInch,   ftclibPose.getHeading());
+			return new Pose2d(ftclibPose.getY() /DistanceUnit.mPerInch,-ftclibPose.getX() / DistanceUnit.mPerInch,   ftclibPose.getHeading());
 		}
 		private Pose2d ftclibChassisSpeedsToRR( ChassisSpeeds ftclibChassisSpeeds ) {
 			return new Pose2d( -ftclibChassisSpeeds.vyMetersPerSecond / DistanceUnit.mPerInch

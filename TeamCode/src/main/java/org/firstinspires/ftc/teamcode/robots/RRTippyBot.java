@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.robots;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.localization.DistanceSensorLocalizer;
 import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Capper;
 import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
-import org.firstinspires.ftc.teamcode.subsystems.Grabber;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
@@ -44,7 +43,7 @@ public class RRTippyBot extends Robot {
 	public Lift lift;
 	public Bucket bucket;
 	public Capper capper;
-	public Grabber grabber;
+//	public Grabber grabber;
 
 	public OdometryLift odometryLift;
 
@@ -61,12 +60,12 @@ public class RRTippyBot extends Robot {
 
 	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_RANGE = 167.5; // 90 - -77.5 = 167.5
+	public static final double BUCKET_ANGLE_RANGE = 180; // 90 - -77.5 = 167.5
 	// lift default is 35, max of 165, range = 200
 
 	public static final double BUCKET_ANGLE_INTAKE = 90; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
-	public static final double BUCKET_ANGLE_MOVING = LIFT_ANGLE;
-	public static final double BUCKET_ANGLE_DUMP = -25; // should be around -45 but the servo is weird
+	public static final double BUCKET_ANGLE_MOVING = 25;
+	public static final double BUCKET_ANGLE_DUMP = -45; // should be around -45 but the servo is weird
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
@@ -85,7 +84,7 @@ public class RRTippyBot extends Robot {
 
 		// initialize util objects/classes
 
-		new Thread( () -> new SoundLibrary( hardwareMap ) ).start( );
+		new Thread( ( ) -> new SoundLibrary( hardwareMap ) ).start( );
 
 		if( auto )
 			drive = new RRMecanumDriveTippy42( hardwareMap );
@@ -96,14 +95,14 @@ public class RRTippyBot extends Robot {
 		// LIFT_ANGLE - 90 :: because the servo's one position is below and perpendicular to the lift
 		bucket = new Bucket( hardwareMap, "bucket", BUCKET_ANGLE_INTAKE - BUCKET_ANGLE_RANGE, BUCKET_ANGLE_RANGE );
 		capper = new Capper( hardwareMap, "capper" );
-		grabber = new Grabber( hardwareMap, "grabber" );
+//		grabber = new Grabber( hardwareMap, "grabber" );
 
 		mecanumDrive = new MecanumDrive( hardwareMap );
 		// bevel gear madness
-		mecanumDrive.setMotorDirections( Direction.REVERSE, Direction.FORWARD, Direction.REVERSE, Direction.REVERSE );
+		mecanumDrive.setMotorDirections( DcMotorSimple.Direction.REVERSE, DcMotorSimple.Direction.REVERSE, DcMotorSimple.Direction.FORWARD, DcMotorSimple.Direction.FORWARD );
 		super.driveTrain = mecanumDrive;
 		encoderTracker = new EncoderTracker( hardwareMap, "frontLeft", "frontRight", 38 / 25.4, 537.7, 1 );
-		if(auto)
+		if( auto )
 			distanceSensorLocalizer = new DistanceSensorLocalizer( hardwareMap, new Vector2d( 4.5, 6.25 ), new Vector2d( 4.5, 6.25 ), new Vector2d( 6.5, 0 ), drive );
 
 		odometryLift = new OdometryLift( hardwareMap, "odometryLift", true );
@@ -198,7 +197,7 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object (will only be null if it hasn't found any recognitions yet)
 	 */
 	public Vector2d getDuckPosition( ) {
-		if( lastIdentified == null || (Math.abs( lastIdentified.getX() ) > 62 && Math.abs( lastIdentified.getY() ) > 62) || (Math.abs( lastIdentified.getX() ) > 71 || Math.abs( lastIdentified.getY() ) > 71) )
+		if( lastIdentified == null || (Math.abs( lastIdentified.getX( ) ) > 62 && Math.abs( lastIdentified.getY( ) ) > 62) || (Math.abs( lastIdentified.getX( ) ) > 71 || Math.abs( lastIdentified.getY( ) ) > 71) )
 			return null;
 
 		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate( ).vec( ) );
@@ -209,7 +208,7 @@ public class RRTippyBot extends Robot {
 	 * @return the field position of the last identified object
 	 */
 	public Pose2d getDuckPosition( double angle ) {
-		if( lastIdentified == null || (Math.abs( lastIdentified.getX() ) > 62 && Math.abs( lastIdentified.getY() ) > 62) || (Math.abs( lastIdentified.getX() ) > 71 || Math.abs( lastIdentified.getY() ) > 71) ) {
+		if( lastIdentified == null || (Math.abs( lastIdentified.getX( ) ) > 62 && Math.abs( lastIdentified.getY( ) ) > 62) || (Math.abs( lastIdentified.getX( ) ) > 71 || Math.abs( lastIdentified.getY( ) ) > 71) ) {
 			return null;
 		}
 

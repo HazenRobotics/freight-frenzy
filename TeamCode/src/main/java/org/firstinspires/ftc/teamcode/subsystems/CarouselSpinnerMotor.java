@@ -41,6 +41,7 @@ public class CarouselSpinnerMotor {
 		if( runWithEncoders ) {
 			spinner.setMode( DcMotor.RunMode.RUN_USING_ENCODER );
 		}
+		spinner.setZeroPowerBehavior( DcMotor.ZeroPowerBehavior.BRAKE );
 	}
 
 	// getters and setters

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drives.RRMecanumDriveTippy42;
 import org.firstinspires.ftc.teamcode.drives.TwoWheelTrackingLocalizerTippy;
 import org.firstinspires.ftc.teamcode.localization.DistanceSensorLocalizer;
+import org.firstinspires.ftc.teamcode.localization.TrackingCameraLocalizer;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -28,6 +29,7 @@ public class LocalizationTest extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        drive.setLocalizer( new TrackingCameraLocalizer( hardwareMap, new Pose2d(  ) ) );
         //drive.setLocalizer( new DistanceSensorLocalizer( hardwareMap, new Vector2d( 4.5, 6.25 ), new Vector2d( 4.5, 6.25 ), new Vector2d( 7.25, 0 ), drive ) );
         //drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
 
