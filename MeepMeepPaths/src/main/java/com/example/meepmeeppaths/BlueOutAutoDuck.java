@@ -49,13 +49,13 @@ public class BlueOutAutoDuck implements MeepMeepPath {
 				} )
 				.waitSeconds( 1.2 )
 
-				// move to barrier to park
+				/*// move to barrier to park
 				.turn( Math.toRadians(90) )
 				.setTangent( Math.toRadians( 180 ) )
 				.splineToConstantHeading( new Vector2d( -36, 24 ), Math.toRadians( 270 ) )
 				.splineToConstantHeading( new Vector2d( -12, 0 ), Math.toRadians( 0 ) )
 				.splineToConstantHeading( new Vector2d( 12, 24 ), Math.toRadians( 90 ) )
-				.lineToConstantHeading( new Vector2d( 12, 44 ) )
+				.lineToConstantHeading( new Vector2d( 12, 44 ) )*/
 
 				/*.setTangent( Math.toRadians( 90 ) )
 				.splineToLinearHeading( new Pose2d( 11.5, 44, 0 ), Math.toRadians( -45 ) )

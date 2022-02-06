@@ -27,7 +27,9 @@ import com.qualcomm.robotcore.hardware.configuration.WebcamConfiguration;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
@@ -42,6 +44,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Detector implements ImageReader.OnImageAvailableListener, Camera.PreviewCallback {
     private static final String TAG = "Detector";
@@ -74,6 +77,9 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
     private int tfodMonitorViewId = -1;
     private Fragment fragment;
 
+    private org.firstinspires.ftc.robotcore.external.hardware.camera.Camera camera;
+    private CameraName cameraName;
+
     /** Input image size of the model along x axis. */
     private int imageSizeX;
     /** Input image size of the model along y axis. */
@@ -85,10 +91,12 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         String labelFileName = String.format("%s_labels.txt", modelFileName);
         modelFileName = String.format("%s.tflite", modelFileName);
         init(modelType, modelFileName, labelFileName, hardwareMap.appContext, t);
+        this.cameraName = hardwareMap.get( CameraName.class, cameraName );
     }
 
     public Detector(Model modelType, String modelPath, String labelPath, HardwareMap hardwareMap, String cameraName, Telemetry t) throws Exception{
         init(modelType, modelPath, labelPath, hardwareMap.appContext, t);
+        this.cameraName = hardwareMap.get( CameraName.class, cameraName );
     }
 
     protected void init(Model modelType, String modelPath, String labelPath, Context ctx, Telemetry t) throws Exception{
@@ -133,6 +141,7 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
             if (fragment != null) {
                 ((Activity) appContext).getFragmentManager().beginTransaction().remove(fragment).commit();
             }
+            camera.close();
 
         } catch (final InterruptedException e) {
             Log.e(TAG, "Unable to stop processing", e);
@@ -142,48 +151,8 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
 
     public void activate() throws Exception{
         startProcessing();
-        final CameraManager manager = (CameraManager) appContext.getSystemService(Context.CAMERA_SERVICE);
-        try {
-            for (final String cameraId : manager.getCameraIdList()) {
-                final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-                Log.d(TAG, String.format("Activation. Cam ID: %s", cameraId));
-
-                final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                Log.d(TAG, String.format("Activation. Facing: %d", facing));
-
-                Integer orientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-                Log.d(TAG, String.format("Activation. Orientation: %d", orientation));
-
-                if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
-
-                    final StreamConfigurationMap map =
-                            characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-
-                    if (map == null) {
-                        continue;
-                    }
-
-                    // Fallback to camera1 API for internal cameras that don't have full support.
-                    // This should help with legacy situations where using the camera2 API causes
-                    // distorted or otherwise broken previews.
-                    useCamera2API = (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
-                                    || isHardwareLevelSupported(
-                                    characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
-                    Log.d(TAG, String.format("Activation. Camera API lv2?: %b", useCamera2API));
-                    break;
-                }
-            }
-            Log.d(TAG, String.format("Activation. Selected Camera: %s", cameraId));
-            setFragment();
-            Log.d(TAG, "Activation. Complete");
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "Not allowed to access camera", e);
-            throw new Exception("Not allowed to access camera", e);
-        }
-        catch (Exception e) {
-            Log.e(TAG, "Problems with activation", e);
-            throw new Exception("Problems with activation", e);
-        }
+        org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager cameraManager = ClassFactory.getInstance().getCameraManager();
+        camera = cameraManager.requestPermissionAndOpenCamera( new Deadline( 10, TimeUnit.SECONDS), cameraName, null );
     }
 
     protected void setFragment() {
