@@ -95,6 +95,7 @@ public class TippyBotTeleOp extends OpMode {
 				.build( );
 		gamepad1.runRumbleEffect( effect );
 		robot.lights.showStatus( RGBLights.StatusLights.WAITING );
+		//robot.bucketDetector.activate();
 	}
 
 	@Override
@@ -115,15 +116,28 @@ public class TippyBotTeleOp extends OpMode {
 		// lift control [up - top layer | down - dump | left - shared]
 		if( player1.dpad_up.onPress( ) || player2.dpad_up.onPress( ) ) { // lift to top layer (for alliance hub)
 			inDriverAssist = true;
-			robot.lift.setHeightVelocity( 1400, 21 );
-		} else if( /*player1.dpad_left.onPress() ||*/ player2.dpad_left.onPress( ) ) { // lift to middle layer (for shared hub)
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+			new Thread( () ->  {
+				robot.sleep( 200 );
+				robot.lift.setHeightVelocity( 2000, 21 );
+			}).start();
+		} else if( player1.dpad_left.onPress( ) || player2.dpad_left.onPress( ) ) { // lift to middle layer (for shared hub)
 			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.MIDDLE );
-		} else if( player1.dpad_left.onPress( ) || player2.dpad_right.onPress( ) ) { // lift to bottom layer (for shared hub)
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+			new Thread( () -> {
+				robot.sleep( 200 );
+				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.MIDDLE );
+			} ).start();
+		} else if( /*player1.dpad_left.onPress( ) ||*/ player2.dpad_right.onPress( ) ) { // lift to bottom layer (for shared hub)
 			inDriverAssist = true;
-			robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+			new Thread( () -> {
+				robot.sleep( 200 );
+				robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.LOW );
+			} ).start();
 		} else if( /*player1.dpad_down.onPress() ||*/ player2.dpad_down.onPress( ) ) { // lift to default position
 			inDriverAssist = true;
+			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 			robot.lift.setDefaultHeightVel( 1200 );
 		}
 
@@ -155,7 +169,7 @@ public class TippyBotTeleOp extends OpMode {
 		}
 
 		telemetry.addLine( (spinnerVelocity > 0 ? "Blue" : "Red") + " Side Velocity" );
-		if(System.currentTimeMillis() > lightControlEnd) {
+		if( System.currentTimeMillis( ) > lightControlEnd ) {
 			if( spinnerVelocity > 0 )
 				robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.BLUE );
 			else
@@ -200,9 +214,9 @@ public class TippyBotTeleOp extends OpMode {
 		}
 
 		if( player1.b.onPress( ) ) // toggles velocity
-			robot.spinner.setPower( Math.abs( robot.spinner.getVelocity( ) ) < 100 ? ( isBlueSide ? spinnerVelocity : -spinnerVelocity ): 0 );
+			robot.spinner.setPower( Math.abs( robot.spinner.getVelocity( ) ) < 100 ? (isBlueSide ? spinnerVelocity : -spinnerVelocity) : 0 );
 
-		if( player1.dpad_right.onPress( ) || player2.dpad_right.onPress( ) ) // switches direction
+		if( player1.dpad_right.onPress( ) ) // switches direction
 			spinnerVelocity *= -1;
 
 
@@ -210,11 +224,15 @@ public class TippyBotTeleOp extends OpMode {
 			home( );
 
 		// reset the lift position to its current zero position
-		if( gamepad1.ps || (robot.lift.getCurrent( CurrentUnit.AMPS ) > 7.9 && robot.lift.getMotorPositionInch() < 10) )
+		if( gamepad1.ps || gamepad2.left_stick_button || (robot.lift.getCurrent( CurrentUnit.AMPS ) > 7.9 && robot.lift.getMotorPositionInch( ) < 10) )
 			robot.lift.resetLift( );
 
 		addControlTelemetry( );
 		addInfoTelemetry( );
+
+		telemetry.addData( "Lift current", robot.lift.getCurrent() );
+
+		//telemetry.addData( "Bucket contents", robot.bucketDetector.getMostConfidentResult() == null ? "None" : robot.bucketDetector.getMostConfidentResult() );
 
 		//updates
 		telemetry.update( );
@@ -224,9 +242,8 @@ public class TippyBotTeleOp extends OpMode {
 
 		if( firstTime ) {
 			addWarnEndGameThread( );
-			if(!GameTimer.isTimerOn()) {
-				GameTimer.startFromTeleop();
-			}
+			if( !GameTimer.isTimerOn( ) )
+				GameTimer.startFromTeleop( );
 			firstTime = false;
 		}
 	}
@@ -250,11 +267,8 @@ public class TippyBotTeleOp extends OpMode {
 					gamepad1.runRumbleEffect( new Gamepad.RumbleEffect.Builder( )
 							.addStep( 1, 1, 250 )
 							.build( ) );
-					lightControlEnd = System.currentTimeMillis() + 200;
+					lightControlEnd = System.currentTimeMillis( ) + 200;
 					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.SHOT_WHITE );
-					robot.sleep( 200 );
-					lightControlEnd = System.currentTimeMillis() + 800;
-					robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.HOT_PINK );
 
 				}
 
@@ -272,7 +286,7 @@ public class TippyBotTeleOp extends OpMode {
 	public void addWarnEndGameThread( ) {
 		new Thread( ( ) -> {
 			inThread = true;
-			while( inThread && GameTimer.remainingTimeTeleop() > 6 ) {
+			while( inThread && GameTimer.remainingTimeTeleop( ) > 6 ) {
 				try {
 					Thread.sleep( 1000 );
 				} catch( InterruptedException ignored ) {
@@ -287,7 +301,7 @@ public class TippyBotTeleOp extends OpMode {
 					.addStep( 1, 1, 70 )
 					.build( ) );
 
-			lightControlEnd = System.currentTimeMillis() + 6000;
+			lightControlEnd = System.currentTimeMillis( ) + 6000;
 			robot.lights.setPattern( RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD );
 
 		} ).start( );
@@ -370,10 +384,10 @@ public class TippyBotTeleOp extends OpMode {
 				// total of 2.5
 				robot.sleepRobot( 1.2 );
 				robot.spinner.setVelocity( Math.signum( spinnerVelocity ) * 9000 );
-				robot.sleepRobot( 0.6 );
+				robot.sleepRobot( 0.4 );
 				// stop and rest 1 sec
 				robot.spinner.setPower( 0.0 );
-				robot.sleepRobot( 0.8 );
+				robot.sleepRobot( 0.6 );
 				telemetry.addLine( "duckSpinAssist loop " + (i++) );
 				telemetry.update( );
 			}
@@ -386,11 +400,12 @@ public class TippyBotTeleOp extends OpMode {
 	 */
 	public void autoSlantBucket( ) {
 
-		if(robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT ) // at the bottom
+		if( robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT ) // at the bottom
 //		|| inaccurateVelocity >= 0 && robot.lift.getPositionInch( ) < Lift.LIFT_UP_SWITCH_LIMIT // moving up at bottom
 //		|| (int)(robot.lift.getVelocity( ) * 10)/10 < 0 && robot.lift.getPositionInch( ) < Lift.LIFT_DOWN_SWITCH_LIMIT ) // moving downwards near the bottom
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-		else if( Math.abs( robot.lift.getVelocity( ) ) > 150 )
+		else if( Math.abs( robot.lift.getPower() ) > 0 && !gamepad1.dpad_down )
+//		else if( Math.abs( robot.lift.getVelocity( ) ) > 150 )
 			robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
 	}
 

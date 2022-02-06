@@ -118,7 +118,7 @@ public class TargetPositionTest extends OpMode {
 					Pose2d position = drive.getPoseEstimate( );
 					telemetry.addLine( "offset: " + position );
 
-					movePosition = calculator.getTargetPosition( recognition, drive.getExternalHeading( ) );
+					//movePosition = calculator.getTargetPosition( recognition, drive.getExternalHeading( ) );
 					telemetry.addLine( "Corban: " + movePosition );
 					movePosition = new Vector2d( movePosition.getX( ) + position.getX( ), movePosition.getY( ) + position.getY( ) );
 					telemetry.addLine( "Corban + offset: " + movePosition );

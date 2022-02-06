@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.drives.MecanumDrive;
@@ -17,12 +19,15 @@ import org.firstinspires.ftc.teamcode.subsystems.CarouselSpinnerMotor;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.OdometryLift;
+import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
 import org.firstinspires.ftc.teamcode.utils.EncoderTracker;
 import org.firstinspires.ftc.teamcode.utils.RGBLights;
 import org.firstinspires.ftc.teamcode.utils.SoundLibrary;
 import org.firstinspires.ftc.teamcode.utils.TargetPositionCalculator;
 import org.firstinspires.ftc.teamcode.vision.BarcodePositionDetector;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
+import org.firstinspires.ftc.teamcode.vision.ObjectBoxDetector;
+import org.firstinspires.ftc.teamcode.vision.ObjectClassifier;
 import org.firstinspires.ftc.teamcode.vision.TensorFlowUtilBack;
 
 import java.util.List;
@@ -53,19 +58,21 @@ public class RRTippyBot extends Robot {
 
 	public DistanceSensorLocalizer distanceSensorLocalizer;
 
-	TensorFlowUtilBack duckTensorFlow;
+	public ObjectClassifier bucketDetector;
+
+	public ObjectBoxDetector freightDetector;
 	TargetPositionCalculator calculator;
 	private Vector2d lastIdentified = null;
 	private boolean searchForDuck = true;
 
 	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_RANGE = 180; // 90 - -77.5 = 167.5
+	public static final double BUCKET_ANGLE_RANGE = 202;
 	// lift default is 35, max of 165, range = 200
 
 	public static final double BUCKET_ANGLE_INTAKE = 90; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
-	public static final double BUCKET_ANGLE_MOVING = 25;
-	public static final double BUCKET_ANGLE_DUMP = -45; // should be around -45 but the servo is weird
+	public static final double BUCKET_ANGLE_MOVING = 40;
+	public static final double BUCKET_ANGLE_DUMP = -35; // should be around -45 but the servo is weird
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
@@ -113,26 +120,26 @@ public class RRTippyBot extends Robot {
 
 		lights.showStatus( RGBLights.StatusLights.CELEBRATION );
 
+		bucketDetector = new ObjectClassifier( "loaded_vs_unloaded.tflite", "loaded_vs_unloaded_labels.txt", "webcam3", opMode );
+
 		if( auto ) {
 
 			barcodeUtil = new BarcodeUtil( hardwareMap, "webcam1", telemetry );
 
-			duckTensorFlow = new TensorFlowUtilBack( opMode );
-			calculator = new TargetPositionCalculator( new Pose2d( -6, 1, Math.toRadians( 180 ) ) );
+			freightDetector = new ObjectBoxDetector( "full_model_with_metadata.tflite",  "full_model_with_metadata.xml", "webcam2", opMode);
+			calculator = new TargetPositionCalculator( new Pose2d( -6, 0, Math.toRadians( 180 ) ) );
 		}
 
-		capper.setPosition( 0 );
-
+		capper.setPosition( 0.2 );
 
 	}
 
-	public void initTF( ) {
-		duckTensorFlow.initTensorFlow( );
-		duckTensorFlow.startTF( );
+	public void startFreightDetection() {
+		freightDetector.activate();
 	}
 
-	public void stopTF( ) {
-		duckTensorFlow.stopTF( );
+	public void stopFreightDetection( ) {
+		freightDetector.stopProcessing();
 	}
 
 	public void waitForDuck( ) {
@@ -142,7 +149,7 @@ public class RRTippyBot extends Robot {
 		telemetry.addLine( "About to wait" );
 		telemetry.update( );
 
-		while( opModeIsActive( ) && searchForDuck && !duckTensorFlow.isActive( ) && timeStarted < opMode.getRuntime( ) + 5 ) {
+		while( opModeIsActive( ) && searchForDuck && !freightDetector.isActive() && timeStarted < opMode.getRuntime( ) + 5 ) {
 
 
 			telemetry.addLine( "Waiting for tensorflow to activate or 5 seconds" );
@@ -162,7 +169,9 @@ public class RRTippyBot extends Robot {
 	public void startDuckScanning( int interval ) {
 		new Thread( ( ) -> {
 
-			while( opModeIsActive( ) && searchForDuck && !duckTensorFlow.isActive( ) ) {
+			startFreightDetection();
+
+			while( opModeIsActive( ) && searchForDuck && !freightDetector.isActive( ) ) {
 				telemetry.addLine( "Scanning will start once tensorflow is activated" );
 				telemetry.update( );
 			}
@@ -172,7 +181,7 @@ public class RRTippyBot extends Robot {
 
 			while( opModeIsActive( ) && searchForDuck ) {
 
-				Recognition recognition = duckTensorFlow.identifyObject( );
+				Classifier.Recognition recognition = freightDetector.getMostConfidentResult();
 
 				if( recognition != null ) {
 					Vector2d position = calculator.getTargetPosition( recognition, drive.getExternalHeading( ) );
@@ -222,12 +231,12 @@ public class RRTippyBot extends Robot {
 	 */
 	public Vector2d getDuckPosition( double robotAngle, int minLoops, double intakePower ) {
 
-		Recognition delayed = null;
+		Classifier.Recognition delayed = null;
 
 		double waitedTime = opMode.getRuntime( );
 
 		for( int i = 0; i < minLoops; ) {
-			delayed = duckTensorFlow.identifyObject( ); // (most confident recognition)
+			delayed = freightDetector.getMostConfidentResult(); // (most confident recognition)
 			if( delayed != null )
 				i++;
 			else if( waitedTime > 1 )
@@ -243,17 +252,17 @@ public class RRTippyBot extends Robot {
 	}
 
 	public Vector2d getClosestFreightPosition( ) {
-		if( !duckTensorFlow.isActive( ) ) {
-			duckTensorFlow.startTF( );
-			while( opModeIsActive( ) && !duckTensorFlow.isActive( ) ) ;
+		if( !freightDetector.isActive( ) ) {
+			startFreightDetection();
+			while( opModeIsActive( ) && !freightDetector.isActive( ) ) ;
 		}
-		List<Recognition> recognitions = duckTensorFlow.identifyObjects( );
+		List<Classifier.Recognition> recognitions = freightDetector.getResults();
 		if( recognitions == null ) {
 			return null;
 		}
 		Vector2d closestFreightPosition = null;
 		double closestDistance = 500;
-		for( Recognition recognition : recognitions ) {
+		for( Classifier.Recognition recognition : recognitions ) {
 			Vector2d freightPosition = calculator.getTargetPosition( recognition, drive.getPoseEstimate( ).getHeading( ) );
 			Vector2d robotPosition = drive.getPoseEstimate( ).vec( );
 			double distance = Math.sqrt( Math.pow( robotPosition.getX( ) - freightPosition.getX( ), 2 ) + Math.pow( robotPosition.getY( ) - freightPosition.getY( ), 2 ) );
@@ -298,13 +307,13 @@ public class RRTippyBot extends Robot {
 			case MIDDLE:
 				return 13;
 			case HIGH:
-				return 20;
+				return 21;
 		}
 	}
 
 	public void liftToShippingHubHeight( RRHexBot.ShippingHubHeight height ) {
 		bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
-		lift.setHeightVelocity( 1200, shippingHubHeightToInches( height ) );
+		lift.setHeightVelocity( 1800, shippingHubHeightToInches( height ) );
 	}
 
 	public RRHexBot.ShippingHubHeight barcodePosToShippingHubHeight( BarcodePositionDetector.BarcodePosition position ) {
@@ -321,11 +330,11 @@ public class RRTippyBot extends Robot {
 	public double shippingHubDistance( RRHexBot.ShippingHubHeight height ) {
 		switch( height ) {
 			default: // (LOW)
-				return 2; // 1.5
+				return 1.5;
 			case MIDDLE:
-				return 3.2; // 5
+				return 2.8;
 			case HIGH:
-				return 7;
+				return 5.5;
 		}
 	}
 

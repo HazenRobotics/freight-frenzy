@@ -70,7 +70,7 @@ public class FusionLocalizer implements Localizer {
 			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 ) {
 				cameraReadyTime = System.currentTimeMillis();
 			}
-			else if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && System.currentTimeMillis() > cameraReadyTime + 1000) {
+			else if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && System.currentTimeMillis() > cameraReadyTime + 300) {
 				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
 				cameraReady = true;
 			}

@@ -22,8 +22,14 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.WebcamConfiguration;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.robots.Robot;
 import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
 import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier.Device;
 import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier.Model;
@@ -33,6 +39,8 @@ import org.firstinspires.ftc.teamcode.tfrec.views.CameraConnectionFragment;
 import org.firstinspires.ftc.teamcode.tfrec.views.LegacyCameraConnectionFragment;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Detector implements ImageReader.OnImageAvailableListener, Camera.PreviewCallback {
@@ -72,15 +80,15 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
     private int imageSizeY;
 
 
-    public Detector(Model modelType, String modelPath, Context ctx, Telemetry t) throws Exception{
+    public Detector( Model modelType, String modelPath, HardwareMap hardwareMap, String cameraName, Telemetry t) throws Exception{
         String modelFileName = modelPath.substring(0, modelPath.lastIndexOf('.'));
         String labelFileName = String.format("%s_labels.txt", modelFileName);
         modelFileName = String.format("%s.tflite", modelFileName);
-        init(modelType, modelFileName, labelFileName, ctx, t);
+        init(modelType, modelFileName, labelFileName, hardwareMap.appContext, t);
     }
 
-    public Detector(Model modelType, String modelPath, String labelPath, Context ctx, Telemetry t) throws Exception{
-        init(modelType, modelPath, labelPath, ctx, t);
+    public Detector(Model modelType, String modelPath, String labelPath, HardwareMap hardwareMap, String cameraName, Telemetry t) throws Exception{
+        init(modelType, modelPath, labelPath, hardwareMap.appContext, t);
     }
 
     protected void init(Model modelType, String modelPath, String labelPath, Context ctx, Telemetry t) throws Exception{
@@ -90,14 +98,10 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         tfodMonitorViewId = appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", appContext.getPackageName());
         try {
-            ((Activity)appContext).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //make visible
-                    FrameLayout fm = (FrameLayout)((Activity)appContext).findViewById(tfodMonitorViewId);
-                    if (fm != null){
-                        fm.setVisibility(View.VISIBLE);
-                    }
+            ((Activity)appContext).runOnUiThread(() -> {
+                FrameLayout fm = (FrameLayout)((Activity)appContext).findViewById(tfodMonitorViewId);
+                if (fm != null){
+                    fm.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -166,7 +170,6 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
                                     || isHardwareLevelSupported(
                                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
                     Log.d(TAG, String.format("Activation. Camera API lv2?: %b", useCamera2API));
-                    this.cameraId = cameraId;
                     break;
                 }
             }
@@ -187,13 +190,10 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         if (useCamera2API) {
             CameraConnectionFragment camera2Fragment =
                     CameraConnectionFragment.newInstance(
-                            new CameraConnectionFragment.ConnectionCallback() {
-                                @Override
-                                public void onPreviewSizeChosen(final Size size, final int rotation) {
-                                    previewHeight = size.getHeight();
-                                    previewWidth = size.getWidth();
-                                    Detector.this.onPreviewSizeChosen(size, rotation);
-                                }
+                            ( size, rotation ) -> {
+                                previewHeight = size.getHeight();
+                                previewWidth = size.getWidth();
+                                Detector.this.onPreviewSizeChosen(size, rotation);
                             },
                             this,
                             getLayoutId(),

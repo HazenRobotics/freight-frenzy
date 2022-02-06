@@ -24,7 +24,7 @@ public class Lift {
 	double groundBucketHeight;
 
 	public static final double LIFT_DISABLE_LIMIT = 0.75;
-	public static final double LIFT_UP_SWITCH_LIMIT = 1.5; // 1.5
+	public static final double LIFT_UP_SWITCH_LIMIT = 1; // 1.5
 	public static final double LIFT_DOWN_SWITCH_LIMIT = 4; // 3.5
 
 	boolean allowLoops = true;

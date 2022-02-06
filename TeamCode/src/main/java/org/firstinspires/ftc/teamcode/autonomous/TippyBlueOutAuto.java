@@ -35,7 +35,7 @@ public class TippyBlueOutAuto extends LinearOpMode {
 
 		robot = new RRTippyBot( this, true );
 
-		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 
 		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
 
@@ -67,21 +67,19 @@ public class TippyBlueOutAuto extends LinearOpMode {
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
 
-		new Thread( ( ) -> robot.initTF( ) ).start( );
-
 		TrajectorySequence beforeDuckPickup = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 
 				// Duck spin
 				.setTangent( Math.toRadians( 225 ) ) // direction to start next movement (line/spline)
 				.splineToLinearHeading( new Pose2d( -61, 57, Math.toRadians( 270 ) ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( 250 );
+					robot.spinner.setVelocity( 150 );
 				} )
-				.waitSeconds( 0.9 )
+				.waitSeconds( 0.94 )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( 1500 );
+					robot.spinner.setPower( 1 );
 				} )
-				.waitSeconds( 0.3 )
+				.waitSeconds( 0.4 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -110,10 +108,8 @@ public class TippyBlueOutAuto extends LinearOpMode {
 			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 					.turn( Math.toRadians( -30 ) )
 					.build( ) );
-		}
-		else {
+		} else
 			SoundLibrary.playAudio( "fine_addition" );
-		}
 
 		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 				// pickup the duck
@@ -132,7 +128,7 @@ public class TippyBlueOutAuto extends LinearOpMode {
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 					robot.stopDuckScanning( );
-					robot.stopTF( );
+					robot.stopFreightDetection();
 				} )
 				//.waitSeconds( 1.0 )
 
@@ -177,7 +173,7 @@ public class TippyBlueOutAuto extends LinearOpMode {
 		while(opModeIsActive() && GameTimer.remainingTimeAutonomous() > 3);
 		robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
-				.lineToConstantHeading(new Vector2d( 48, 40 ))
+				.lineToConstantHeading(new Vector2d( 48, 44 ))
 				.build());
 
 

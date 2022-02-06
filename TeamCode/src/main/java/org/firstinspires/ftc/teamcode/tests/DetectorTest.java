@@ -62,7 +62,7 @@ public class DetectorTest extends LinearOpMode{
         LABEL_FILE_NAME = labelFile;
         MODEl_TYPE = Classifier.Model.FLOAT_EFFICIENTNET;
         try {
-            tfDetector = new Detector(MODEl_TYPE, MODEL_FILE_NAME, LABEL_FILE_NAME, hm.appContext, telemetry);
+            tfDetector = new Detector(MODEl_TYPE, MODEL_FILE_NAME, LABEL_FILE_NAME, hm, "webcam3", telemetry);
             tfDetector.activate();
         }
         catch (Exception ex){

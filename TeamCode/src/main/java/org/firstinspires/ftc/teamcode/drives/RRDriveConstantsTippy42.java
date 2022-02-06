@@ -34,7 +34,7 @@ public class RRDriveConstantsTippy42 {
 	 * from DriveVelocityPIDTuner.
 	 */
 	public static final boolean RUN_USING_ENCODER = true;
-	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 34, 0, 18, 14.2 );/*new PIDFCoefficients( 22, 0, 16,
+	public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients( 20, 0, 12, 14.2 );/*new PIDFCoefficients( 22, 0, 16,
 			15.2 );*/
 
 	/*

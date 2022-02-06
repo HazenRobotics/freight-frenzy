@@ -32,7 +32,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 
 		robot = new RRTippyBot( this, true );
 
-		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 
 		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.NORTH );
 
@@ -64,21 +64,19 @@ public class TippyRedOutAuto extends LinearOpMode {
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
 
-		new Thread( ( ) -> robot.initTF( ) ).start( );
-
 		TrajectorySequence beforeDuckPickup = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 
 				// Duck spin
 				.setTangent( Math.toRadians( 135 ) ) // direction to start next movement (line/spline)
 				.splineToLinearHeading( new Pose2d( -61, -57.5, Math.toRadians( 90 ) ), Math.toRadians( 270 ) )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( -250 );
+					robot.spinner.setVelocity( -150 );
 				} )
-				.waitSeconds( 0.9 )
+				.waitSeconds( 0.94 )
 				.addTemporalMarker( ( ) -> {
-					robot.spinner.setVelocity( -1500 );
+					robot.spinner.setPower( -1 );
 				} )
-				.waitSeconds( 0.3 )
+				.waitSeconds( 0.4 )
 				.addTemporalMarker( ( ) -> {
 					robot.spinner.setPower( 0 );
 				} )
@@ -90,7 +88,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 				} )
 
 				.setTangent( Math.toRadians( 60 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( height ) + 1, false ), Math.toRadians( 70 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 70 ) )
 				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -129,13 +127,13 @@ public class TippyRedOutAuto extends LinearOpMode {
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 					robot.stopDuckScanning( );
-					robot.stopTF( );
+					robot.stopFreightDetection();
 				} )
 				//.waitSeconds( 1.0 )
 
 				// drop duck in top
 				.setTangent( Math.toRadians( 40 ) ) // direction to start next movement (line/spline)
-				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ) + 1, false ), Math.toRadians( 90 ) )
+				.splineToLinearHeading( RRTippyBot.getHubPosition( -45, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
 				.waitSeconds( 0.5 )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
@@ -174,7 +172,7 @@ public class TippyRedOutAuto extends LinearOpMode {
 		while(opModeIsActive() && GameTimer.remainingTimeAutonomous() > 3);
 		robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate() )
 				/*.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )*/
-				.lineToConstantHeading(new Vector2d( 48, -40 ))
+				.lineToConstantHeading(new Vector2d( 48, -44 ))
 				.build());
 
 

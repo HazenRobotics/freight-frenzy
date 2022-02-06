@@ -35,7 +35,7 @@ public class TippyBlueOppositePark extends LinearOpMode {
 
 		robot = new RRTippyBot( this, true );
 
-		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 
 		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.SOUTH );
 
@@ -66,8 +66,6 @@ public class TippyBlueOppositePark extends LinearOpMode {
 
 		RRHexBot.ShippingHubHeight height = robot.barcodePosToShippingHubHeight( barcodePosition );
 		robot.barcodeUtil.stopCamera( );
-
-		new Thread( ( ) -> robot.initTF( ) ).start( );
 
 		TrajectorySequence trajectorySequence = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 

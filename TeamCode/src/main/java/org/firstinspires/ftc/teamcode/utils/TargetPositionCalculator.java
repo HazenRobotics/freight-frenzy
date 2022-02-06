@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
 import org.firstinspires.ftc.teamcode.vision.HomographyTargetDistance;
 import org.opencv.core.Point;
 
@@ -24,11 +25,11 @@ public class TargetPositionCalculator {
 	 * @param robotAngle angle of the robot relative to 0, in Radians
 	 * @return field position of the target
 	 */
-	public Vector2d getTargetPosition( @NonNull Recognition target, double robotAngle ) {
+	public Vector2d getTargetPosition( @NonNull Classifier.Recognition target, double robotAngle ) {
 
 		//Calculate point at the bottom center of the bounding box
-		double x = (target.getLeft( ) + (target.getWidth( ) / 2));
-		double y = target.getBottom( );
+		double x = target.getLocation().centerX();
+		double y = target.getLocation().bottom;
 		Point targetBasePoint = new Point( x, y );
 
 		//Calculate 3D position from point

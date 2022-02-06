@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drives;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.TwoTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -32,6 +33,7 @@ import java.util.List;
  *    \--------------/
  *
  */
+@Config
 public class TwoWheelTrackingLocalizerTippy extends TwoTrackingWheelLocalizer {
 
 	public static double TICKS_PER_REV = 4000;
@@ -44,8 +46,8 @@ public class TwoWheelTrackingLocalizerTippy extends TwoTrackingWheelLocalizer {
 	public static double PERPENDICULAR_X = 5;
 	public static double PERPENDICULAR_Y = 2.5;
 
-	public static double X_MULTIPLIER = 0.985983; // Multiplier in the X direction
-	public static double Y_MULTIPLIER = 0.981659; // 0.979497 0.981896 0.983583  Multiplier in the Y direction
+	public static double X_MULTIPLIER = 0.983; // Multiplier in the X direction
+	public static double Y_MULTIPLIER = 0.978; // Multiplier in the Y direction
 
 	// Parallel/Perpendicular to the forward axis
 	// Parallel wheel is parallel to the forward axis

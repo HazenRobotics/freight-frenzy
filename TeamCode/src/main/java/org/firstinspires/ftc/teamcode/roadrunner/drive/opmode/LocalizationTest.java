@@ -29,7 +29,7 @@ public class LocalizationTest extends LinearOpMode {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        drive.setLocalizer( new TrackingCameraLocalizer( hardwareMap, new Pose2d(  ) ) );
+        //drive.setLocalizer( new TrackingCameraLocalizer( hardwareMap, new Pose2d(  ) ) );
         //drive.setLocalizer( new DistanceSensorLocalizer( hardwareMap, new Vector2d( 4.5, 6.25 ), new Vector2d( 4.5, 6.25 ), new Vector2d( 7.25, 0 ), drive ) );
         //drive.setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, drive ) );
 

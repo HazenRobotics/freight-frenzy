@@ -22,7 +22,7 @@ public class TippyRedInAuto extends LinearOpMode {
 
 	RRTippyBot robot;
 
-	double wallPos = -64.625;
+	double wallPos = -67;
 
 	@Override
 	public void runOpMode( ) throws InterruptedException {
@@ -32,7 +32,7 @@ public class TippyRedInAuto extends LinearOpMode {
 
 		robot = new RRTippyBot( this, true );
 
-		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_MOVING );
+		robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
 
 		robot.drive.setCameraFrameOfReference( TrackingCameraLocalizer.CardinalDirection.NORTH );
 
@@ -75,53 +75,55 @@ public class TippyRedInAuto extends LinearOpMode {
 				.splineToLinearHeading( RRTippyBot.getHubPosition( 22.5, 90, robot.shippingHubDistance( height ), false ), Math.toRadians( 90 + 22.5 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
+					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 
 				.waitSeconds( 0.8 )
 
 				// move to grab block 1
 				.setTangent( Math.toRadians( 270 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToSplineHeading( new Pose2d( 8, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					//robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					robot.intake.setPower( 0.6 );
 				} )
-				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 8, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 
 				// move to dump block 1 in the top layer
 
 				.splineToSplineHeading( RRTippyBot.getHubPosition( 22.5, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
+					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.waitSeconds( 0.8 )
 
 				// move to grab block 2
 				.setTangent( Math.toRadians( 270 ) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.splineToSplineHeading( new Pose2d( 8, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					//robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					robot.intake.setPower( 0.6 );
 				} )
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
+				.lineToConstantHeading( new Vector2d( 8, wallPos ) )
 				.addTemporalMarker( ( ) -> {
 					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
 				} )
-				.lineToConstantHeading( new Vector2d( 18, wallPos ) )
 
 				// move to dump block 2 in the top layer
 				.splineToSplineHeading( RRTippyBot.getHubPosition( 22.5, 90, robot.shippingHubDistance( RRHexBot.ShippingHubHeight.HIGH ), false ), Math.toRadians( 90 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.dumpBucket( );
-					robot.lift.setDefaultHeightVel( 1200, () -> robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE ) );
+					robot.lift.setDefaultHeightVel( 1200 );
 				} )
 				.addTemporalMarker( ( ) -> {
 					robot.drive.setDeadwheelsDisabledCheck( ( ) -> true );
@@ -154,11 +156,12 @@ public class TippyRedInAuto extends LinearOpMode {
 
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					//robot.intake.intakeBlocks( 0.6, 1, 2000 ); // should stop the intake after 1 block has been intaken
+					robot.intake.setPower( 0.6 );
 				} )
 				.setTangent( Math.toRadians( 270) )
-				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
-				.lineToConstantHeading( new Vector2d( 55, wallPos ) )
+				.splineToSplineHeading( new Pose2d( 8, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
+				.lineToConstantHeading( new Vector2d( 48, wallPos ) )
 
 				// turn towards the
 				//.turn( Math.toRadians( 110 ) )

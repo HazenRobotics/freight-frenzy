@@ -126,7 +126,7 @@ public class Intake {
 		new Thread( ( ) -> {
 
 			int intakeTimeLimit = 10 * 1000; // 10 seconds
-			double startTime = System.currentTimeMillis( );
+			long startTime = System.currentTimeMillis( );
 			while( getPower( ) > 0 && startTime + intakeTimeLimit > System.currentTimeMillis( ) ) { // while the power is up, and it has been less than 10 seconds
 				if( intakenBlocks >= maxIntaken )
 					break;
