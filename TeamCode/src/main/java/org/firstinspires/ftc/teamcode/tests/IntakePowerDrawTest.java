@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,9 +11,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Bucket;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.utils.GamepadEvents;
-import org.firstinspires.ftc.teamcode.utils.Logger;
-
-import java.util.Date;
 
 @TeleOp(name = "IntakePowerDrawTest", group = "Test")
 //@Disabled
@@ -70,7 +66,7 @@ public class IntakePowerDrawTest extends OpMode {
 		}
 
 		if( player.a.onPress( ) )
-			intake.intakeNum( intakePower, 1, 50 );
+			intake.intakeClear( intakePower, 1, 50 );
 
 
 //		if( player.a.onPress( ) ) {

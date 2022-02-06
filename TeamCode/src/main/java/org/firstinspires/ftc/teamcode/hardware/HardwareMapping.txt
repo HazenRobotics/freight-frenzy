@@ -1,33 +1,36 @@
-HexBot (18")
-Motors & Encoders:
-Control Hub Motor 0: "frontLeft" - front left motor and encoder
-Control Hub Motor 1: "backLeft" - back left motor and encoder
-Control Hub Motor 2: "frontRight" - front right motor and encoder
-Control Hub Motor 3: "backRight" - back right motor and encoder
-Expansion Hub Motor 0: "lift" - the lift's motor and encoder
-Expansion Hub Motor 1: "spinner" - the intake's motor and (dead wheel's) parallel encoder
-Expansion Hub Motor 2: "intake" - the left carousel spinner's motor and (dead wheel's) perpendicular encoder
-
-Servos:
-Control Hub Servo 0: "bucket" - the bucket servo
-Control Hub Servo 1: "capper" - the capper servo for the shipping element
-// Control Hub Servo 2: "capperLift" - the servo that controls the lift for the capper
-// Control Hub Servo 3: "capperLiftRotator" - the servo that rotates the capper lift
-
-
-
 TippyBot (13")
+--------------
+
 Motors & Encoders:
-Control Hub Motor 0: "frontLeft" - front left motor and encoder
-Control Hub Motor 1: "backLeft" - back left motor and encoder
-Control Hub Motor 2: "frontRight" - front right motor and encoder
-Control Hub Motor 3: "backRight" - back right motor and encoder
-Expansion Hub Motor 0: "lift" - the lift's motor and encoder
-Expansion Hub Motor 1: "intake" - the intake's motor and (dead wheel's) parallel encoder
-Expansion Hub Motor 2: "spinner" - the carousel spinner's motor and (dead wheel's) perpendicular encoder
+    Control Hub Motor 0: "frontLeft" - front left motor and encoder
+    Control Hub Motor 1: "backLeft" - back left motor and encoder
+    Control Hub Motor 2: "frontRight" - front right motor and encoder
+    Control Hub Motor 3: "backRight" - back right motor and encoder
+    Expansion Hub Motor 0: "lift" - the lift's motor and encoder
+    Expansion Hub Motor 1: "intake" - the intake's motor
+    Expansion Hub Motor 2: "spinner" - the carousel spinner's motor and the (dead wheel's) parallel encoder
+    Expansion Hub Motor 3: "spinner" - the (dead wheel's) perpendicular encoder
 
 Servos:
-Control Hub Servo 0: "bucket" - the bucket servo
-Control Hub Servo 1: "odometryLift" - the servo that lifts the odometry up and down
-Control Hub Servo 2: "capper" - the capper servo for the shipping element
-Control Hub Servo 2: "grabber" - the grabber servo for grabbing shipping elements and possibly blocks/balls
+    Control Hub Servo 0: "bucket" - the bucket servo
+    // Control Hub Servo 1: "bucketHor" - the horizontal servo for the bucket (left/right rotation)
+    Control Hub Servo 1: "odometryLift" - the servo that lifts the odometry up and down
+    Control Hub Servo 2: "capper" - the capper servo for the shipping element
+    Control Hub Servo 4: "blinkin" - the led lights
+    Control Hub Servo 5: "servo" - ***for testing***
+
+I2C
+    Control Hub Bus 0: (0) "backDistance"
+    Control Hub Bus 0: (1) "imu"
+    Control Hub Bus 1: (0) "leftDistance"
+    Expansion Hub Bus 1: (0) "rightDistance"
+
+Usbs:
+Usb 3.0: Intel RealSense Camera
+Usb 2.0: Usb Hub:
+    Webcam 1: "webcam1"
+    Webcam 2: "webcam2"
+    Webcam 3: "webcam3"
+
+
+

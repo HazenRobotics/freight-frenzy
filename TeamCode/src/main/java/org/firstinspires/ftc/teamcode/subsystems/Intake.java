@@ -110,9 +110,9 @@ public class Intake {
 	 * @param maxIntaken max number of objects to intake
 	 * @param clearTime  the number of milliseconds to keep spinning after the intake is thought to be empty
 	 */
-	public void intakeNum( double power, int maxIntaken, long clearTime ) {
+	public void intakeClear( double power, int maxIntaken, long clearTime ) {
 		setPower( power );
-		intakeNum( maxIntaken, clearTime );
+		intakeClear( maxIntaken, clearTime );
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class Intake {
 	 * @param maxIntaken max number of objects to intake
 	 * @param clearTime  the number of milliseconds to keep spinning after the intake is thought to be empty
 	 */
-	public void intakeNum( double maxIntaken, long clearTime ) {
+	public void intakeClear( double maxIntaken, long clearTime ) {
 
 		new Thread( ( ) -> {
 
