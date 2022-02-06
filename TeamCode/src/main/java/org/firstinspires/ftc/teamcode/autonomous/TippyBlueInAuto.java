@@ -85,7 +85,7 @@ public class TippyBlueInAuto extends LinearOpMode {
 				.splineToSplineHeading( new Pose2d( 18, wallPos, Math.toRadians( 180 ) ), Math.toRadians( 0 ) )
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeNum( 0.6, 1 );
+					robot.intake.intakeClear( 0.6, 1 );
 //					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 50, wallPos ) )
@@ -111,7 +111,7 @@ public class TippyBlueInAuto extends LinearOpMode {
 
 				.addTemporalMarker( ( ) -> {
 					robot.bucket.setAngle( RRTippyBot.BUCKET_ANGLE_INTAKE );
-					robot.intake.intakeNum( 0.6, 1 );
+					robot.intake.intakeClear( 0.6, 1 );
 //					robot.intake.intakeBlocks( 0.6, 1, 500 ); // should stop the intake after 1 block has been intaken
 				} )
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
