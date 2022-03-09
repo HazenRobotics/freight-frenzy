@@ -86,7 +86,7 @@ public class TippyBlueOutAuto extends LinearOpMode {
 
 				// start duck scanning, move lift up, and move to drop off block
 				.addTemporalMarker( ( ) -> {
-					robot.startDuckScanning( 250 );
+//					robot.startDuckScanning( 250 );
 					robot.liftToShippingHubHeight( height );
 				} )
 
@@ -101,7 +101,7 @@ public class TippyBlueOutAuto extends LinearOpMode {
 		robot.drive.followTrajectorySequence( beforeDuckPickup );
 		robot.lift.setDefaultHeightVel( 1000 );
 
-		robot.waitForDuck( );
+//		robot.waitForDuck( );
 
 		if( robot.getDuckPosition( ) == null ) {
 			SoundLibrary.playAudio( "nooo" );
@@ -142,8 +142,10 @@ public class TippyBlueOutAuto extends LinearOpMode {
 					robot.lift.setDefaultHeightVel( 1000 );
 				} )
 				.waitSeconds( 1.5 )
+				/*
 				//Line up for parking
 				.lineToLinearHeading( new Pose2d( -36, 44, Math.toRadians( 0 ) ) )
+				*/
 				/*
 
 
@@ -175,7 +177,6 @@ public class TippyBlueOutAuto extends LinearOpMode {
 				.setVelConstraint( new MecanumVelocityConstraint( 50, 11.5 ) )
 				.lineToConstantHeading(new Vector2d( 48, 44 ))
 				.build());
-
 
 		while( !isStopRequested( ) && !opModeIsActive( ) );
 

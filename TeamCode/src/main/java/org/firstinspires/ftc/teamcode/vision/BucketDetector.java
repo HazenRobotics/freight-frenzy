@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.tfrec.Detector;
 import org.firstinspires.ftc.teamcode.tfrec.classification.Classifier;
@@ -45,26 +46,27 @@ public class BucketDetector {
 	}
 
 	public Classifier.Recognition getMostConfidentResult( ) {
-		List<Classifier.Recognition> results = getResults();
+		List<Classifier.Recognition> results = getResults( );
 		Classifier.Recognition mostConfidentRecognition = null;
 		for( Classifier.Recognition r : results ) {
-			if (mostConfidentRecognition == null || r.getConfidence() > mostConfidentRecognition.getConfidence() ) {
+			if( mostConfidentRecognition == null || r.getConfidence( ) > mostConfidentRecognition.getConfidence( ) ) {
 				mostConfidentRecognition = r;
 			}
 		}
 		return mostConfidentRecognition;
 	}
 
-	public void activate() {
-		try{
+	public void activate( ) {
+		try {
 			tfDetector.activate( );
 		} catch( Exception e ) {
 			opMode.telemetry.addData( "Error starting detector", e );
+			Log.d( "HERE", "Error starting detextor" + e );
 		}
 	}
 
-	public void stopProcessing() {
-		tfDetector.stopProcessing();
+	public void stopProcessing( ) {
+		tfDetector.stopProcessing( );
 	}
 
 }

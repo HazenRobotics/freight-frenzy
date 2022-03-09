@@ -119,8 +119,8 @@ public class TippyBlueInAuto extends LinearOpMode {
 				.lineToConstantHeading( new Vector2d( 52, wallPos ) )
 				.lineToConstantHeading( new Vector2d( 8, wallPos ) )
 				.addTemporalMarker( ( ) -> {
-					robot.intake.setPower( 0 );
 					robot.liftToShippingHubHeight( RRHexBot.ShippingHubHeight.HIGH );
+					robot.intake.setPower( 0 );
 				} )
 
 				// move to dump block 2 in the top layer

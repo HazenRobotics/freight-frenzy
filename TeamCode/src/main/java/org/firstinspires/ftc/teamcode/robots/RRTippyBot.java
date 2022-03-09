@@ -67,12 +67,12 @@ public class RRTippyBot extends Robot {
 
 	public static final double LIFT_ANGLE = 50;
 
-	public static final double BUCKET_ANGLE_RANGE = 202;
+	public static final double BUCKET_ANGLE_RANGE = 185;
 	// lift default is 35, max of 165, range = 200
 
 	public static final double BUCKET_ANGLE_INTAKE = 90; // theoretically should be exactly 90 but 0.0 - 0.4 doesn't set position correctly on the servo
-	public static final double BUCKET_ANGLE_MOVING = 40;
-	public static final double BUCKET_ANGLE_DUMP = -35; // should be around -45 but the servo is weird
+	public static final double BUCKET_ANGLE_MOVING = 10;
+	public static final double BUCKET_ANGLE_DUMP = -50; // should be around -45 but the servo is weird
 
 	public static final double CAPPER_PICKUP = 1.0;
 	public static final double CAPPER_HOLD = 0.8;
@@ -135,6 +135,7 @@ public class RRTippyBot extends Robot {
 	}
 
 	public void startFreightDetection() {
+		telemetry.addLine( "Starting Freight Detection" );
 		freightDetector.activate();
 	}
 
@@ -155,10 +156,11 @@ public class RRTippyBot extends Robot {
 			telemetry.addLine( "Waiting for tensorflow to activate or 5 seconds" );
 			telemetry.update( );
 
-			try {
-				Thread.sleep( 100 );
-			} catch( InterruptedException ignored ) {
-			}
+			Robot.waitTime( 100 );
+//			try {
+//				Thread.sleep( 100 );
+//			} catch( InterruptedException ignored ) {
+//			}
 		}
 		telemetry.update( );
 	}
@@ -190,10 +192,11 @@ public class RRTippyBot extends Robot {
 						lastIdentified = position;
 				}
 
-				try {
-					Thread.sleep( interval );
-				} catch( InterruptedException ignored ) {
-				}
+				Robot.waitTime( interval );
+//				try {
+//					Thread.sleep( interval );
+//				} catch( InterruptedException ignored ) {
+//				}
 			}
 		} ).start( );
 	}
@@ -307,7 +310,7 @@ public class RRTippyBot extends Robot {
 			case MIDDLE:
 				return 13;
 			case HIGH:
-				return 21;
+				return 22;
 		}
 	}
 
@@ -332,17 +335,17 @@ public class RRTippyBot extends Robot {
 			default: // (LOW)
 				return 1.5;
 			case MIDDLE:
-				return 2.8;
+				return 3.2;
 			case HIGH:
-				return 5.5;
+				return 8.5;
 		}
 	}
 
 	public void dumpBucket( ) {
 		bucket.setAngle( BUCKET_ANGLE_DUMP );
 		sleepRobot( 0.65 );
-		bucket.setAngle( BUCKET_ANGLE_MOVING );
-//		bucket.setAngle( BUCKET_ANGLE_INTAKE );
+//		bucket.setAngle( BUCKET_ANGLE_MOVING );
+		bucket.setAngle( BUCKET_ANGLE_INTAKE );
 	}
 
 	/*public double distanceFromShippingHub( RRHexBot.ShippingHubHeight height) {

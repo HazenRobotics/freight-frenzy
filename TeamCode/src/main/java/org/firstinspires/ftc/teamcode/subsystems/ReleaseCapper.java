@@ -12,9 +12,9 @@ public class ReleaseCapper {
 		STORE
 	}
 
-	private final double RELEASE_POSITION = degreeToPercent( 270 );
-	private final double PICKUP_POSITION = degreeToPercent( 246 );
-	private final double STORE_POSITION = degreeToPercent( 0 );
+	private final double RELEASE_POSITION = degreeToPercent( 0 );
+	private final double PICKUP_POSITION = degreeToPercent( 45 );
+	private final double STORE_POSITION = degreeToPercent( 270 );
 
 	private Servo servo;
 	private Position position;
