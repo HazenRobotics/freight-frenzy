@@ -98,17 +98,21 @@ public class TippyRedOutAuto extends LinearOpMode {
 		robot.drive.followTrajectorySequence( beforeDuckPickup );
 		robot.lift.setDefaultHeightVel( 1000 );
 
-		robot.waitForDuck( );
+//		robot.waitForDuck( );
+//
+//		if( robot.getDuckPosition( ) == null ) {
+//			SoundLibrary.playAudio( "nooo" );
+//			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
+//					.turn( Math.toRadians( 30 ) )
+//					.build( ) );
+//		}
+//		else {
+//			SoundLibrary.playAudio( "fine_addition" );
+//		}
 
-		if( robot.getDuckPosition( ) == null ) {
-			SoundLibrary.playAudio( "nooo" );
-			robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
-					.turn( Math.toRadians( 30 ) )
+		robot.drive.followTrajectorySequence( robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
+				.turn( Math.toRadians( 30 ) )
 					.build( ) );
-		}
-		else {
-			SoundLibrary.playAudio( "fine_addition" );
-		}
 
 		TrajectorySequence afterPickupDuck = robot.drive.trajectorySequenceBuilder( robot.drive.getPoseEstimate( ) )
 				// pickup the duck

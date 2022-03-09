@@ -60,16 +60,10 @@ public class FusionLocalizer implements Localizer {
 		wheelLocalizer.update( );
 		cameraLocalizer.update( );
 		if( cameraReady && !deadwheelsDisabled ) {
-//			String writeText = "" + (System.currentTimeMillis() / 1000.0 );
-//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getY( );
 			cameraLocalizer.sendOdometryData( wheelLocalizer.getPoseVelocity( ) );
-//			writeText += ", " + wheelLocalizer.getPoseEstimate( ).getY( );
-//			writeText += ", " + cameraLocalizer.getPoseEstimate( ).getY( );
-//			Logger.writeAFile( "PosGraph.csv", writeText, true, false );
 		} else {
-			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 ) {
+			if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && cameraReadyTime == 0 )
 				cameraReadyTime = System.currentTimeMillis();
-			}
 			else if( !cameraReady && cameraLocalizer.getPoseConfidence( ) == T265Camera.PoseConfidence.High && System.currentTimeMillis() > cameraReadyTime + 300) {
 				cameraLocalizer.setPoseEstimate( !deadwheelsDisabled ? wheelLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
 				cameraReady = true;
@@ -83,9 +77,9 @@ public class FusionLocalizer implements Localizer {
 	 * @param checkFunc Function that returns true if the dead wheels should be disabled, and false if they should not be disabled
 	 */
 	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc ) {
-		if( checkDeadwheelsThread != null && checkDeadwheelsThread.isAlive( ) ) {
+		if( checkDeadwheelsThread != null && checkDeadwheelsThread.isAlive( ) )
 			checkDeadwheelsThread.interrupt( );
-		}
+
 		checkDeadwheelsThread = new Thread( ( ) -> {
 			while( true ) {
 				if( checkFunc.get( ) && !deadwheelsDisabled ) {
@@ -95,11 +89,12 @@ public class FusionLocalizer implements Localizer {
 					wheelLocalizer.setPoseEstimate( cameraReady ? cameraLocalizer.getPoseEstimate( ) : driveLocalizer.getPoseEstimate( ) );
 					deadwheelsDisabled = false;
 				}
-				try {
-					Thread.sleep( 50 );
-				} catch( InterruptedException e ) {
-					e.printStackTrace( );
-				}
+				Robot.waitTime( 50 );
+//				try {
+//					Thread.sleep( 50 );
+//				} catch( InterruptedException e ) {
+//					e.printStackTrace( );
+//				}
 			}
 		} );
 		checkDeadwheelsThread.start( );

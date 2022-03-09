@@ -31,8 +31,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -117,7 +115,7 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
 		// upward (normal to the floor) using a command like the following:
-		BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
+		BNO055IMUUtil.remapAxes( imu, AxesOrder.XYZ, AxesSigns.NPN );
 
 		leftFront = hardwareMap.get( DcMotorEx.class, "frontLeft" );
 		leftRear = hardwareMap.get( DcMotorEx.class, "backLeft" );
@@ -149,27 +147,25 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
 		fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
-		List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
-			setDeadwheelsDisabledCheck( ( ) -> {
-						for( LynxModule hub : hubs ) {
-							if(hub.isNotResponding( )) {
-								return true;
-							}
-						}
-						return false;
-					}
-			);
+		List<LynxModule> hubs = hardwareMap.getAll( LynxModule.class );
+		setDeadwheelsDisabledCheck( ( ) -> {
+					for( LynxModule hub : hubs )
+						if( hub.isNotResponding( ) )
+							return true;
+					return false;
+				}
+		);
 		setLocalizer( fusionLocalizer );
-		if(!(mapName == null)) {
-			mapName = mapName + ".bin";
-		}
+		if( !(mapName == null) )
+			mapName += ".bin";
+
 //		setLocalizer( new TrackingCameraLocalizer(hardwareMap, new Pose2d( CAMERA_X, CAMERA_Y, 0 )) );
 
 		trajectorySequenceRunner = new TrajectorySequenceRunner( follower, HEADING_PID );
 	}
 
-	public RRMecanumDriveTippy42( HardwareMap hardwareMap) {
-		this(hardwareMap, false, null);
+	public RRMecanumDriveTippy42( HardwareMap hardwareMap ) {
+		this( hardwareMap, false, null );
 	}
 
 	public TrajectoryBuilder trajectoryBuilder( Pose2d startPose ) {
@@ -247,9 +243,8 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 	}
 
 	public void setMode( DcMotor.RunMode runMode ) {
-		for( DcMotorEx motor : motors ) {
+		for( DcMotorEx motor : motors )
 			motor.setMode( runMode );
-		}
 	}
 
 	public void setZeroPowerBehavior( DcMotor.ZeroPowerBehavior zeroPowerBehavior ) {
@@ -355,31 +350,32 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		return new ProfileAccelerationConstraint( maxAccel );
 	}
 
-	public void stopCamera() {
-		((TrackingCameraLocalizer) getLocalizer()).stopCamera();
+	public void stopCamera( ) {
+		((TrackingCameraLocalizer) getLocalizer( )).stopCamera( );
 	}
 
-	public void resetCamera() {
-		((TrackingCameraLocalizer) getLocalizer()).resetCamera();
+	public void resetCamera( ) {
+		((TrackingCameraLocalizer) getLocalizer( )).resetCamera( );
 	}
 
-	public T265Camera.PoseConfidence getPoseConfidence() {
-		return fusionLocalizer.getCameraPoseConfidence();
+	public T265Camera.PoseConfidence getPoseConfidence( ) {
+		return fusionLocalizer.getCameraPoseConfidence( );
 	}
 
-	public void exportLocalizationMap(String mapName) {
-		((TrackingCameraLocalizer) getLocalizer()).exportMap(mapName + ".bin");
+	public void exportLocalizationMap( String mapName ) {
+		((TrackingCameraLocalizer) getLocalizer( )).exportMap( mapName + ".bin" );
 	}
-	public void exportLocalizationMap() {
+
+	public void exportLocalizationMap( ) {
 		exportLocalizationMap( "map" );
 	}
 
-	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc) {
+	public void setDeadwheelsDisabledCheck( Supplier<Boolean> checkFunc ) {
 		fusionLocalizer.setDeadwheelsDisabledCheck( checkFunc );
 		deadwheelCheckFunc = checkFunc;
 	}
 
-	public Supplier<Boolean> getDeadwheelsDisabledCheck() {
+	public Supplier<Boolean> getDeadwheelsDisabledCheck( ) {
 		return deadwheelCheckFunc;
 	}
 
@@ -387,8 +383,8 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 		fusionLocalizer.setCameraFrameOfReference( frameOfReference );
 	}
 
-	public void cancelTrajectorySequence() {
-		trajectorySequenceRunner.cancelFollowing();
+	public void cancelTrajectorySequence( ) {
+		trajectorySequenceRunner.cancelFollowing( );
 	}
 
 }

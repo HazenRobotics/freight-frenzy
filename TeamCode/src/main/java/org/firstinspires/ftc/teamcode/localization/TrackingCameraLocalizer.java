@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.localization;
 
-import android.graphics.Camera;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -9,8 +7,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Transform2d;
-import com.arcrobotics.ftclib.geometry.Translation2d;
-import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
@@ -27,6 +23,7 @@ public class TrackingCameraLocalizer implements Localizer {
 	private static T265Camera slamra;
 	private Pose2d _offset = new Pose2d(  );
 	private CardinalDirection _frameOfReference;
+	public static double ODOMETRY_COVARIANCE = 0.3; // 0 = odometry, 1 = camera
 
 	public enum CardinalDirection {
 		NORTH,
@@ -46,12 +43,11 @@ public class TrackingCameraLocalizer implements Localizer {
 	public TrackingCameraLocalizer( HardwareMap hardwareMap, Pose2d cameraFromRobot, boolean loadMap, String mapName, CardinalDirection frameOfReference ) {
 		_frameOfReference = frameOfReference;
 		if(slamra == null) {
-			if(loadMap && new File(String.format("/sdcard/FIRST/localization/maps/%s", mapName)).exists()) {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
-			}
-			else {
-				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), 0.3,  hardwareMap.appContext);
-			}
+			if(loadMap && new File(String.format("/sdcard/FIRST/localization/maps/%s", mapName)).exists())
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), ODOMETRY_COVARIANCE, String.format("/localization/maps/%s", mapName),  hardwareMap.appContext);
+			else
+				slamra = new T265Camera(transformFromRobot( cameraFromRobot ), ODOMETRY_COVARIANCE,  hardwareMap.appContext);
+
 		}
 		try {
 			if(!slamra.isStarted()) slamra.start();
