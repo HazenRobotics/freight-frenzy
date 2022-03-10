@@ -41,18 +41,13 @@ public  class Duckwgun extends OpMode {
 	@Override
 	public void loop() {
 
-		double drive =  -gamepad1.left_stick_y;
-		double strafe = gamepad1.left_stick_x;
-		double rotate = gamepad1.right_stick_x;
-
-		double frontLeftPower = drive + strafe + rotate;
-		double frontRightPower = drive - strafe - rotate;
-		double backLeftPower = drive - strafe + rotate;
-		double backRightPower = drive + strafe - rotate;
-
-		setPowers( frontLeftPower, frontRightPower, backLeftPower, backRightPower );
-
-
+		if ( gamepad1.b ) {
+			setPowers( 0.5 );
+		}
+		else
+		{
+			setPowers( 1 );
+		}
 		telemetry.update();
 	}
 
@@ -62,7 +57,21 @@ public  class Duckwgun extends OpMode {
 
 	}
 
-	public void setPowers(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
+	public void setPowers(double vroom) {
+
+		double drive =  -gamepad1.left_stick_y;
+		double strafe = gamepad1.left_stick_x;
+		double rotate = gamepad1.right_stick_x;
+		double gas = gamepad1.right_trigger;
+		if (gas==0)
+		{
+			gas=1;
+		}
+
+		double frontLeftPower = (drive + strafe + rotate)*vroom*gas;
+		double frontRightPower = (drive - strafe - rotate)*vroom*gas;
+		double backLeftPower = (drive - strafe + rotate)*vroom*gas;
+		double backRightPower = (drive + strafe - rotate)*vroom*gas;
 
 		frontLeft.setPower(frontLeftPower);
 		frontRight.setPower(frontRightPower);
