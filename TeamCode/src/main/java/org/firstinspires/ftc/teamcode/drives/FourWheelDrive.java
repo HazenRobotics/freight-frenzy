@@ -66,7 +66,7 @@ public class FourWheelDrive implements Drive {
 		frontRight = hardwareMap.get( DcMotorEx.class, frontRightName );
 		backRight = hardwareMap.get( DcMotorEx.class, backRightName );
 
-		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );
+		setMotorDirections( REVERSE, REVERSE, FORWARD, FORWARD );
 		setZeroPowerBehavior( BRAKE, BRAKE, BRAKE, BRAKE );
 		//setRunMode(STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER );
 

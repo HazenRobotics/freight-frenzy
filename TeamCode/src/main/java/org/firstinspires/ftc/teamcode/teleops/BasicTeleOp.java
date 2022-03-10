@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 // 13" robot with laptop on it
 @TeleOp(name = "BasicTeleOp", group = "TeleOp")
-public  class BasicTeleOp extends OpMode {
+public class BasicTeleOp extends OpMode {
 
 	public static String CLASS_NAME = "AutoDemonstration";
 

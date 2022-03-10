@@ -67,18 +67,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       android:textStyle="bold"/>
 
     <ImageButton
-      android:id="@+id/menu_buttons"
-      android:scaleType="fitXY"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:src="@drawable/icon_menu"
-      android:background="@android:color/transparent"
-      android:padding="15dp"
-      android:adjustViewBounds="true"
-      android:layout_alignParentEnd="true"
-      android:layout_centerInParent="true"
-      android:layout_centerHorizontal="true"
-      android:layout_margin="10dp"/>
+        android:id="@+id/menu_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:padding="15dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_menu" />
 
   </RelativeLayout>
   <!-- end of black bar -->
