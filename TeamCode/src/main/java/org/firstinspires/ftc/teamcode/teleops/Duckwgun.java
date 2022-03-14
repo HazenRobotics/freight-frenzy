@@ -63,10 +63,6 @@ public  class Duckwgun extends OpMode {
 		double strafe = gamepad1.left_stick_x;
 		double rotate = gamepad1.right_stick_x;
 		double gas = gamepad1.right_trigger;
-		if (gas==0)
-		{
-			gas=1;
-		}
 
 		double frontLeftPower = (drive + strafe + rotate)*vroom*gas;
 		double frontRightPower = (drive - strafe - rotate)*vroom*gas;
