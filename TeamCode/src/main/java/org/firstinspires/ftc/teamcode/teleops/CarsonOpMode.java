@@ -89,6 +89,10 @@ public class CarsonOpMode extends OpMode
         double strafe = gamepad1.left_stick_x;
         double spin = gamepad1.right_stick_x;
         double move = -gamepad1.left_stick_y;
+        double raiseLift = gamepad1.right_trigger;
+        double lowerLift = gamepad1.left_trigger;
+        boolean clearance = gamepad1.left_bumper;
+        boolean cleared = gamepad1.right_bumper;
 
         // move +- spin +- strafe
 
