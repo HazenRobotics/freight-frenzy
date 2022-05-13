@@ -37,9 +37,10 @@ public interface Drive {
 	/**
 	 * @param distanceToMove
 	 * @param circumference
+	 * @param gearRatio
 	 * @return
 	 */
-	int convertDistTicks( double distanceToMove, double circumference );
+	int convertDistTicks( double distanceToMove, double circumference, double gearRatio );
 
 	/**
 	 * Returns the current state of the drive train
