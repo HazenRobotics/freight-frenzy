@@ -190,6 +190,9 @@ public class DifSwerveDrive implements Drive {
 		double normPower = strafe.norm( ) * MAX_VELOCITY;
 		double angularPower = rotate * storedMaxAngularPow;
 
+		double leftDrivePow = normPower + angularPower;
+		double rightDrivePow = normPower - angularPower;
+
 		double leftStrafePow = normPower * normalizeAngle( targetHubAngle - leftRotation );
 		double rightStrafePow = normPower * normalizeAngle( targetHubAngle - rightRotation );
 
@@ -198,11 +201,11 @@ public class DifSwerveDrive implements Drive {
 
 		// if the target angle = the current angle (of the hubs) then it will just drive
 
-		leftTop.setPower( normPower + leftStrafePow + leftRotatePow );
-		leftBottom.setPower( normPower - leftStrafePow - leftRotatePow );
+		leftTop.setPower( leftDrivePow + leftStrafePow + leftRotatePow );
+		leftBottom.setPower( leftDrivePow - leftStrafePow - leftRotatePow );
 
-		rightTop.setPower( normPower + rightStrafePow + rightRotatePow );
-		rightBottom.setPower( normPower - rightStrafePow - rightRotatePow );
+		rightTop.setPower( rightDrivePow + rightStrafePow + rightRotatePow );
+		rightBottom.setPower( rightDrivePow - rightStrafePow - rightRotatePow );
 	}
 
 	public void moveVelocity( Vector2d strafe, double rotate ) {
@@ -216,19 +219,22 @@ public class DifSwerveDrive implements Drive {
 		double normVelocity = strafe.norm( ) * MAX_VELOCITY;
 		double angularVelocity = rotate * storedMaxAngularVel;
 
+		double leftDriveVel = normVelocity + angularVelocity;
+		double rightDriveVel = normVelocity - angularVelocity;
+
 		double leftStrafeVel = normVelocity * normalizeAngle( targetHubAngle - leftRotation );
 		double rightStrafeVel = normVelocity * normalizeAngle( targetHubAngle - rightRotation );
 
-		double leftRotateVel = angularVelocity * normalizeAngle( /*targetRotateAngle*/ -leftRotation );
-		double rightRotateVel = angularVelocity * normalizeAngle( /*targetRotateAngle*/ -rightRotation );
+		double leftRotateVel = angularVelocity * normalizeAngle( /* targetRotateAngle */ -leftRotation );
+		double rightRotateVel = angularVelocity * normalizeAngle( /* targetRotateAngle */ -rightRotation );
 
 		// if the target angle = the current angle (of the hubs) then it will just drive
 
-		leftTop.setVelocity( normVelocity + leftStrafeVel + leftRotateVel, AngleUnit.RADIANS );
-		leftBottom.setVelocity( normVelocity - leftStrafeVel - leftRotateVel, AngleUnit.RADIANS );
+		leftTop.setVelocity( leftDriveVel + leftStrafeVel + leftRotateVel, AngleUnit.RADIANS );
+		leftBottom.setVelocity( leftDriveVel - leftStrafeVel - leftRotateVel, AngleUnit.RADIANS );
 
-		rightTop.setVelocity( normVelocity + rightStrafeVel + rightRotateVel, AngleUnit.RADIANS );
-		rightBottom.setVelocity( normVelocity - rightStrafeVel - rightRotateVel, AngleUnit.RADIANS );
+		rightTop.setVelocity( rightDriveVel + rightStrafeVel + rightRotateVel, AngleUnit.RADIANS );
+		rightBottom.setVelocity( rightDriveVel - rightStrafeVel - rightRotateVel, AngleUnit.RADIANS );
 
 	}
 
