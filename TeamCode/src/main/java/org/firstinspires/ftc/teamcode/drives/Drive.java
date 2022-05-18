@@ -35,12 +35,22 @@ public interface Drive {
 	void drive( double move, double turn );
 
 	/**
-	 * @param distanceToMove
-	 * @param circumference
-	 * @param gearRatio
-	 * @return
+	 * @param distanceToTravel the distance to travel in inches
+	 * @param circumference    the circumference of the wheel that has the encoder
+	 * @param gearRatio        the ratio between the motor and the wheel
+	 * @param ppr              the number of ticks or pulses of the motor in one revolution
+	 * @return the number of ticks to travel
 	 */
-	int convertDistTicks( double distanceToMove, double circumference, double gearRatio );
+	int convertDistTicks( double distanceToTravel, double circumference, double gearRatio, double ppr );
+
+	/**
+	 * @param ticksToTravel the distance to move in inches
+	 * @param circumference the circumference of the wheel that has the encoder
+	 * @param gearRatio     the ratio between the motor and the wheel
+	 * @param ppr           the number of ticks or pulses of the motor in one revolution
+	 * @return the distance to travel
+	 */
+	double convertTicksDist( double ticksToTravel, double circumference, double gearRatio, double ppr );
 
 	/**
 	 * Returns the current state of the drive train

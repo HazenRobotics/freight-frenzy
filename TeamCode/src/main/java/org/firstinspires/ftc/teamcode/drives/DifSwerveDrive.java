@@ -4,8 +4,6 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
-import android.util.Log;
-
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,9 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import java.util.Vector;
-
-public class SwerveDrive implements Drive {
+public class DifSwerveDrive implements Drive {
 
 	public DcMotorEx leftTop;
 	public DcMotorEx leftBottom;
@@ -32,37 +28,38 @@ public class SwerveDrive implements Drive {
 
 	public double wheelRadius;
 	public double wheelGearRatio;
+
 	public double rotateGearRadius;
 	public double rotateGearRatio;
 
-	int ticksInRotation = 0;
+	public double maxAngularVelocity;
+	public double storedMaxAngularPow;
+	public double storedMaxAngularVel;
 
-	public SwerveDrive( HardwareMap hardwareMap ) {
-		setUpMotors( hardwareMap, "leftTop", "leftBottom", "rightTop", "rightBottom" );
+	public double wheelBase;
+
+	int ticksInRotation = 250;
+
+	final double TWO_PI = 2 * Math.PI;
+
+	double MAX_VELOCITY = 5 * TWO_PI; // Radians per seconds
+
+	public DifSwerveDrive( HardwareMap hardwareMap ) {
+		this( hardwareMap, "leftTop", "leftBottom", "rightTop", "rightBottom" );
 	}
 
-	public SwerveDrive( HardwareMap hardwareMap, String leftTopName, String rightTopName, String leftBottomName, String rightBottomName ) {
+	public DifSwerveDrive( HardwareMap hardwareMap, String leftTopName, String rightTopName, String leftBottomName, String rightBottomName ) {
 		setUpMotors( hardwareMap, leftTopName, rightTopName, leftBottomName, rightBottomName );
 	}
 
-	/**
-	 * @param distanceToTravel the distance to move in inches
-	 * @param circumference    the circumference of the wheel that has the encoder
-	 * @param gearRatio        the ratio between the motor and the wheel
-	 * @return the amount of ticks to move forward
-	 */
-	public int convertDistTicks( double distanceToTravel, double circumference, double gearRatio ) {
-		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / gearRatio );
+	@Override
+	public int convertDistTicks( double distanceToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertDistTicks( distanceToTravel, circumference, gearRatio, ppr );
 	}
 
-	/**
-	 * @param ticksToTravel the distance to move in inches
-	 * @param circumference the circumference of the wheel that has the encoder
-	 * @param gearRatio     the ratio between the motor and the wheel
-	 * @return the distance to move forward
-	 */
-	public int convertTicksDist( double ticksToTravel, double circumference, double gearRatio ) {
-		return (int) Math.round( ticksToTravel * circumference * gearRatio / PULSES_PER_REVOLUTION );
+	@Override
+	public double convertTicksDist( double ticksToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertTicksDist( ticksToTravel, circumference, gearRatio, ppr );
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class SwerveDrive implements Drive {
 		leftBottom = hardwareMap.get( DcMotorEx.class, leftBottomName );
 		rightBottom = hardwareMap.get( DcMotorEx.class, rightBottomName );
 
-		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );
+		setMotorDirections( FORWARD, FORWARD, FORWARD, FORWARD );
 		setZeroPowerBehavior( BRAKE, BRAKE, BRAKE, BRAKE );
 		//setRunMode(STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER );
 	}
@@ -93,8 +90,23 @@ public class SwerveDrive implements Drive {
 		this.rotateGearRadius = rotateGearRadius;
 		this.rotateGearRatio = wheelGearRadius;
 
-		ticksInRotation = convertDistTicks( 2 * Math.PI, 2 * Math.PI * rotateGearRadius, rotateGearRatio );
+		ticksInRotation = convertDistTicks( TWO_PI, TWO_PI * rotateGearRadius, rotateGearRatio, PULSES_PER_REVOLUTION );
 
+		storedMaxAngularPow = 2 / wheelBase;
+		storedMaxAngularVel = 2 * maxAngularVelocity / wheelBase;
+	}
+
+	/**
+	 * @param maxAngularVelocity the new max rotation speed of a wheel pod in rad / s
+	 */
+	public void setMaxAngularVelocity( double maxAngularVelocity ) {
+		this.maxAngularVelocity = maxAngularVelocity;
+		storedMaxAngularPow = 2 / wheelBase;
+		storedMaxAngularVel = 2 * maxAngularVelocity / wheelBase;
+	}
+
+	public void setWheelBase( double wheelBase ) {
+		this.wheelBase = wheelBase;
 	}
 
 	/**
@@ -109,11 +121,12 @@ public class SwerveDrive implements Drive {
 	/**
 	 * @param topMotor    the motor controlling the wheel hub's upper gear
 	 * @param bottomMotor the motor controlling the wheel hub's lower gear
-	 * @return the number of radians the motor hub has rotated
+	 * @param angleUnit   the angle unit to measure the wheel's rotation
+	 * @return the number of angleUnit the motor hub has rotated
 	 */
-	public int getWheelRotationRadians( DcMotorEx topMotor, DcMotorEx bottomMotor ) {
-		return convertTicksDist( getWheelRotation( topMotor, bottomMotor ), 2 * Math.PI * rotateGearRadius, rotateGearRatio );
-
+	public double getWheelRotation( DcMotorEx topMotor, DcMotorEx bottomMotor, AngleUnit angleUnit ) {
+		double radians = convertTicksDist( getWheelRotation( topMotor, bottomMotor ), TWO_PI * rotateGearRadius, rotateGearRatio, PULSES_PER_REVOLUTION );
+		return (angleUnit == AngleUnit.RADIANS) ? radians : Math.toDegrees( radians );
 	}
 
 	/**
@@ -121,7 +134,7 @@ public class SwerveDrive implements Drive {
 	 * @return the angle normalized between 0 and 1
 	 */
 	public double normalizeAngle( double angle ) {
-		return normalize( angle, 0, 2 * Math.PI, 0, 1 );
+		return normalize( angle, 0, TWO_PI, 0, 1 );
 	}
 
 	/**
@@ -140,7 +153,7 @@ public class SwerveDrive implements Drive {
 	 * @param vectorAngle the angle from a vector
 	 * @return the angle rotated 90° counterclockwise
 	 */
-	public double rotateAngle( double vectorAngle ) {
+	public double normalizeVectorAngle( double vectorAngle ) {
 		return Angle.norm( vectorAngle + Math.PI / 2 );
 	}
 
@@ -148,78 +161,98 @@ public class SwerveDrive implements Drive {
 	 * @param vector the vector to get an angle from
 	 * @return the angle rotated 90° counterclockwise
 	 */
-	public double rotateAngle( Vector2d vector ) {
-		return rotateAngle( vector.angle( ) );
+	public double normalizeVectorAngle( Vector2d vector ) {
+		return normalizeVectorAngle( vector.angle( ) );
 	}
+
+	// drive logic
+	/*
+	drive: similar power to everything
+		strafe: if wheel too far left, turn hub right more
+				if wheel too far right, turn hub left more
+	if rotate right:
+		move wheels toward 0 (straight of the robot) and set wheel powers opposite each other
+			if wheel too far left, turn hub right more
+			if wheel too far right, turn hub left more
+	 */
 
 	public void move( double drive, double strafe, double rotate ) {
 		move( new Vector2d( strafe, drive ), rotate );
 	}
-
 	public void move( Vector2d strafe, double rotate ) {
 
-		int leftRotation = getWheelRotationRadians( leftTop, leftBottom );
-		int rightRotation = getWheelRotationRadians( rightTop, rightBottom );
+		double leftRotation = getWheelRotation( leftTop, leftBottom, AngleUnit.RADIANS );
+		double rightRotation = getWheelRotation( rightTop, rightBottom, AngleUnit.RADIANS );
 
-		double targetHubAngle = rotateAngle( strafe );
-		double targetRotateAngle = 0; // perpendicular to robot's point of rotation
+		double targetHubAngle = normalizeVectorAngle( strafe );
+//		double targetRotateAngle = 0; // perpendicular to robot's point of rotation
 
-		int width = 14; // inches between wheels
+		double normPower = strafe.norm( ) * MAX_VELOCITY;
+		double angularPower = rotate * storedMaxAngularPow;
 
-		/*
-		drive: similar power to everything
-			strafe: if wheel too far left, turn hub right more
-					if wheel too far right, turn hub left more
-		if rotate right:
-		 */
+		double leftStrafePow = normPower * normalizeAngle( targetHubAngle - leftRotation );
+		double rightStrafePow = normPower * normalizeAngle( targetHubAngle - rightRotation );
 
-		// too far left: leftRotation < rotateAngle( vector.angle( ) )
-		// too far right: leftRotation > rotateAngle( vector.angle( ) )
-
-		double leftPower = strafe.norm( );
-		leftPower -= strafe.norm( ) * normalizeAngle( targetHubAngle - leftRotation ); // slower rotates clockwise
-		leftPower -= rotate * normalizeAngle( targetRotateAngle - leftRotation );
-
-		double rightPower = strafe.norm( );
-		rightPower -= strafe.norm( ) * normalizeAngle( targetHubAngle - rightRotation ); // slower rotates clockwise
-		rightPower -= rotate * normalizeAngle( targetRotateAngle - rightRotation );
+		double leftRotatePow = angularPower * normalizeAngle( /*targetRotateAngle*/ -leftRotation );
+		double rightRotatePow = angularPower * normalizeAngle( /*targetRotateAngle*/ -rightRotation );
 
 		// if the target angle = the current angle (of the hubs) then it will just drive
 
-		leftTop.setPower( strafe.norm( ) );
-		leftBottom.setPower( leftPower );
+		leftTop.setPower( normPower + leftStrafePow + leftRotatePow );
+		leftBottom.setPower( normPower - leftStrafePow - leftRotatePow );
 
-		rightTop.setPower( strafe.norm( ) );
-		rightBottom.setPower( rightPower );
+		rightTop.setPower( normPower + rightStrafePow + rightRotatePow );
+		rightBottom.setPower( normPower - rightStrafePow - rightRotatePow );
+	}
+
+	public void moveVelocity( Vector2d strafe, double rotate ) {
+
+		double leftRotation = getWheelRotation( leftTop, leftBottom, AngleUnit.RADIANS );
+		double rightRotation = getWheelRotation( rightTop, rightBottom, AngleUnit.RADIANS );
+
+		double targetHubAngle = normalizeVectorAngle( strafe );
+//		double targetRotateAngle = 0; // perpendicular to robot's point of rotation
+
+		double normVelocity = strafe.norm( ) * MAX_VELOCITY;
+		double angularVelocity = rotate * storedMaxAngularVel;
+
+		double leftStrafeVel = normVelocity * normalizeAngle( targetHubAngle - leftRotation );
+		double rightStrafeVel = normVelocity * normalizeAngle( targetHubAngle - rightRotation );
+
+		double leftRotateVel = angularVelocity * normalizeAngle( /*targetRotateAngle*/ -leftRotation );
+		double rightRotateVel = angularVelocity * normalizeAngle( /*targetRotateAngle*/ -rightRotation );
+
+		// if the target angle = the current angle (of the hubs) then it will just drive
+
+		leftTop.setVelocity( normVelocity + leftStrafeVel + leftRotateVel, AngleUnit.RADIANS );
+		leftBottom.setVelocity( normVelocity - leftStrafeVel - leftRotateVel, AngleUnit.RADIANS );
+
+		rightTop.setVelocity( normVelocity + rightStrafeVel + rightRotateVel, AngleUnit.RADIANS );
+		rightBottom.setVelocity( normVelocity - rightStrafeVel - rightRotateVel, AngleUnit.RADIANS );
 
 	}
 
 	@Override
 	public void drive( double drive, double strafe ) {
 
-		Vector2d vector = new Vector2d( strafe, drive );
+		drive( new Vector2d( strafe, drive ) );
+	}
 
-		int leftRotation = getWheelRotationRadians( leftTop, leftBottom );
-		int rightRotation = getWheelRotationRadians( rightTop, rightBottom );
+	public void drive( Vector2d strafe ) {
 
-		/*
-		drive: similar power to everything
-			strafe: if wheel too far left, rotate right more
-					if wheel too far right, rotate left more
-		 */
+		double targetHubAngle = normalizeVectorAngle( strafe );
+		double power = strafe.norm( );
 
-		// too far left: leftRotation < rotateAngle( vector.angle( ) )
-		// too far right: leftRotation > rotateAngle( vector.angle( ) )
+		double leftStrafePow = normalizeAngle( targetHubAngle - getWheelRotation( leftTop, leftBottom, AngleUnit.RADIANS ) );
+		double rightStrafePow = normalizeAngle( targetHubAngle - getWheelRotation( rightTop, rightBottom, AngleUnit.RADIANS ) );
 
-		double leftPower = vector.norm( ) - vector.norm( ) * normalizeAngle( rotateAngle( vector ) - leftRotation ); // slower rotates clockwise
-		double rightPower = vector.norm( ) - vector.norm( ) * normalizeAngle( rotateAngle( vector ) - rightRotation ); // slower rotates clockwise
+		// if the target angle = the current angle (of the hubs) then it will just drive
 
-		leftTop.setPower( vector.norm( ) );
-		leftBottom.setPower( leftPower );
+		leftTop.setPower( power * (1 + leftStrafePow) ); // norm + norm * strafe
+		leftBottom.setPower( power * (1 - leftStrafePow) ); // norm - norm * strafe
 
-		rightTop.setPower( vector.norm( ) );
-		rightBottom.setPower( rightPower );
-
+		rightTop.setPower( power * (1 + rightStrafePow) ); // norm + norm * strafe
+		rightBottom.setPower( power * (1 - rightStrafePow) ); // norm - norm * strafe
 	}
 
 	@Override
@@ -237,8 +270,8 @@ public class SwerveDrive implements Drive {
 	@Override
 	public void turn( double power ) {
 
-		int leftRotation = getWheelRotationRadians( leftTop, leftBottom );
-		int rightRotation = getWheelRotationRadians( rightTop, rightBottom );
+		double leftRotation = getWheelRotation( leftTop, leftBottom, AngleUnit.RADIANS );
+		double rightRotation = getWheelRotation( rightTop, rightBottom, AngleUnit.RADIANS );
 
 		double targetRotateAngle = 0; // perpendicular to robot's point of rotation
 
@@ -255,7 +288,7 @@ public class SwerveDrive implements Drive {
 		topMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 		bottomMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
-		int target = convertDistTicks( distance, 2 * Math.PI * wheelRadius, rotateGearRadius );
+		int target = convertDistTicks( distance, TWO_PI * wheelRadius, rotateGearRadius, PULSES_PER_REVOLUTION );
 		topMotor.setTargetPosition( target );
 		topMotor.setTargetPosition( target );
 
@@ -274,7 +307,7 @@ public class SwerveDrive implements Drive {
 		topMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 		bottomMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
-		int target = convertDistTicks( radians, Math.PI * rotateGearRadius * 2, wheelGearRatio );
+		int target = convertDistTicks( radians, TWO_PI * rotateGearRadius, wheelGearRatio, PULSES_PER_REVOLUTION );
 		topMotor.setTargetPosition( target );
 		topMotor.setTargetPosition( target );
 
@@ -298,7 +331,8 @@ public class SwerveDrive implements Drive {
 	public void rotateWheelToPos( double power, double targetAngle, DcMotorEx topMotor, DcMotorEx bottomMotor, boolean moveClosestDirection ) {
 
 		// rotation = difference between motors / 2. Distance = Math.max( motors ) - difference
-		int distanceRotated = topMotor.getCurrentPosition( ) - bottomMotor.getCurrentPosition( ) / 2;
+
+		int distanceRotated = getWheelRotation( topMotor, bottomMotor );
 //		int distanceTravelled = Math.max( topMotor.getCurrentPosition( ), bottomMotor.getCurrentPosition( ) ) - distanceRotated;
 
 		if( moveClosestDirection )
@@ -312,7 +346,7 @@ public class SwerveDrive implements Drive {
 		topMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 		bottomMotor.setMode( DcMotor.RunMode.RUN_TO_POSITION );
 
-		int target = convertDistTicks( radians, 2 * Math.PI * rotateGearRadius, rotateGearRadius );
+		int target = convertDistTicks( radians, TWO_PI * rotateGearRadius, rotateGearRadius, PULSES_PER_REVOLUTION );
 		topMotor.setTargetPosition( target );
 		topMotor.setTargetPosition( -target );
 

@@ -35,7 +35,7 @@ public class MecanumDrive extends FourWheelDrive {
 		return convertDistTicks( distanceToTravel, Math.PI * WHEEL_DIAMETER );
 	}
 
-	public int convertTicksDist( double ticksToTravel ) {
+	public double convertTicksDist( double ticksToTravel ) {
 		return convertTicksDist( ticksToTravel, Math.PI * WHEEL_DIAMETER );
 	}
 

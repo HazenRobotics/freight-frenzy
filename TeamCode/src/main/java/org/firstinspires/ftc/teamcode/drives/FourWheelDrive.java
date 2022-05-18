@@ -19,8 +19,8 @@ public class FourWheelDrive implements Drive {
 	public DcMotorEx backLeft;
 	public DcMotorEx backRight;
 
-	final double PULSES_PER_REVOLUTION = 250;
-	final double GEAR_RATIO = 0.25;
+	final double pulsesPerRevolution = 250;
+	final double gearRatio = 0.25;
 
 	private State currentState = State.STOPPED;
 
@@ -33,45 +33,31 @@ public class FourWheelDrive implements Drive {
 	}
 
 	/**
-	 * @param distanceToTravel the distance to move in inches
+	 * @param distanceToTravel the distance to travel in inches
 	 * @param circumference    the circumference of the wheel that has the encoder
-	 * @return the amount of ticks to move forward
+	 * @return the number of ticks to travel
 	 */
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
-		return convertDistTicks( distanceToTravel, circumference, GEAR_RATIO );
+		return convertDistTicks( distanceToTravel, circumference, gearRatio, pulsesPerRevolution );
 	}
 
 	/**
 	 * @param ticksToTravel the distance to move in inches
 	 * @param circumference the circumference of the wheel that has the encoder
-	 * @return the distance to move forward
+	 * @return the distance to travel
 	 */
-	public int convertTicksDist( double ticksToTravel, double circumference ) {
-		return convertTicksDist( ticksToTravel, circumference, GEAR_RATIO );
+	public double convertTicksDist( double ticksToTravel, double circumference ) {
+		return convertTicksDist( ticksToTravel, circumference, gearRatio, pulsesPerRevolution );
 	}
 
-	/**
-	 * @param distanceToTravel the distance to move in inches
-	 * @param circumference    the circumference of the wheel that has the encoder
-	 * @param gearRatio        the ratio between the motor and the wheel
-	 * @return the amount of ticks to move forward
-	 */
 	@Override
-	public int convertDistTicks( double distanceToTravel, double circumference, double gearRatio ) {
-		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / gearRatio );
+	public int convertDistTicks( double distanceToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertDistTicks( distanceToTravel, circumference, gearRatio, ppr );
 	}
 
-	/**
-	 * @param ticksToTravel the distance to move in inches
-	 * @param circumference the circumference of the wheel that has the encoder
-	 * @param gearRatio     the ratio between the motor and the wheel
-	 * @return the distance to move forward
-	 */
-	public int convertTicksDist( double ticksToTravel, double circumference, double gearRatio ) {
-		double calculations = ticksToTravel * circumference * GEAR_RATIO;
-		int totalDistance = (int) Math.round( calculations / PULSES_PER_REVOLUTION );
-
-		return totalDistance;
+	@Override
+	public double convertTicksDist( double ticksToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertTicksDist( ticksToTravel, circumference, gearRatio, ppr );
 	}
 
 	/**
@@ -92,8 +78,6 @@ public class FourWheelDrive implements Drive {
 		setMotorDirections( FORWARD, FORWARD, REVERSE, REVERSE );
 		setZeroPowerBehavior( BRAKE, BRAKE, BRAKE, BRAKE );
 		//setRunMode(STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER );
-
-
 	}
 
 	@Override
@@ -114,7 +98,6 @@ public class FourWheelDrive implements Drive {
 	@Override
 	public void drive( double move, double turn ) {
 
-		// You might have to play with the + or - depending on how your motors are installed
 		double frontLeftPower = move + turn;
 		double backLeftPower = move + turn;
 		double frontRightPower = move - turn;

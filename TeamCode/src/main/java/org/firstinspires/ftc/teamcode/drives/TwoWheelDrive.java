@@ -15,9 +15,9 @@ public class TwoWheelDrive implements Drive {
 	public DcMotorEx right;
 
 	final double PULSES_PER_REVOLUTION = 250;
-	final double GEAR_RATIO = 0.25;
+	final double GEAR_RATIO = 1.0;
 
-	private Drive.State currentState = Drive.State.STOPPED;
+	private State currentState = State.STOPPED;
 
 	public TwoWheelDrive( HardwareMap hardwareMap ) {
 		this( hardwareMap, "left", "right" );
@@ -28,25 +28,31 @@ public class TwoWheelDrive implements Drive {
 	}
 
 	/**
-	 * convert a distance (in inches) to ticks
-	 *
-	 * @param distanceToTravel the distance to move in inches
+	 * @param distanceToTravel the distance to travel in inches
 	 * @param circumference    the circumference of the wheel that has the encoder
-	 * @return totalTicks - the amount of ticks to move forward
+	 * @return the number of ticks to travel
 	 */
 	public int convertDistTicks( double distanceToTravel, double circumference ) {
-		return (int) Math.round( ((distanceToTravel / circumference) * PULSES_PER_REVOLUTION) / GEAR_RATIO );
+		return convertDistTicks( distanceToTravel, circumference, GEAR_RATIO, PULSES_PER_REVOLUTION );
 	}
 
 	/**
-	 * convert a number of ticks to distance (in inches)
-	 *
-	 * @param ticksToTravel the number of ticks to travel
-	 * @param circumference the circumference of the wheel (2*pi*r or pi*d)
-	 * @return the distance (in inches) in that number of ticks
+	 * @param ticksToTravel the distance to move in inches
+	 * @param circumference the circumference of the wheel that has the encoder
+	 * @return the distance to travel
 	 */
-	public int convertTicksDist( double ticksToTravel, double circumference ) {
-		return (int) Math.round( (ticksToTravel * circumference * GEAR_RATIO) / PULSES_PER_REVOLUTION );
+	public double convertTicksDist( double ticksToTravel, double circumference ) {
+		return convertTicksDist( ticksToTravel, circumference, GEAR_RATIO, PULSES_PER_REVOLUTION );
+	}
+
+	@Override
+	public int convertDistTicks( double distanceToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertDistTicks( distanceToTravel, circumference, gearRatio, ppr );
+	}
+
+	@Override
+	public double convertTicksDist( double ticksToTravel, double circumference, double gearRatio, double ppr ) {
+		return convertTicksDist( ticksToTravel, circumference, gearRatio, ppr );
 	}
 
 	/**
@@ -63,8 +69,6 @@ public class TwoWheelDrive implements Drive {
 		setMotorDirections( FORWARD, REVERSE );
 		setZeroPowerBehavior( BRAKE, BRAKE );
 		//setRunMode(STOP_AND_RESET_ENCODER, STOP_AND_RESET_ENCODER );
-
-
 	}
 
 	@Override
@@ -85,7 +89,6 @@ public class TwoWheelDrive implements Drive {
 	@Override
 	public void drive( double move, double turn ) {
 
-		// You might have to play with the + or - depending on how your motors are installed
 		double leftPower = move + turn;
 		double rightPower = move - turn;
 
