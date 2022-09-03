@@ -221,6 +221,19 @@ public class Lift {
 		moveDistanceVelocity( velocity, distanceToMove, true );
 	}
 
+	/**
+	 * @param velocity the velocity at which to move the lift
+	 * @param height   the height from the ground to the new pos, bottom of the bucket (in the intake position), to move the lift to, in inches
+	 */
+	public void setHeightVelocityLinear( double velocity, double height ) {
+		if( height < groundBucketHeight )
+			height = groundBucketHeight;
+
+		stopAndReset( );
+		double distanceToMove = calcLiftDistanceFromHeight( height - groundBucketHeight ) - convertTicksDist( liftPosition, 2 * spoolRadius * Math.PI );
+		moveDistanceVelocity( velocity, distanceToMove, false );
+	}
+
 	// util methods
 
 	/**

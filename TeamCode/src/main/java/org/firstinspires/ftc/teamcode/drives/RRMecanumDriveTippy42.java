@@ -145,17 +145,17 @@ public class RRMecanumDriveTippy42 extends MecanumDrive {
 
 		// TODO: if desired, use setLocalizer() to change the localization method
 		// for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-		//setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
-		fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
-		List<LynxModule> hubs = hardwareMap.getAll( LynxModule.class );
+		setLocalizer( new TwoWheelTrackingLocalizerTippy( hardwareMap, this ) );
+		//fusionLocalizer = new FusionLocalizer( hardwareMap, this, new Pose2d( CAMERA_X, CAMERA_Y ) );
+		/*List<LynxModule> hubs = hardwareMap.getAll( LynxModule.class );
 		setDeadwheelsDisabledCheck( ( ) -> {
 					for( LynxModule hub : hubs )
 						if( hub.isNotResponding( ) )
 							return true;
 					return false;
 				}
-		);
-		setLocalizer( fusionLocalizer );
+		);*/
+		//setLocalizer( fusionLocalizer );
 		if( !(mapName == null) )
 			mapName += ".bin";
 

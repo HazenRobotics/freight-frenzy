@@ -120,7 +120,7 @@ public class RRTippyBot extends Robot {
 
 		lights.showStatus( RGBLights.StatusLights.CELEBRATION );
 
-		bucketDetector = new ObjectClassifier( "loaded_vs_unloaded.tflite", "loaded_vs_unloaded_labels.txt", "webcam3", opMode );
+		//bucketDetector = new ObjectClassifier( "loaded_vs_unloaded.tflite", "loaded_vs_unloaded_labels.txt", "webcam3", opMode );
 
 		if( auto ) {
 
@@ -203,6 +203,14 @@ public class RRTippyBot extends Robot {
 
 	public void stopDuckScanning( ) {
 		searchForDuck = false;
+	}
+
+	/**
+	 * @return field position of last identified object
+	 */
+	public Vector2d getLastIdentifiedPosition() {
+		if( lastIdentified == null) return null;
+		return new Vector2d( lastIdentified.getX( ), lastIdentified.getY( ) ).plus( drive.getPoseEstimate( ).vec( ) );
 	}
 
 	/**
